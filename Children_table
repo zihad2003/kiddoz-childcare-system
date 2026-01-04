@@ -1,0 +1,13 @@
+CREATE TABLE children (
+    id SERIAL PRIMARY KEY,
+    parent_id INT NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    age INT CHECK (age >= 0),
+    allergies TEXT,
+    plan_type VARCHAR(50),
+    CONSTRAINT fk_parent
+        FOREIGN KEY (parent_id)
+        REFERENCES profiles(id)
+        ON DELETE CASCADE
+);
+
