@@ -1,0 +1,15 @@
+CREATE TABLE subscriptions (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    plan_type VARCHAR(50) NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE,
+    status VARCHAR(20) DEFAULT 'active',
+    payment_method VARCHAR(50),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_user
+        FOREIGN KEY (user_id)
+        REFERENCES profiles(id)
+        ON DELETE CASCADE
+);
