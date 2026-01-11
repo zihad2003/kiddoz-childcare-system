@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
-import { 
-  getAuth, 
-  onAuthStateChanged, 
-  signOut 
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
 } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { Loader2 } from 'lucide-react';
@@ -20,6 +20,7 @@ import EnrollmentPage from './components/enrollment/EnrollmentPage';
 import AdminDashboard from './components/admin/AdminDashboard';
 import ParentDashboard from './components/dashboard/ParentDashboard';
 import Chatbot from './components/ai/Chatbot';
+import InfoPage from './components/layout/InfoPage';
 
 // Firebase Configuration
 const firebaseConfig = {
@@ -100,51 +101,57 @@ export default function App() {
 
   return (
     <div className="font-sans text-slate-800 bg-slate-50 min-h-screen flex flex-col">
-      <Navbar 
-        view={view} 
-        setView={setView} 
-        user={user} 
-        handleLogout={handleLogout} 
+      <Navbar
+        view={view}
+        setView={setView}
+        user={user}
+        handleLogout={handleLogout}
       />
-      
+
       <main className="flex-grow">
         {/* Public Landing Pages */}
         {view === 'home' && <Hero setView={setView} />}
         {(view === 'home' || view === 'programs') && <Programs />}
-        
+
         {/* Enrollment Wizard */}
         {view === 'enroll' && (
-          <EnrollmentPage 
-            user={user} 
-            setView={setView} 
-            db={db} 
-            appId={appId} 
-            PLANS={PLANS} 
+          <EnrollmentPage
+            user={user}
+            setView={setView}
+            db={db}
+            appId={appId}
+            PLANS={PLANS}
           />
         )}
 
         {/* Protected Dashboard Views */}
         {view === 'admin' && user && (
-          <AdminDashboard 
-            user={user} 
-            setView={setView} 
-            db={db} 
-            appId={appId} 
+          <AdminDashboard
+            user={user}
+            setView={setView}
+            db={db}
+            appId={appId}
           />
         )}
-        
+
         {view === 'dashboard' && user && (
-          <ParentDashboard 
-            user={user} 
-            setView={setView} 
-            db={db} 
-            appId={appId} 
+          <ParentDashboard
+            user={user}
+            setView={setView}
+            db={db}
+            appId={appId}
           />
         )}
+
+        {/* Info Pages (Footer Links) */}
+        {view === 'info-privacy' && <InfoPage type="privacy" />}
+        {view === 'info-terms' && <InfoPage type="terms" />}
+        {view === 'info-help' && <InfoPage type="help" />}
+        {view === 'info-safety' && <InfoPage type="safety" />}
       </main>
 
-      <Footer setView={setView} />
-      
+      {view !== 'admin' && <Footer setView={setView} />}
+
       {/* Persistent AI Assistant */}
       <Chatbot user={user} />
     </div>

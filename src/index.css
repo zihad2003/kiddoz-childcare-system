@@ -1,72 +1,52 @@
+@import '@fontsource/outfit/400.css';
+@import '@fontsource/outfit/500.css';
+@import '@fontsource/outfit/600.css';
+@import '@fontsource/outfit/700.css';
+@import '@fontsource/outfit/800.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Custom Variable Definitions */
-:root {
-  --purple-main: #7c3aed;
-  --slate-dark: #0f172a;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color-scheme: light;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Global Reset & Base Styles */
-body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-  background-color: #f8fafc; /* slate-50 */
-  overflow-x: hidden;
-}
-
-/* Smooth Scrolling for Anchor Links */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Tailwind Layer Extensions */
 @layer utilities {
   .animate-gradient-x {
     animation: gradient-x 15s ease infinite;
   }
-
-  @keyframes gradient-x {
-    0%, 100% {
-      background-size: 200% 200%;
-      background-position: left center;
-    }
-    50% {
-      background-size: 200% 200%;
-      background-position: right center;
-    }
+  
+  .glass {
+    @apply bg-white/10 backdrop-blur-lg border border-white/20;
   }
-
-  /* Custom glass effect for UI elements */
-  .glass-effect {
-    @apply bg-white/80 backdrop-blur-md border border-white/20;
+  
+  .glass-dark {
+    @apply bg-black/10 backdrop-blur-lg border border-white/10;
+  }
+  
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
 }
 
-/* Scrollbar Styling for a cleaner look */
+:root {
+  font-family: 'Outfit', system-ui, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  @apply bg-slate-50 text-slate-900;
+}
+
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
-
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  @apply bg-slate-100;
 }
-
 ::-webkit-scrollbar-thumb {
-  background: #c7d2fe; /* indigo-200 */
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #818cf8; /* indigo-400 */
+  @apply bg-slate-300 rounded-full hover:bg-slate-400;
 }

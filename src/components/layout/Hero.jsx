@@ -3,7 +3,7 @@ import Badge from '../ui/Badge';
 
 const Hero = ({ setView }) => (
   <div className="relative overflow-hidden bg-purple-900 text-white pt-28 pb-40">
-    <div className="absolute inset-0 opacity-30 bg-[url('https://images.unsplash.com/photo-1596464716127-f9a829be169c?auto=format&fit=crop&q=80')] bg-cover bg-center" />
+    <div className="absolute inset-0 opacity-30 bg-[url('https://images.unsplash.com/photo-1587654780291-39c9404d746b?auto=format&fit=crop&q=80')] bg-cover bg-center" />
     <div className="absolute inset-0 bg-gradient-to-b from-purple-900 via-purple-900/80 to-slate-50" />
     <div className="relative max-w-7xl mx-auto px-4 text-center z-10">
       <Badge color="bg-white/10 text-purple-200 border border-purple-400/30 mb-8 backdrop-blur-md">Next Generation Childcare</Badge>

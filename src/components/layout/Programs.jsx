@@ -8,9 +8,9 @@ const Programs = () => {
     <div className={`flex flex-col md:flex-row ${reverse ? 'md:flex-row-reverse' : ''} gap-12 items-center mb-24`}>
       <div className="md:w-1/2 relative group">
         <div className={`absolute inset-0 bg-purple-600 rounded-3xl transform ${reverse ? '-rotate-3' : 'rotate-3'} group-hover:rotate-0 transition duration-500 opacity-20`}></div>
-        <img 
-          src={img} 
-          alt={title} 
+        <img
+          src={img}
+          alt={title}
           className="rounded-3xl shadow-2xl relative z-10 w-full object-cover h-[400px]"
         />
       </div>
@@ -36,28 +36,28 @@ const Programs = () => {
         <p className="text-slate-500">Tailored care for every stage of development.</p>
       </div>
 
-      <ProgramCard 
+      <ProgramCard
         title="1. Nurturing Day Care"
         age="6 months - 3 years"
         desc="A safe haven for your little ones while you work. We prioritize emotional security, sensory play, and routine monitoring to ensure your child feels at home."
-        img="https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&q=80"
+        img="https://images.unsplash.com/photo-1544947936-a36746cfdf31?auto=format&fit=crop&q=80"
         features={['Real-time Diaper/Feed Logs', 'Sensory Development', 'Organic Meal Plans', 'Secure Nap Rooms']}
       />
 
-      <ProgramCard 
+      <ProgramCard
         title="2. Pre-School Excellence"
         age="3 years - 5 years"
         desc="Preparing young minds for the future. Our curriculum balances academic foundations like phonics and math with crucial social skills and creative expression."
-        img="https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&q=80"
+        img="https://images.unsplash.com/photo-1576400883215-05fae3e15777?auto=format&fit=crop&q=80"
         features={['Early Literacy & STEM', 'Social Group Dynamics', 'Creative Arts Studio', 'School Readiness']}
         reverse={true}
       />
 
-      <ProgramCard 
+      <ProgramCard
         title="3. Professional Nanny Service"
         age="All Ages (Home Service)"
         desc="Need extra help at home? KiddoZ allows you to book certified, background-checked nannies for evening care, weekends, or emergency support."
-        img="https://images.unsplash.com/photo-1543355000-4b95cb739466?auto=format&fit=crop&q=80"
+        img="https://images.unsplash.com/photo-1627733475990-2e4a42867c26?auto=format&fit=crop&q=80"
         features={['Background Checked', 'First Aid Certified', 'Flexible Booking', 'App-Based Tracking']}
       />
     </Section>
