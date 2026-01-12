@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CheckCircle, ArrowRight, ArrowLeft, Star, Shield, Zap } from 'lucide-react';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import Section from '../ui/Section';
@@ -9,7 +10,8 @@ import Select from '../ui/Select';
 import Badge from '../ui/Badge';
 import BiometricRegistration from './BiometricRegistration';
 
-const EnrollmentPage = ({ user, setView, db, appId, PLANS }) => {
+const EnrollmentPage = ({ user, db, appId, PLANS }) => {
+  const navigate = useNavigate();
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [formStep, setFormStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -26,7 +28,7 @@ const EnrollmentPage = ({ user, setView, db, appId, PLANS }) => {
 
   // Handle final submission after biometric phase
   const handleEnrollmentComplete = async () => {
-    if (!user) { setView('login'); return; }
+    if (!user) { navigate('/login'); return; }
 
     setIsLoading(true);
     try {
@@ -85,7 +87,7 @@ const EnrollmentPage = ({ user, setView, db, appId, PLANS }) => {
         <p className="text-slate-500 mb-8 max-w-xs mx-auto">
           Enrollment & Biometric Setup Complete. Your child is now protected by KiddoZ AI safety systems.
         </p>
-        <Button onClick={() => setView('dashboard')} size="lg" className="w-full">
+        <Button onClick={() => navigate('/dashboard')} size="lg" className="w-full">
           Go to Dashboard
         </Button>
       </Card>

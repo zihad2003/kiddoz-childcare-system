@@ -1,22 +1,28 @@
 import React, { useState } from 'react';
 import { Menu, X, User, LogOut } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 
-const Navbar = ({ view, setView, user, handleLogout }) => {
+const Navbar = ({ user, handleLogout }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
-  const NavItem = ({ target, label, icon: Icon }) => (
-    <button
-      onClick={() => { setView(target); setMobileMenuOpen(false); }}
-      className={`flex items-center gap-2 px-4 py-2 rounded-xl transition font-medium ${view === target ? 'bg-purple-100 text-purple-800' : 'text-slate-600 hover:text-purple-600 hover:bg-purple-50'
+  const isActive = (path) => location.pathname === path;
+
+  const NavItem = ({ to, label, icon: Icon }) => (
+    <Link
+      to={to}
+      onClick={() => setMobileMenuOpen(false)}
+      className={`flex items-center gap-2 px-4 py-2 rounded-xl transition font-medium ${isActive(to) ? 'bg-purple-100 text-purple-800' : 'text-slate-600 hover:text-purple-600 hover:bg-purple-50'
         }`}
     >
       {Icon && <Icon size={18} />}
       {label}
-    </button>
+    </Link>
   );
 
   // Admin View Navbar
-  if (view === 'admin' && user) return (
+  // Check if we are on an admin route
+  if (location.pathname.startsWith('/admin') && user) return (
     <nav className="glass sticky top-0 z-40 border-b border-purple-100 shadow-sm bg-purple-50/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20 items-center">
@@ -47,23 +53,23 @@ const Navbar = ({ view, setView, user, handleLogout }) => {
     <nav className="glass sticky top-0 z-40 border-b-0 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20 items-center">
-          <div className="flex items-center cursor-pointer gap-3" onClick={() => setView('home')}>
+          <Link to="/" className="flex items-center cursor-pointer gap-3">
             <div className="w-10 h-10 bg-gradient-to-tr from-purple-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg transform rotate-3">K</div>
             <span className="text-2xl font-extrabold tracking-tight text-slate-800">Kiddo<span className="text-purple-600">Z</span></span>
-          </div>
+          </Link>
           <div className="hidden md:flex space-x-1 items-center bg-slate-50 p-1.5 rounded-2xl border border-slate-200">
-            <NavItem target="home" label="Home" />
-            <NavItem target="programs" label="Programs" />
-            <NavItem target="enroll" label="Pricing & Enroll" />
+            <NavItem to="/" label="Home" />
+            <NavItem to="/programs" label="Programs" />
+            <NavItem to="/enroll" label="Pricing & Enroll" />
           </div>
           <div className="hidden md:flex items-center gap-4">
             {user ? (
               <>
-                <button onClick={() => setView('dashboard')} className="flex items-center gap-2 bg-purple-600 text-white px-6 py-2.5 rounded-full hover:bg-purple-700 transition shadow-lg font-semibold"><User size={18} /> Parent Portal</button>
+                <Link to="/dashboard" className="flex items-center gap-2 bg-purple-600 text-white px-6 py-2.5 rounded-full hover:bg-purple-700 transition shadow-lg font-semibold"><User size={18} /> Parent Portal</Link>
                 <button onClick={handleLogout} className="text-slate-400 hover:text-red-500 transition bg-slate-50 p-2 rounded-full hover:bg-red-50"><LogOut size={20} /></button>
               </>
             ) : (
-              <button onClick={() => setView('login')} className="text-purple-600 font-bold hover:text-purple-800 px-6 py-2">Log In</button>
+              <Link to="/login" className="text-purple-600 font-bold hover:text-purple-800 px-6 py-2">Log In</Link>
             )}
           </div>
           <div className="md:hidden">
@@ -73,16 +79,15 @@ const Navbar = ({ view, setView, user, handleLogout }) => {
       </div>
       {mobileMenuOpen && (
         <div className="md:hidden bg-white border-b border-slate-100 p-4 space-y-2 shadow-lg">
-          <NavItem target="home" label="Home" />
-          <NavItem target="programs" label="Programs" />
-          <NavItem target="enroll" label="Enroll" />
+          <NavItem to="/" label="Home" />
+          <NavItem to="/programs" label="Programs" />
+          <NavItem to="/enroll" label="Enroll" />
           {user ? (
-            <button onClick={() => { setView('dashboard'); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-3 bg-purple-600 text-white rounded-xl font-bold flex items-center gap-2"><User size={18} /> Parent Portal</button>
-          ) : (<NavItem target="login" label="Login" />)}
+            <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)} className="w-full text-left px-4 py-3 bg-purple-600 text-white rounded-xl font-bold flex items-center gap-2"><User size={18} /> Parent Portal</Link>
+          ) : (<NavItem to="/login" label="Login" />)}
         </div>
       )}
     </nav>
   );
 };
-
 export default Navbar;

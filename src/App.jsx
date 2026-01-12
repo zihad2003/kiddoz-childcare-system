@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { initializeApp } from 'firebase/app';
 import {
   getAuth,
@@ -73,9 +74,10 @@ const PLANS = [
 ];
 
 export default function App() {
-  const [view, setView] = useState('home');
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   // Auth State Listener
   useEffect(() => {
@@ -88,7 +90,7 @@ export default function App() {
 
   const handleLogout = async () => {
     await signOut(auth);
-    setView('home');
+    navigate('/');
   };
 
   // Loading State UI
@@ -98,65 +100,58 @@ export default function App() {
     </div>
   );
 
-  // Authentication View
-  if (view === 'login') return <AuthPage auth={auth} setView={setView} />;
-
   return (
     <div className="font-sans text-slate-800 bg-slate-50 min-h-screen flex flex-col">
+      {/* Hide Navbar on Login page if desired, but usually we keep it or change it. 
+          For now, keeping logic similar: show navbar everywhere */}
       <Navbar
-        view={view}
-        setView={setView}
         user={user}
         handleLogout={handleLogout}
       />
 
       <main className="flex-grow">
-        {/* Public Landing Pages */}
-        {view === 'home' && <Hero setView={setView} />}
-        {(view === 'home' || view === 'programs') && <Programs />}
-        {view === 'home' && <TourCTA setView={setView} />}
+        <Routes>
+          <Route path="/" element={
+            <>
+              <Hero />
+              <Programs />
+              <TourCTA />
+            </>
+          } />
 
-        {/* Enrollment Wizard */}
-        {view === 'enroll' && (
-          <EnrollmentPage
-            user={user}
-            setView={setView}
-            db={db}
-            appId={appId}
-            PLANS={PLANS}
-          />
-        )}
+          <Route path="/programs" element={<Programs />} />
 
-        {/* Protected Dashboard Views */}
-        {view === 'admin' && user && (
-          <AdminDashboard
-            user={user}
-            setView={setView}
-            db={db}
-            appId={appId}
-          />
-        )}
+          <Route path="/login" element={<AuthPage auth={auth} />} />
 
-        {view === 'dashboard' && user && (
-          <ParentDashboard
-            user={user}
-            setView={setView}
-            db={db}
-            appId={appId}
-          />
-        )}
+          <Route path="/enroll" element={
+            <EnrollmentPage
+              user={user}
+              db={db}
+              appId={appId}
+              PLANS={PLANS}
+            />
+          } />
 
-        {/* Info Pages (Footer Links) */}
-        {view === 'info-privacy' && <InfoPage type="privacy" />}
-        {view === 'info-terms' && <InfoPage type="terms" />}
-        {view === 'info-help' && <InfoPage type="help" />}
-        {view === 'info-safety' && <InfoPage type="safety" />}
+          <Route path="/tour" element={<TourBookingPage />} />
 
-        {/* Tour Booking */}
-        {view === 'tour' && <TourBookingPage setView={setView} />}
+          <Route path="/admin" element={
+            user ? <AdminDashboard user={user} db={db} appId={appId} /> : <Navigate to="/login" />
+          } />
+
+          <Route path="/dashboard" element={
+            user ? <ParentDashboard user={user} db={db} appId={appId} /> : <Navigate to="/login" />
+          } />
+
+          {/* Info Pages */}
+          <Route path="/info/privacy" element={<InfoPage type="privacy" />} />
+          <Route path="/info/terms" element={<InfoPage type="terms" />} />
+          <Route path="/info/help" element={<InfoPage type="help" />} />
+          <Route path="/info/safety" element={<InfoPage type="safety" />} />
+        </Routes>
       </main>
 
-      {view !== 'admin' && <Footer setView={setView} />}
+      {/* Hide footer on Admin pages */}
+      {!location.pathname.startsWith('/admin') && <Footer />}
 
       {/* Persistent AI Assistant */}
       <Chatbot user={user} />

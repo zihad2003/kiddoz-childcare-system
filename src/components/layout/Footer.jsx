@@ -1,7 +1,8 @@
 import React from 'react';
 import { MapPin, MessageCircle, Calendar } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
-const Footer = ({ setView }) => (
+const Footer = () => (
   <footer className="bg-purple-950 text-purple-200 py-16 font-sans">
     <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-4 gap-12 mb-12">
       <div>
@@ -24,19 +25,19 @@ const Footer = ({ setView }) => (
       <div>
         <h4 className="font-bold text-white text-lg mb-6">Our Programs</h4>
         <ul className="space-y-4">
-          <li><button onClick={() => { console.log('Programs clicked'); setView('programs'); window.scrollTo(0, 0); }} className="hover:text-amber-400 transition text-left">Pre-School (3-5 Yrs)</button></li>
-          <li><button onClick={() => { setView('programs'); window.scrollTo(0, 0); }} className="hover:text-amber-400 transition text-left">Day Care (6mo-3 Yrs)</button></li>
-          <li><button onClick={() => { setView('programs'); window.scrollTo(0, 0); }} className="hover:text-amber-400 transition text-left">Nanny Service</button></li>
+          <li><Link to="/programs" onClick={() => window.scrollTo(0, 0)} className="hover:text-amber-400 transition text-left block">Pre-School (3-5 Yrs)</Link></li>
+          <li><Link to="/programs" onClick={() => window.scrollTo(0, 0)} className="hover:text-amber-400 transition text-left block">Day Care (6mo-3 Yrs)</Link></li>
+          <li><Link to="/programs" onClick={() => window.scrollTo(0, 0)} className="hover:text-amber-400 transition text-left block">Nanny Service</Link></li>
         </ul>
       </div>
 
       <div>
         <h4 className="font-bold text-white text-lg mb-6">Support</h4>
         <ul className="space-y-4">
-          <li><button onClick={() => { setView('info-help'); window.scrollTo(0, 0); }} className="hover:text-amber-400 transition text-left">Help Center</button></li>
-          <li><button onClick={() => { setView('info-safety'); window.scrollTo(0, 0); }} className="hover:text-amber-400 transition text-left">Safety Protocols</button></li>
-          <li><button onClick={() => { setView('login'); window.scrollTo(0, 0); }} className="hover:text-amber-400 transition text-left">Parent Login</button></li>
-          <li><button onClick={() => { setView('admin'); window.scrollTo(0, 0); }} className="hover:text-amber-400 transition text-left">Admin Portal</button></li>
+          <li><Link to="/info/help" onClick={() => window.scrollTo(0, 0)} className="hover:text-amber-400 transition text-left block">Help Center</Link></li>
+          <li><Link to="/info/safety" onClick={() => window.scrollTo(0, 0)} className="hover:text-amber-400 transition text-left block">Safety Protocols</Link></li>
+          <li><Link to="/login" onClick={() => window.scrollTo(0, 0)} className="hover:text-amber-400 transition text-left block">Parent Login</Link></li>
+          <li><Link to="/admin" onClick={() => window.scrollTo(0, 0)} className="hover:text-amber-400 transition text-left block">Admin Portal</Link></li>
         </ul>
       </div>
 
@@ -61,8 +62,8 @@ const Footer = ({ setView }) => (
     <div className="max-w-7xl mx-auto px-4 pt-8 border-t border-purple-900 flex flex-col md:flex-row justify-between items-center text-sm text-purple-400">
       <p>© {new Date().getFullYear()} KiddoZ Inc. All rights reserved.</p>
       <div className="flex gap-6 mt-4 md:mt-0">
-        <button onClick={() => { setView('info-privacy'); window.scrollTo(0, 0); }} className="hover:text-white transition">Privacy Policy</button>
-        <button onClick={() => { setView('info-terms'); window.scrollTo(0, 0); }} className="hover:text-white transition">Terms & Conditions</button>
+        <Link to="/info/privacy" onClick={() => window.scrollTo(0, 0)} className="hover:text-white transition">Privacy Policy</Link>
+        <Link to="/info/terms" onClick={() => window.scrollTo(0, 0)} className="hover:text-white transition">Terms & Conditions</Link>
       </div>
     </div>
   </footer>

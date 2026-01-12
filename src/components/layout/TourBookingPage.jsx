@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Calendar, Clock, MapPin, CheckCircle, Video, User, Mail, Phone, ArrowLeft } from 'lucide-react';
-import Section from '../ui/Section';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
 import Select from '../ui/Select';
-import Badge from '../ui/Badge';
 
-const TourBookingPage = ({ setView }) => {
+const TourBookingPage = () => {
+    const navigate = useNavigate();
     const [step, setStep] = useState(1);
     const [date, setDate] = useState('');
     const [time, setTime] = useState('');
@@ -56,7 +56,7 @@ const TourBookingPage = ({ setView }) => {
                         <span className="text-slate-600 capitalize">{type} Tour</span>
                     </div>
                 </div>
-                <Button onClick={() => setView('home')} variant="outline" className="w-full">
+                <Button onClick={() => navigate('/')} variant="outline" className="w-full">
                     Back to Home
                 </Button>
             </Card>
@@ -66,7 +66,7 @@ const TourBookingPage = ({ setView }) => {
     return (
         <div className="bg-slate-50 min-h-screen pt-28 pb-20 font-sans">
             <div className="max-w-4xl mx-auto px-4">
-                <button onClick={() => setView('home')} className="mb-8 text-slate-500 hover:text-purple-600 font-bold flex items-center gap-2 transition">
+                <button onClick={() => navigate('/')} className="mb-8 text-slate-500 hover:text-purple-600 font-bold flex items-center gap-2 transition">
                     <ArrowLeft size={20} /> Back
                 </button>
 

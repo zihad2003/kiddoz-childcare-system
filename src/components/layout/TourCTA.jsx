@@ -1,10 +1,12 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Calendar, Shield, MapPin, ArrowRight } from 'lucide-react';
 import Section from '../ui/Section';
 import Button from '../ui/Button';
 import Card from '../ui/Card';
 
-const TourCTA = ({ setView }) => {
+const TourCTA = () => {
+    const navigate = useNavigate();
     return (
         <Section className="bg-slate-50 py-24 relative overflow-hidden">
             {/* Decorative Background Elements */}
@@ -26,10 +28,10 @@ const TourCTA = ({ setView }) => {
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-4">
-                            <Button onClick={() => setView('tour')} size="lg" className="shadow-xl shadow-purple-200" icon={ArrowRight}>
+                            <Button onClick={() => navigate('/tour')} size="lg" className="shadow-xl shadow-purple-200" icon={ArrowRight}>
                                 Schedule a Tour
                             </Button>
-                            <Button onClick={() => setView('programs')} variant="outline" size="lg">
+                            <Button onClick={() => navigate('/programs')} variant="outline" size="lg">
                                 View Curriculum
                             </Button>
                         </div>
