@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signInAnonymously, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { signInAnonymously, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { User, ShieldCheck, ArrowLeft, AlertCircle } from 'lucide-react';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
 
-const AuthPage = ({ auth }) => {
+const AuthPage = ({ auth, db }) => {
   const navigate = useNavigate();
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [phone, setPhone] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -20,7 +22,14 @@ const AuthPage = ({ auth }) => {
 
     try {
       if (isSignUp) {
-        await createUserWithEmailAndPassword(auth, email, password);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        // Update Profile with Name
+        await updateProfile(userCredential.user, {
+          displayName: fullName
+        });
+
+        // Optional: Store extra data like phone in Firestore user profile if needed
+        // await setDoc(doc(db, 'users', userCredential.user.uid), { phone, role: 'parent' }); 
       } else {
         await signInWithEmailAndPassword(auth, email, password);
       }
@@ -55,6 +64,34 @@ const AuthPage = ({ auth }) => {
               <AlertCircle size={16} /> {error}
             </div>
           )}
+
+          {isSignUp && (
+            <>
+              <div>
+                <label className="block text-sm font-bold text-slate-700 mb-1.5 ml-1">Full Name</label>
+                <input
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
+                  placeholder="John Doe"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-slate-700 mb-1.5 ml-1">Phone Number</label>
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                  placeholder="(555) 000-0000"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition"
+                />
+              </div>
+            </>
+          )}
+
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-1.5 ml-1">Email Address</label>
             <input
