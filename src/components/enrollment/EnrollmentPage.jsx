@@ -34,45 +34,45 @@ const EnrollmentPage = ({ user, db, appId, PLANS }) => {
     try {
       const studentId = `K-${Math.floor(1000 + Math.random() * 9000)}`;
 
-      // In a real app, upload images to storage here and get URLs
-      // const faceUrl = await uploadImage(biometrics.face);
-
       await addDoc(collection(db, `artifacts/${appId}/public/data/students`), {
         ...childData,
         id: studentId,
         parentId: user.uid,
-        plan: selectedPlan.name,
+        plan: selectedPlan?.name || 'Unknown Plan',
         enrollmentDate: serverTimestamp(),
         temp: '98.6',
         mood: 'Neutral',
         attendance: 'Registered',
         meal: 'Not checked in',
-        hasBiometrics: true, // Marker for AI system
+        hasBiometrics: true,
         createdAt: serverTimestamp()
       });
 
       setIsLoading(false);
-      setFormStep(4); // Success Step
+      setFormStep(4);
     } catch (e) {
-      console.error(e);
+      console.error("Enrollment error:", e);
       alert("Enrollment failed. Please try again.");
       setIsLoading(false);
     }
   };
 
   const handlePlanSelect = (plan) => {
+    console.log("Plan selected:", plan);
     setSelectedPlan(plan);
     setFormStep(2);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo(0, 0);
   };
 
   const handleStudentInfoSubmit = (e) => {
     e.preventDefault();
-    setFormStep(3); // Go to Biometrics
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    console.log("Student info submitted");
+    setFormStep(3);
+    window.scrollTo(0, 0);
   };
 
   const handleBiometricComplete = (images) => {
+    console.log("Biometrics completed");
     setBiometrics(images);
     handleEnrollmentComplete();
   };
@@ -166,7 +166,7 @@ const EnrollmentPage = ({ user, db, appId, PLANS }) => {
               <button onClick={() => setFormStep(1)} className="text-slate-400 hover:text-purple-600 flex items-center gap-2 mb-6 font-medium transition"><ArrowLeft size={18} /> Back to Plans</button>
 
               <div className="mb-8">
-                <Badge color="bg-purple-50 text-purple-700 border-purple-100 mb-4">Selected: {selectedPlan.name}</Badge>
+                <Badge color="bg-purple-50 text-purple-700 border-purple-100 mb-4">Selected: {selectedPlan?.name}</Badge>
                 <h2 className="text-3xl font-bold text-slate-900">Student Registration</h2>
                 <p className="text-slate-500 mt-2">Please fill in your child's details accurately.</p>
               </div>
