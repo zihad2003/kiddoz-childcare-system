@@ -21,6 +21,7 @@ import AdminDashboard from './components/admin/AdminDashboard';
 import ParentDashboard from './components/dashboard/ParentDashboard';
 import Chatbot from './components/ai/Chatbot';
 import InfoPage from './components/layout/InfoPage';
+import TourBookingPage from './components/layout/TourBookingPage';
 
 // Firebase Configuration
 const firebaseConfig = {
@@ -148,6 +149,9 @@ export default function App() {
         {view === 'info-terms' && <InfoPage type="terms" />}
         {view === 'info-help' && <InfoPage type="help" />}
         {view === 'info-safety' && <InfoPage type="safety" />}
+
+        {/* Tour Booking */}
+        {view === 'tour' && <TourBookingPage setView={setView} />}
       </main>
 
       {view !== 'admin' && <Footer setView={setView} />}
