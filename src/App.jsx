@@ -22,6 +22,7 @@ import ParentDashboard from './components/dashboard/ParentDashboard';
 import Chatbot from './components/ai/Chatbot';
 import InfoPage from './components/layout/InfoPage';
 import TourBookingPage from './components/layout/TourBookingPage';
+import TourCTA from './components/layout/TourCTA';
 
 // Firebase Configuration
 const firebaseConfig = {
@@ -113,6 +114,7 @@ export default function App() {
         {/* Public Landing Pages */}
         {view === 'home' && <Hero setView={setView} />}
         {(view === 'home' || view === 'programs') && <Programs />}
+        {view === 'home' && <TourCTA setView={setView} />}
 
         {/* Enrollment Wizard */}
         {view === 'enroll' && (
