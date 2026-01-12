@@ -1,12 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signInAnonymously } from 'firebase/auth';
-import { User, ShieldCheck, ArrowLeft } from 'lucide-react';
+import { signInAnonymously, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { User, ShieldCheck, ArrowLeft, AlertCircle } from 'lucide-react';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
 
 const AuthPage = ({ auth }) => {
   const navigate = useNavigate();
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleAuth = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      if (isSignUp) {
+        await createUserWithEmailAndPassword(auth, email, password);
+      } else {
+        await signInWithEmailAndPassword(auth, email, password);
+      }
+      navigate('/dashboard');
+    } catch (err) {
+      console.error(err);
+      let msg = "Authentication failed.";
+      if (err.code === 'auth/email-already-in-use') msg = "Email already registered.";
+      if (err.code === 'auth/invalid-email') msg = "Invalid email address.";
+      if (err.code === 'auth/weak-password') msg = "Password should be at least 6 chars.";
+      if (err.code === 'auth/wrong-password') msg = "Incorrect password.";
+      if (err.code === 'auth/user-not-found') msg = "No account found with this email.";
+      setError(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-purple-50 p-4 font-sans">
@@ -14,23 +45,52 @@ const AuthPage = ({ auth }) => {
       <Card className="w-full max-w-md p-8 relative z-10 animate-in fade-in zoom-in duration-500 shadow-2xl">
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-gradient-to-tr from-purple-600 to-indigo-600 text-white rounded-2xl flex items-center justify-center text-3xl font-extrabold mx-auto mb-6 shadow-lg shadow-purple-200">K</div>
-          <h2 className="text-3xl font-bold text-slate-900 mb-2">Welcome Back</h2>
-          <p className="text-slate-500">Sign in to continue to KiddoZ</p>
+          <h2 className="text-3xl font-bold text-slate-900 mb-2">{isSignUp ? 'Create Account' : 'Welcome Back'}</h2>
+          <p className="text-slate-500">{isSignUp ? 'Join the KiddoZ family today' : 'Sign in to continue to KiddoZ'}</p>
         </div>
 
-        <div className="space-y-4 mb-8">
+        <form onSubmit={handleAuth} className="space-y-4 mb-8">
+          {error && (
+            <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm flex items-center gap-2">
+              <AlertCircle size={16} /> {error}
+            </div>
+          )}
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-1.5 ml-1">Email Address</label>
-            <input type="email" placeholder="name@example.com" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition" />
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              placeholder="name@example.com"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition"
+            />
           </div>
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-1.5 ml-1">Password</label>
-            <input type="password" placeholder="••••••••" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition" />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              placeholder="••••••••"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition"
+            />
           </div>
-          <Button className="w-full h-12 text-lg shadow-lg shadow-purple-200 mt-2">
-            Sign In
+          <Button type="submit" isLoading={loading} className="w-full h-12 text-lg shadow-lg shadow-purple-200 mt-2">
+            {isSignUp ? 'Sign Up' : 'Sign In'}
           </Button>
-        </div>
+
+          <div className="text-center pt-2">
+            <button
+              type="button"
+              onClick={() => { setIsSignUp(!isSignUp); setError(''); }}
+              className="text-sm text-purple-600 font-bold hover:text-purple-700 hover:underline"
+            >
+              {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
+            </button>
+          </div>
+        </form>
 
         <div className="relative mb-8">
           <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-100"></div></div>
