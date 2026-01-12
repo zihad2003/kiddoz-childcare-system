@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { signInAnonymously, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { User, ShieldCheck, ArrowLeft, AlertCircle } from 'lucide-react';
 import Card from '../ui/Card';
@@ -7,13 +7,22 @@ import Button from '../ui/Button';
 
 const AuthPage = ({ auth, db }) => {
   const navigate = useNavigate();
-  const [isSignUp, setIsSignUp] = useState(false);
+  const location = useLocation();
+
+  // Determine mode based on URL
+  const isSignUp = location.pathname === '/signup';
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Clear error when switching modes
+  useEffect(() => {
+    setError('');
+  }, [location.pathname]);
 
   const handleAuth = async (e) => {
     e.preventDefault();
@@ -23,13 +32,9 @@ const AuthPage = ({ auth, db }) => {
     try {
       if (isSignUp) {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        // Update Profile with Name
         await updateProfile(userCredential.user, {
           displayName: fullName
         });
-
-        // Optional: Store extra data like phone in Firestore user profile if needed
-        // await setDoc(doc(db, 'users', userCredential.user.uid), { phone, role: 'parent' }); 
       } else {
         await signInWithEmailAndPassword(auth, email, password);
       }
@@ -121,7 +126,7 @@ const AuthPage = ({ auth, db }) => {
           <div className="text-center pt-2">
             <button
               type="button"
-              onClick={() => { setIsSignUp(!isSignUp); setError(''); }}
+              onClick={() => navigate(isSignUp ? '/login' : '/signup')}
               className="text-sm text-purple-600 font-bold hover:text-purple-700 hover:underline"
             >
               {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
