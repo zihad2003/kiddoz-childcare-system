@@ -3,6 +3,7 @@ import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { BookOpen, ScanFace, Activity, ChevronDown, CheckCircle, Clock, Heart, Thermometer, User, Users, Utensils, Smile, FileText } from 'lucide-react';
 import LiveViewYOLO from '../ai/LiveViewYOLO';
 import ResourceTab from './ResourceTab';
+import ProgressCharts from './ProgressCharts';
 import Card from '../ui/Card';
 import Badge from '../ui/Badge';
 import Button from '../ui/Button';
@@ -277,6 +278,10 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
                         </Button>
                       </div>
                     </Card>
+                  </div>
+
+                  <div className="lg:col-span-3 mt-4">
+                    <ProgressCharts />
                   </div>
                 </div>
               )}
