@@ -14,6 +14,7 @@ import Navbar from './components/layout/Navbar';
 import Hero from './components/layout/Hero';
 import Footer from './components/layout/Footer';
 import Programs from './components/layout/Programs';
+import ProgramDetails from './components/layout/ProgramDetails'; // Import Details Page
 import AuthPage from './components/layout/AuthPage';
 
 // Modules - Functional Dashboards
@@ -120,6 +121,7 @@ export default function App() {
           } />
 
           <Route path="/programs" element={<Programs />} />
+          <Route path="/programs/:programId" element={<ProgramDetails />} /> {/* Dynamic Route */}
 
           <Route path="/login" element={<AuthPage auth={auth} db={db} />} />
           <Route path="/signup" element={<AuthPage auth={auth} db={db} />} />
