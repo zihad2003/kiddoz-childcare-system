@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, orderBy, onSnapshot, updateDoc, doc, serverTimestamp } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, updateDoc, doc, serverTimestamp, addDoc } from 'firebase/firestore';
 import { Users, Bell, LogOut, Search, X, Edit2, ShieldCheck, Thermometer, Smile, Utensils, Clock, DollarSign, Settings, TrendingUp, CreditCard } from 'lucide-react';
+import { useToast } from '../../context/ToastContext';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
@@ -11,6 +12,7 @@ import HealthLogs from './HealthLogs';
 import DoctorUpload from './DoctorUpload';
 
 const AdminDashboard = ({ user, setView, db, appId }) => {
+  const { addToast } = useToast();
   const [adminTab, setAdminTab] = useState('roster');
   const [students, setStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
@@ -48,11 +50,24 @@ const AdminDashboard = ({ user, setView, db, appId }) => {
       await updateDoc(doc(db, `artifacts/${appId}/public/data/students`, selectedStudent.docId), {
         ...statsForm, lastUpdated: serverTimestamp()
       });
+
+      // Add notification for parent
+      await addDoc(collection(db, `artifacts/${appId}/public/data/notifications`), {
+        studentId: selectedStudent.id,
+        parentId: selectedStudent.parentId,
+        title: 'Health Update',
+        message: `New health stats recorded for ${selectedStudent.name}.`,
+        timestamp: serverTimestamp(),
+        read: false,
+        type: 'health'
+      });
+
+      addToast(`Updated stats for ${selectedStudent.name}`, 'success');
       setIsEditing(false);
       setLoading(false);
     } catch (e) {
       console.error(e);
-      alert("Update failed");
+      addToast("Update failed. Please try again.", 'error');
       setLoading(false);
     }
   };
@@ -170,6 +185,7 @@ const AdminDashboard = ({ user, setView, db, appId }) => {
                     <Button onClick={() => openEditModal(student)} variant="outline" size="sm" className="w-full">
                       Update Vitals
                     </Button>
+                    <p className="text-[10px] text-center text-slate-400 mt-2 font-medium">IoT Auto-sync coming soon</p>
                   </Card>
                 ))}
               </div>

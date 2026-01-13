@@ -9,9 +9,11 @@ import Input from '../ui/Input';
 import Select from '../ui/Select';
 import Badge from '../ui/Badge';
 import BiometricRegistration from './BiometricRegistration';
+import { useToast } from '../../context/ToastContext';
 
 const EnrollmentPage = ({ user, db, appId, PLANS }) => {
   const navigate = useNavigate();
+  const { addToast } = useToast();
   const location = useLocation();
   const [selectedPlan, setSelectedPlan] = useState(location.state?.plan || null);
   const [childData, setChildData] = useState(location.state?.childData || {
@@ -90,6 +92,7 @@ const EnrollmentPage = ({ user, db, appId, PLANS }) => {
         createdAt: serverTimestamp()
       });
 
+      addToast('Enrollment completed successfully! Welcome to the family.', 'success');
       setIsLoading(false);
       navigate('/enroll/success');
     } catch (e) {

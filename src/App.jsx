@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
+import { ToastProvider } from './context/ToastContext';
 import { initializeApp } from 'firebase/app';
 import {
   getAuth,
@@ -21,6 +22,7 @@ import AuthPage from './components/layout/AuthPage';
 import EnrollmentPage from './components/enrollment/EnrollmentPage';
 import AdminDashboard from './components/admin/AdminDashboard';
 import ParentDashboard from './components/dashboard/ParentDashboard';
+import StudentProfile from './components/dashboard/StudentProfile'; // Profile
 import Chatbot from './components/ai/Chatbot';
 import InfoPage from './components/layout/InfoPage';
 import TourBookingPage from './components/layout/TourBookingPage';
@@ -102,62 +104,67 @@ export default function App() {
   );
 
   return (
-    <div className="font-sans text-slate-800 bg-slate-50 min-h-screen flex flex-col">
-      {/* Hide Navbar on Login page if desired, but usually we keep it or change it. 
+    <ToastProvider>
+      <div className="font-sans text-slate-800 bg-slate-50 min-h-screen flex flex-col">
+        {/* Hide Navbar on Login page if desired, but usually we keep it or change it. 
           For now, keeping logic similar: show navbar everywhere */}
-      <Navbar
-        user={user}
-        handleLogout={handleLogout}
-      />
+        <Navbar
+          user={user}
+          handleLogout={handleLogout}
+        />
 
-      <main className="flex-grow">
-        <Routes>
-          <Route path="/" element={
-            <>
-              <Hero />
-              <Programs />
-              <TourCTA />
-            </>
-          } />
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={
+              <>
+                <Hero />
+                <Programs />
+                <TourCTA />
+              </>
+            } />
 
-          <Route path="/programs" element={<Programs />} />
-          <Route path="/programs/:programId" element={<ProgramDetails />} /> {/* Dynamic Route */}
+            <Route path="/programs" element={<Programs />} />
+            <Route path="/programs/:programId" element={<ProgramDetails />} /> {/* Dynamic Route */}
 
-          <Route path="/login" element={<AuthPage auth={auth} db={db} />} />
-          <Route path="/signup" element={<AuthPage auth={auth} db={db} />} />
+            <Route path="/login" element={<AuthPage auth={auth} db={db} />} />
+            <Route path="/signup" element={<AuthPage auth={auth} db={db} />} />
 
-          <Route path="/enroll/*" element={
-            <EnrollmentPage
-              user={user}
-              db={db}
-              appId={appId}
-              PLANS={PLANS}
-            />
-          } />
+            <Route path="/enroll/*" element={
+              <EnrollmentPage
+                user={user}
+                db={db}
+                appId={appId}
+                PLANS={PLANS}
+              />
+            } />
 
-          <Route path="/tour" element={<TourBookingPage />} />
+            <Route path="/tour" element={<TourBookingPage />} />
 
-          <Route path="/admin" element={
-            <AdminDashboard user={user} db={db} appId={appId} />
-          } />
+            <Route path="/admin" element={
+              <AdminDashboard user={user} db={db} appId={appId} />
+            } />
 
-          <Route path="/dashboard" element={
-            <ParentDashboard user={user} db={db} appId={appId} />
-          } />
+            <Route path="/dashboard" element={
+              <ParentDashboard user={user} db={db} appId={appId} />
+            } />
 
-          {/* Info Pages */}
-          <Route path="/info/privacy" element={<InfoPage type="privacy" />} />
-          <Route path="/info/terms" element={<InfoPage type="terms" />} />
-          <Route path="/info/help" element={<InfoPage type="help" />} />
-          <Route path="/info/safety" element={<InfoPage type="safety" />} />
-        </Routes>
-      </main>
+            <Route path="/student/:id" element={<StudentProfile />} />
 
-      {/* Hide footer on Admin pages */}
-      {!location.pathname.startsWith('/admin') && <Footer />}
+            {/* Info Pages */}
+            <Route path="/info/privacy" element={<InfoPage type="privacy" />} />
+            <Route path="/info/terms" element={<InfoPage type="terms" />} />
+            <Route path="/info/help" element={<InfoPage type="help" />} />
+            <Route path="/info/safety" element={<InfoPage type="safety" />} />
+          </Routes>
+        </main>
 
-      {/* Persistent AI Assistant */}
-      <Chatbot user={user} />
-    </div>
+        {/* Hide footer on Admin pages */}
+        {!location.pathname.startsWith('/admin') && <Footer />}
+
+        {/* Persistent AI Assistant */}
+        {/* Persistent AI Assistant */}
+        <Chatbot user={user} />
+      </div>
+    </ToastProvider>
   );
 }

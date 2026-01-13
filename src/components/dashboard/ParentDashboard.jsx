@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
-import { BookOpen, ScanFace, Activity, ChevronDown, CheckCircle, Clock, Heart, Thermometer, User, Users, Utensils, Smile, FileText } from 'lucide-react';
+import { BookOpen, ScanFace, Activity, ChevronDown, CheckCircle, Clock, Heart, Thermometer, User, Users, Utensils, Smile, FileText, Bell } from 'lucide-react';
 import LiveViewYOLO from '../ai/LiveViewYOLO';
 import ResourceTab from './ResourceTab';
 import ProgressCharts from './ProgressCharts';
@@ -12,6 +13,8 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
   const [activeTab, setActiveTab] = useState('overview');
   const [students, setStudents] = useState([]);
   const [selectedStudentId, setSelectedStudentId] = useState('');
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   const currentChild = students.find(s => s.docId === selectedStudentId) || students[0];
 
@@ -23,7 +26,16 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
       setStudents(data);
       if (data.length > 0 && !selectedStudentId) setSelectedStudentId(data[0].docId);
     });
-    return () => unsub();
+
+    // Subscribe to notifications
+    const qNotifs = query(collection(db, `artifacts/${appId}/public/data/notifications`), where('read', '==', false));
+    const unsubNotifs = onSnapshot(qNotifs, (snapshot) => {
+      const notifs = snapshot.docs.map(d => ({ docId: d.id, ...d.data() }));
+      // Filter for current user's students (or rely on security rules, but here filter client side for Demo simplicity)
+      setNotifications(notifs.filter(n => n.parentId === user.uid));
+    });
+
+    return () => { unsub(); unsubNotifs(); };
   }, [user]);
 
   const StatCard = ({ icon: Icon, color, label, value, subtext }) => (
@@ -50,7 +62,36 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-end gap-6 relative z-10">
           <div>
             <Badge color="bg-purple-500/30 text-purple-100 border-0 mb-4 backdrop-blur-md">Welcome Back, {user?.displayName}</Badge>
-            <h1 className="text-4xl font-bold mb-2">Parent Portal</h1>
+            <div className="flex items-center gap-4">
+              <h1 className="text-4xl font-bold mb-2">Parent Portal</h1>
+              <div className="relative">
+                <button onClick={() => setShowNotifications(!showNotifications)} className="relative p-2 hover:bg-white/10 rounded-full transition">
+                  <Bell size={24} />
+                  {notifications.length > 0 && <span className="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full border-2 border-purple-900"></span>}
+                </button>
+                {showNotifications && (
+                  <div className="absolute top-full left-0 mt-2 w-80 bg-white rounded-xl shadow-2xl overflow-hidden text-slate-800 z-50 animate-in fade-in slide-in-from-top-2">
+                    <div className="bg-purple-50 p-3 font-bold border-b border-purple-100 flex justify-between items-center">
+                      <span>Notifications</span>
+                      <span className="text-xs bg-purple-200 text-purple-800 px-2 py-0.5 rounded-full">{notifications.length} New</span>
+                    </div>
+                    <div className="max-h-64 overflow-y-auto">
+                      {notifications.length === 0 ? (
+                        <p className="p-4 text-center text-slate-400 text-sm">No new notifications</p>
+                      ) : (
+                        notifications.map(n => (
+                          <div key={n.docId} className="p-3 border-b border-slate-50 hover:bg-slate-50">
+                            <p className="font-bold text-sm text-purple-700">{n.title}</p>
+                            <p className="text-xs text-slate-600">{n.message}</p>
+                            <p className="text-[10px] text-slate-400 mt-1">{n.timestamp?.toDate().toLocaleTimeString()}</p>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
             <div className="flex items-center gap-3 text-purple-200">
               <span>Viewing updates for:</span>
               {students.length > 0 && (
@@ -178,9 +219,12 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
                             <span className="font-bold text-lg">{currentChild.parentName}</span>
                           </div>
 
-                          <Button className="w-full bg-white text-purple-900 hover:bg-purple-50 border-0 shadow-lg" variant="secondary">
-                            View Full Profile
-                          </Button>
+
+                          <Link to={`/student/${currentChild.docId}`} className="block w-full">
+                            <Button className="w-full bg-white text-purple-900 hover:bg-purple-50 border-0 shadow-lg" variant="secondary">
+                              View Full Profile
+                            </Button>
+                          </Link>
                         </div>
                       </Card>
                     </div>
@@ -294,8 +338,8 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
             </>
           )}
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };
 

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Upload, FileText, X, Check, AlertCircle } from 'lucide-react';
+import { useToast } from '../../context/ToastContext';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
 
 const DoctorUpload = ({ studentId, onUploadComplete }) => {
+    const { addToast } = useToast();
     const [dragActive, setDragActive] = useState(false);
     const [file, setFile] = useState(null);
     const [uploading, setUploading] = useState(false);
@@ -43,7 +45,7 @@ const DoctorUpload = ({ studentId, onUploadComplete }) => {
             setUploading(false);
             setFile(null);
             if (onUploadComplete) onUploadComplete();
-            alert("Medical document uploaded successfully! (Simulation)");
+            addToast("Medical document uploaded successfully!", 'success');
         }, 2000);
     };
 

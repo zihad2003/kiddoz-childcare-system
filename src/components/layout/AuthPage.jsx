@@ -4,10 +4,12 @@ import { signInAnonymously, createUserWithEmailAndPassword, signInWithEmailAndPa
 import { User, ShieldCheck, ArrowLeft, AlertCircle } from 'lucide-react';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
+import { useToast } from '../../context/ToastContext';
 
 const AuthPage = ({ auth, db }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { addToast } = useToast();
 
   // Determine mode based on URL
   const isSignUp = location.pathname === '/signup';
@@ -38,6 +40,7 @@ const AuthPage = ({ auth, db }) => {
       } else {
         await signInWithEmailAndPassword(auth, email, password);
       }
+      addToast(isSignUp ? 'Account created successfully! Welcome.' : 'Signed in successfully. Welcome back!', 'success');
       navigate('/dashboard');
     } catch (err) {
       console.error(err);
