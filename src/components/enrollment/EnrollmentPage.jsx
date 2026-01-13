@@ -32,15 +32,19 @@ const EnrollmentPage = ({ user, db, appId, PLANS }) => {
   if (location.pathname.includes('/AIsetup')) currentStep = 3;
   if (location.pathname.includes('/success')) currentStep = 4;
 
-  // Ensure state is synced if navigating directly or via history
+  // Ensure state is synced or defaults are provided for direct link access
   useEffect(() => {
     if (location.state?.plan) {
       setSelectedPlan(location.state.plan);
+    } else if (!selectedPlan && (currentStep === 2 || currentStep === 3)) {
+      // Default for direct access (Design/Demo mode)
+      setSelectedPlan(PLANS[1]); // Default to "Growth Scholar"
     }
+
     if (location.state?.childData) {
       setChildData(location.state.childData);
     }
-  }, [location.state]);
+  }, [location.state, location.pathname]);
 
   const handlePlanSelect = (plan) => {
     console.log("Plan selected:", plan);
@@ -69,11 +73,14 @@ const EnrollmentPage = ({ user, db, appId, PLANS }) => {
     try {
       const studentId = `K-${Math.floor(1000 + Math.random() * 9000)}`;
 
+      // Ensure we have a plan even if direct access happened
+      const finalPlan = selectedPlan || PLANS[1];
+
       await addDoc(collection(db, `artifacts/${appId}/public/data/students`), {
         ...childData,
         id: studentId,
         parentId: user.uid,
-        plan: selectedPlan?.name || 'Unknown Plan',
+        plan: finalPlan.name,
         enrollmentDate: serverTimestamp(),
         temp: '98.6',
         mood: 'Neutral',
@@ -138,8 +145,8 @@ const EnrollmentPage = ({ user, db, appId, PLANS }) => {
   );
 
   const StudentInfo = () => {
-    // If no plan selected, redirect back to start
-    if (!selectedPlan) return <Navigate to="/enroll" />;
+    // Removed redirect check to allow direct access
+    // if (!selectedPlan) return <Navigate to="/enroll" />;
 
     return (
       <div className="max-w-2xl mx-auto animate-in slide-in-from-right-8 duration-500">
@@ -147,7 +154,7 @@ const EnrollmentPage = ({ user, db, appId, PLANS }) => {
           <button onClick={() => navigate('/enroll')} className="text-slate-400 hover:text-purple-600 flex items-center gap-2 mb-6 font-medium transition"><ArrowLeft size={18} /> Back to Plans</button>
 
           <div className="mb-8">
-            <Badge color="bg-purple-50 text-purple-700 border-purple-100 mb-4">Selected: {selectedPlan?.name}</Badge>
+            <Badge color="bg-purple-50 text-purple-700 border-purple-100 mb-4">Selected: {selectedPlan?.name || "Growth Scholar"}</Badge>
             <h2 className="text-3xl font-bold text-slate-900">Student Registration</h2>
             <p className="text-slate-500 mt-2">Please fill in your child's details accurately.</p>
           </div>
@@ -225,8 +232,8 @@ const EnrollmentPage = ({ user, db, appId, PLANS }) => {
   };
 
   const AISetup = () => {
-    // Check local selectedPlan first
-    if (!selectedPlan) return <Navigate to="/enroll" />;
+    // Removed redirect check to allow direct access
+    // if (!selectedPlan) return <Navigate to="/enroll" />;
     return (
       <BiometricRegistration
         onComplete={handleBiometricComplete}
