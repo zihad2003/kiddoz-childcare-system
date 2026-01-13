@@ -29,7 +29,7 @@ const Navbar = ({ user, handleLogout }) => {
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-tr from-slate-700 to-slate-900 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg">K</div>
             <div className="flex flex-col">
-              <span className="text-xl font-extrabold tracking-tight text-slate-800 leading-none">Fit<span className="text-purple-600">day</span></span>
+              <span className="text-xl font-extrabold tracking-tight text-slate-800 leading-none">Kiddo<span className="text-purple-600">Z</span></span>
               <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Admin Portal</span>
             </div>
           </div>
@@ -54,8 +54,8 @@ const Navbar = ({ user, handleLogout }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20 items-center">
           <Link to="/" className="flex items-center cursor-pointer gap-3">
-            <div className="w-10 h-10 bg-gradient-to-tr from-purple-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg transform rotate-3">F</div>
-            <span className="text-2xl font-extrabold tracking-tight text-slate-800">Fit<span className="text-purple-600">day</span></span>
+            <div className="w-10 h-10 bg-gradient-to-tr from-purple-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg transform rotate-3">K</div>
+            <span className="text-2xl font-extrabold tracking-tight text-slate-800">Kiddo<span className="text-purple-600">Z</span></span>
           </Link>
           <div className="hidden md:flex space-x-1 items-center bg-slate-50 p-1.5 rounded-2xl border border-slate-200">
             <NavItem to="/" label="Home" />

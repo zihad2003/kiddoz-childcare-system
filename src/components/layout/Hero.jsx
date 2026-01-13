@@ -12,7 +12,7 @@ const Hero = () => {
       <div className="relative max-w-7xl mx-auto px-4 text-center z-10">
         <Badge color="bg-white/10 text-purple-200 border border-purple-400/30 mb-8 backdrop-blur-md">Next Generation Childcare</Badge>
         <h1 className="text-6xl md:text-8xl font-black mb-8 tracking-tighter leading-tight">Safe. Smart. <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-pink-400 to-purple-300 animate-gradient-x">Connected.</span></h1>
-        <p className="text-xl md:text-2xl text-purple-100 mb-12 max-w-3xl mx-auto leading-relaxed font-light">Fitday is the complete ecosystem for modern families. From AI-powered health tracking to real-time YOLOv8 monitoring.</p>
+        <p className="text-xl md:text-2xl text-purple-100 mb-12 max-w-3xl mx-auto leading-relaxed font-light">KiddoZ is the complete ecosystem for modern families. From AI-powered health tracking to real-time YOLOv8 monitoring.</p>
         <div className="flex flex-col sm:flex-row gap-5 justify-center">
           <button onClick={() => navigate('/tour')} className="bg-amber-400 hover:bg-amber-300 text-purple-950 font-bold px-10 py-5 rounded-full text-lg transition transform hover:-translate-y-1 hover:shadow-2xl">Book a Tour</button>
           <button onClick={() => navigate('/enroll')} className="bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-semibold px-10 py-5 rounded-full text-lg transition">See Pricing</button>

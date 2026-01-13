@@ -61,9 +61,9 @@ const AuthPage = ({ auth, db }) => {
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20"></div>
       <Card className="w-full max-w-md p-8 relative z-10 animate-in fade-in zoom-in duration-500 shadow-2xl">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-tr from-purple-600 to-indigo-600 text-white rounded-2xl flex items-center justify-center text-3xl font-extrabold mx-auto mb-6 shadow-lg shadow-purple-200">F</div>
+          <div className="w-16 h-16 bg-gradient-to-tr from-purple-600 to-indigo-600 text-white rounded-2xl flex items-center justify-center text-3xl font-extrabold mx-auto mb-6 shadow-lg shadow-purple-200">K</div>
           <h2 className="text-3xl font-bold text-slate-900 mb-2">{isSignUp ? 'Create Account' : 'Welcome Back'}</h2>
-          <p className="text-slate-500">{isSignUp ? 'Join the Fitday family today' : 'Sign in to continue to Fitday'}</p>
+          <p className="text-slate-500">{isSignUp ? 'Join the KiddoZ family today' : 'Sign in to continue to KiddoZ'}</p>
         </div>
 
         <form onSubmit={handleAuth} className="space-y-4 mb-8">

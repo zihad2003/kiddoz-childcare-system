@@ -1,6 +1,6 @@
-# Fitday - Next Gen Childcare Management System
+# KiddoZ - Next Gen Childcare Management System
 
-Fitday (formerly KiddoZ) is a comprehensive childcare management platform integrating AI safety monitoring, real-time health tracking, and seamless parent-staff communication.
+KiddoZ is a comprehensive childcare management platform integrating AI safety monitoring, real-time health tracking, and seamless parent-staff communication.
 
 ## 🚀 Key Features
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, orderBy, serverTimestamp } from 'firebase/firestore';
 import { BookOpen, ScanFace, Activity, ChevronDown, CheckCircle, Clock, Heart, Thermometer, User, Users, Utensils, Smile, FileText, Bell } from 'lucide-react';
 import LiveViewYOLO from '../ai/LiveViewYOLO';
 import ResourceTab from './ResourceTab';
@@ -71,7 +71,7 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
           <div>
             <Badge color="bg-purple-500/30 text-purple-100 border-0 mb-4 backdrop-blur-md">Welcome Back, {user?.displayName}</Badge>
             <div className="flex items-center gap-4">
-              <h1 className="text-4xl font-bold mb-2">Fitday Parent Portal</h1>
+              <h1 className="text-4xl font-bold mb-2">KiddoZ Parent Portal</h1>
               <div className="relative">
                 <button onClick={() => setShowNotifications(!showNotifications)} className="relative p-2 hover:bg-white/10 rounded-full transition">
                   <Bell size={24} />

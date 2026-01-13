@@ -91,8 +91,8 @@ const AdminDashboard = ({ user, setView, db, appId }) => {
       {/* Sidebar */}
       <div className="w-full md:w-72 bg-purple-900 text-white p-6 flex flex-col shadow-2xl z-10">
         <div className="mb-10 flex items-center gap-3 font-bold text-2xl">
-          <div className="bg-white text-purple-900 p-2 rounded-lg shadow-lg">F</div>
-          <span>Fitday Staff</span>
+          <div className="bg-white text-purple-900 p-2 rounded-lg shadow-lg">K</div>
+          <span>KiddoZ Staff</span>
         </div>
 
         <nav className="space-y-3 flex-1">
