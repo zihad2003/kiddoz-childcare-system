@@ -32,17 +32,27 @@ const EnrollmentPage = ({ user, db, appId, PLANS }) => {
   if (location.pathname.includes('/AIsetup')) currentStep = 3;
   if (location.pathname.includes('/success')) currentStep = 4;
 
+  // Ensure state is synced if navigating directly or via history
+  useEffect(() => {
+    if (location.state?.plan) {
+      setSelectedPlan(location.state.plan);
+    }
+    if (location.state?.childData) {
+      setChildData(location.state.childData);
+    }
+  }, [location.state]);
+
   const handlePlanSelect = (plan) => {
     console.log("Plan selected:", plan);
     setSelectedPlan(plan);
-    navigate('kidsinfo', { state: { plan } });
+    navigate('/enroll/kidsinfo', { state: { plan } });
     window.scrollTo(0, 0);
   };
 
   const handleStudentInfoSubmit = (e) => {
     e.preventDefault();
     console.log("Student info submitted");
-    navigate('AIsetup', { state: { plan: selectedPlan, childData } });
+    navigate('/enroll/AIsetup', { state: { plan: selectedPlan, childData } });
     window.scrollTo(0, 0);
   };
 
@@ -74,7 +84,7 @@ const EnrollmentPage = ({ user, db, appId, PLANS }) => {
       });
 
       setIsLoading(false);
-      navigate('success');
+      navigate('/enroll/success');
     } catch (e) {
       console.error("Enrollment error:", e);
       alert("Enrollment failed. Please try again.");
@@ -215,6 +225,7 @@ const EnrollmentPage = ({ user, db, appId, PLANS }) => {
   };
 
   const AISetup = () => {
+    // Check local selectedPlan first
     if (!selectedPlan) return <Navigate to="/enroll" />;
     return (
       <BiometricRegistration
