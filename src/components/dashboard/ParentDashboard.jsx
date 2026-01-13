@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { BookOpen, ScanFace, Activity, ChevronDown, CheckCircle, Clock, Heart, Thermometer, User, Users, Utensils, Smile, FileText } from 'lucide-react';
 import LiveViewYOLO from '../ai/LiveViewYOLO';
+import ResourceTab from './ResourceTab';
 import Card from '../ui/Card';
 import Badge from '../ui/Badge';
 import Button from '../ui/Button';
@@ -81,6 +82,7 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
             { id: 'overview', label: 'Overview', icon: BookOpen },
             { id: 'live', label: 'YOLO Live View', icon: ScanFace },
             { id: 'health', label: 'Health Data', icon: Activity },
+            { id: 'resources', label: 'Resources', icon: BookOpen },
           ].map(tab => (
             <button
               key={tab.id}
@@ -276,6 +278,12 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
                       </div>
                     </Card>
                   </div>
+                </div>
+              )}
+
+              {activeTab === 'resources' && (
+                <div className="max-w-4xl mx-auto">
+                  <ResourceTab />
                 </div>
               )}
             </>

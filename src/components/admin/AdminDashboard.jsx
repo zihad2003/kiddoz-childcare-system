@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { collection, query, orderBy, onSnapshot, updateDoc, doc, serverTimestamp } from 'firebase/firestore';
-import { Users, Bell, LogOut, Search, X, Edit2, ShieldCheck, Thermometer, Smile, Utensils, Clock } from 'lucide-react';
+import { Users, Bell, LogOut, Search, X, Edit2, ShieldCheck, Thermometer, Smile, Utensils, Clock, DollarSign, Settings, TrendingUp, CreditCard } from 'lucide-react';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
@@ -83,6 +83,22 @@ const AdminDashboard = ({ user, setView, db, appId }) => {
           >
             <Bell size={20} /> Alerts Center
           </button>
+
+          <div className="pt-6 pb-2">
+            <p className="px-4 text-xs font-bold text-purple-400 uppercase tracking-widest mb-2">Admin Tools</p>
+            <button
+              onClick={() => setAdminTab('financials')}
+              className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'financials' ? 'bg-purple-700 shadow-lg translate-x-1' : 'hover:bg-purple-800 text-purple-200 hover:text-white'}`}
+            >
+              <DollarSign size={20} /> Financials
+            </button>
+            <button
+              onClick={() => setAdminTab('settings')}
+              className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'settings' ? 'bg-purple-700 shadow-lg translate-x-1' : 'hover:bg-purple-800 text-purple-200 hover:text-white'}`}
+            >
+              <Settings size={20} /> App Settings
+            </button>
+          </div>
         </nav>
 
         <div className="bg-purple-800/50 rounded-xl p-4 mb-4">
@@ -104,7 +120,10 @@ const AdminDashboard = ({ user, setView, db, appId }) => {
       <div className="flex-1 overflow-y-auto">
         <header className="bg-white border-b border-slate-100 p-8 sticky top-0 z-10 bg-white/80 backdrop-blur-md">
           <h2 className="text-3xl font-bold text-slate-800 capitalize flex items-center gap-3">
-            {adminTab === 'roster' ? <><Users className="text-purple-600" /> Student Roster</> : <><Bell className="text-purple-600" /> Notifications</>}
+            {adminTab === 'roster' && <><Users className="text-purple-600" /> Student Roster</>}
+            {adminTab === 'alerts' && <><Bell className="text-purple-600" /> Notifications</>}
+            {adminTab === 'financials' && <><DollarSign className="text-purple-600" /> Financial Overview</>}
+            {adminTab === 'settings' && <><Settings className="text-purple-600" /> System Settings</>}
           </h2>
         </header>
 
@@ -158,11 +177,93 @@ const AdminDashboard = ({ user, setView, db, appId }) => {
           )}
 
           {adminTab === 'alerts' && (
-            <div className="max-w-3xl animate-in fade-in duration-500">
-              <Card className="p-8 text-center border-dashed border-2 border-slate-200 shadow-none bg-slate-50">
-                <Bell size={48} className="mx-auto text-slate-300 mb-4" />
-                <h3 className="text-xl font-bold text-slate-700">No New System Alerts</h3>
-                <p className="text-slate-500">Everything is running smoothly. Check back later for system notifications.</p>
+            <div className="max-w-3xl animate-in fade-in duration-500 space-y-4">
+              <Card className="p-4 border-l-4 border-l-amber-500 bg-white shadow-sm flex gap-4">
+                <div className="bg-amber-100 p-3 rounded-full h-fit text-amber-600"><Bell size={20} /></div>
+                <div>
+                  <h4 className="font-bold text-slate-800">Low Supply Alert</h4>
+                  <p className="text-slate-600 text-sm">Diaper inventory is running low in Toddler Room B.</p>
+                  <span className="text-xs text-slate-400 mt-2 block">2 hours ago</span>
+                </div>
+              </Card>
+              <Card className="p-4 border-l-4 border-l-blue-500 bg-white shadow-sm flex gap-4">
+                <div className="bg-blue-100 p-3 rounded-full h-fit text-blue-600"><Clock size={20} /></div>
+                <div>
+                  <h4 className="font-bold text-slate-800">Staff Meeting Reminder</h4>
+                  <p className="text-slate-600 text-sm">Monthly staff coordination meeting at 4:00 PM.</p>
+                  <span className="text-xs text-slate-400 mt-2 block">5 hours ago</span>
+                </div>
+              </Card>
+            </div>
+          )}
+
+          {adminTab === 'financials' && (
+            <div className="animate-in fade-in duration-500 space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <Card className="p-6 bg-gradient-to-br from-emerald-500 to-teal-600 text-white border-0">
+                  <DollarSign className="mb-4 opacity-80" size={32} />
+                  <h3 className="text-3xl font-bold mb-1">$42,500</h3>
+                  <p className="text-emerald-100">Monthly Revenue</p>
+                  <div className="mt-4 text-xs bg-black/10 inline-block px-2 py-1 rounded">+12% from last month</div>
+                </Card>
+                <Card className="p-6">
+                  <Users className="mb-4 text-purple-600" size={32} />
+                  <h3 className="text-3xl font-bold text-slate-800 mb-1">124</h3>
+                  <p className="text-slate-500">Active Enrollments</p>
+                  <div className="mt-4 text-xs text-green-600 bg-green-50 inline-block px-2 py-1 rounded font-bold">+5 New this week</div>
+                </Card>
+                <Card className="p-6">
+                  <CreditCard className="mb-4 text-blue-600" size={32} />
+                  <h3 className="text-3xl font-bold text-slate-800 mb-1">98%</h3>
+                  <p className="text-slate-500">Payment Collection Rate</p>
+                  <div className="mt-4 text-xs text-slate-400">2 pending invoices</div>
+                </Card>
+              </div>
+
+              <Card className="p-6">
+                <h3 className="font-bold text-xl text-slate-800 mb-6 flex items-center gap-2"><TrendingUp className="text-purple-600" /> Revenue Forecast</h3>
+                <div className="h-64 flex items-end justify-between gap-4 px-4 pb-4 border-b border-slate-100">
+                  {[40, 60, 45, 70, 65, 85, 80, 95, 90, 100, 95, 110].map((h, i) => (
+                    <div key={i} className="w-full bg-purple-100 hover:bg-purple-600 transition-colors rounded-t-lg relative group" style={{ height: `${h / 1.5}%` }}>
+                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                        ${h}k
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex justify-between text-xs text-slate-400 mt-2 px-2">
+                  <span>Jan</span><span>Dec</span>
+                </div>
+              </Card>
+            </div>
+          )}
+
+          {adminTab === 'settings' && (
+            <div className="max-w-2xl animate-in fade-in duration-500">
+              <Card className="p-6 space-y-6">
+                <div>
+                  <h3 className="font-bold text-lg text-slate-800 mb-4">General Settings</h3>
+                  <div className="flex items-center justify-between py-3 border-b border-slate-100">
+                    <div>
+                      <p className="font-semibold text-slate-700">System Notifications</p>
+                      <p className="text-xs text-slate-500">Enable email alerts for staff</p>
+                    </div>
+                    <div className="w-12 h-6 bg-purple-600 rounded-full relative cursor-pointer"><div className="w-4 h-4 bg-white rounded-full absolute top-1 right-1 shadow-sm"></div></div>
+                  </div>
+                  <div className="flex items-center justify-between py-3 border-b border-slate-100">
+                    <div>
+                      <p className="font-semibold text-slate-700">Maintenance Mode</p>
+                      <p className="text-xs text-slate-500">Disables parent access temporarily</p>
+                    </div>
+                    <div className="w-12 h-6 bg-slate-200 rounded-full relative cursor-pointer"><div className="w-4 h-4 bg-white rounded-full absolute top-1 left-1 shadow-sm"></div></div>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg text-slate-800 mb-4">Data Management</h3>
+                  <Button variant="outline" className="w-full justify-center text-red-500 hover:bg-red-50 border-red-200">
+                    <ShieldCheck size={18} className="mr-2" /> Export All Student Data (CSV)
+                  </Button>
+                </div>
               </Card>
             </div>
           )}
