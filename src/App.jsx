@@ -136,11 +136,11 @@ export default function App() {
           <Route path="/tour" element={<TourBookingPage />} />
 
           <Route path="/admin" element={
-            user ? <AdminDashboard user={user} db={db} appId={appId} /> : <Navigate to="/login" />
+            <AdminDashboard user={user} db={db} appId={appId} />
           } />
 
           <Route path="/dashboard" element={
-            user ? <ParentDashboard user={user} db={db} appId={appId} /> : <Navigate to="/login" />
+            <ParentDashboard user={user} db={db} appId={appId} />
           } />
 
           {/* Info Pages */}
