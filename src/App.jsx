@@ -124,7 +124,7 @@ export default function App() {
           <Route path="/login" element={<AuthPage auth={auth} db={db} />} />
           <Route path="/signup" element={<AuthPage auth={auth} db={db} />} />
 
-          <Route path="/enroll" element={
+          <Route path="/enroll/*" element={
             <EnrollmentPage
               user={user}
               db={db}
