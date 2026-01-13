@@ -89,9 +89,9 @@ const AdminDashboard = ({ user, setView, db, appId }) => {
           <p className="text-xs text-purple-300 font-medium uppercase mb-2">Logged in as</p>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center font-bold">
-              {user.email?.[0].toUpperCase()}
+              {user?.email?.[0]?.toUpperCase() || 'A'}
             </div>
-            <div className="truncate text-sm font-semibold">{user.email}</div>
+            <div className="truncate text-sm font-semibold">{user?.email || 'Admin View'}</div>
           </div>
         </div>
 
