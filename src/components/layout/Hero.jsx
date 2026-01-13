@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Badge from '../ui/Badge';
-import heroImg from '../../assets/images/hero-landing.jpg';
+import heroImg from '../../assets/images/landing/hero.png';
 
 const Hero = () => {
   const navigate = useNavigate();
