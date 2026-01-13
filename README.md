@@ -1,25 +1,25 @@
-# KiddoZ - Next Gen Childcare Management System
+# Fitday - Next Gen Childcare Management System
 
-KiddoZ is a comprehensive childcare management platform integrating AI safety monitoring, real-time health tracking, and seamless parent-staff communication.
+Fitday (formerly KiddoZ) is a comprehensive childcare management platform integrating AI safety monitoring, real-time health tracking, and seamless parent-staff communication.
 
 ## 🚀 Key Features
 
 ### 👨‍👩‍👧 Parent Portal
 *   **Live Dashboard**: Real-time view of attendance, mood, and meals.
 *   **YOLOv8 Security Stream**: AI-powered live feed detecting student safety status.
-*   **Health Tracking**: Visualization of developmental milestones and vitals trends.
+*   **Rich Notifications**: Real-time alerts for health updates, observations, and staff notes.
+*   **Medical Documents**: Secure access to uploaded health reports and vaccination records.
 *   **Resource Library**: Curated educational content and critical downloads.
 
 ### 🛡️ Admin & Staff Portal
 *   **Roster Management**: Complete CRUD operations for student records.
-*   **Deep Health Logs**: Detailed logging for incidents, meals, and medical checks.
+*   **Detailed Health Updates**: Staff can log vitals, internal notes, and parent-facing observations.
+*   **Doctor Upload**: Secure medical record upload associated with specific students.
 *   **Financial Dashboard**: Revenue tracking, forecasting, and payment stats.
-*   **System Controls**: One-click maintenance mode and notification settings.
 
 ### 🌐 Public Frontend
-*   **Dynamic Program Pages**: Detailed views for Day Care, Pre-School, and Nanny services.
-*   **Smart Booking**: Interactive Tour Booking system with calendar integration.
-*   **AI Enrollment**: 3-Step flow including Biometric Registration.
+*   **Dynamic Program Pages**: Detailed views for Day Care, Pre-School, and Nanny services with high-quality local assets.
+*   **AI Enrollment**: 3-Step flow including Biometric Registration and Plan selection.
 *   **AI Chatbot**: Dual-mode assistant (General Inquiries & Health Data Analysis).
 
 ## 🛠️ Tech Stack
@@ -37,8 +37,7 @@ KiddoZ is a comprehensive childcare management platform integrating AI safety mo
     ```bash
     npm install
     ```
-3.  Set up Environment Variables (Firebase config in `src/App.jsx` or `.env`).
-4.  Run local server:
+3.  Run local server:
     ```bash
     npm run dev
     ```

@@ -21,7 +21,7 @@ const AdminDashboard = ({ user, setView, db, appId }) => {
   const [loading, setLoading] = useState(false);
 
   // Stats form for the modal
-  const [statsForm, setStatsForm] = useState({ temp: '', mood: '', attendance: '', meal: '' });
+  const [statsForm, setStatsForm] = useState({ temp: '', mood: '', attendance: '', meal: '', notes: '', observations: '' });
 
   useEffect(() => {
     const qStudents = query(collection(db, `artifacts/${appId}/public/data/students`), orderBy('name'));
@@ -38,7 +38,9 @@ const AdminDashboard = ({ user, setView, db, appId }) => {
       temp: student.temp || '98.6',
       mood: student.mood || 'Neutral',
       attendance: student.attendance || 'Present',
-      meal: student.meal || 'Not checked'
+      meal: student.meal || 'Not checked',
+      notes: student.notes || '',
+      observations: student.observations || ''
     });
     setIsEditing(true);
   };
@@ -56,7 +58,15 @@ const AdminDashboard = ({ user, setView, db, appId }) => {
         studentId: selectedStudent.id,
         parentId: selectedStudent.parentId,
         title: 'Health Update',
-        message: `New health stats recorded for ${selectedStudent.name}.`,
+        message: `${selectedStudent.name}'s vitals were updated. Temp: ${statsForm.temp}°F, Mood: ${statsForm.mood}.`,
+        details: {
+          temp: statsForm.temp,
+          mood: statsForm.mood,
+          meal: statsForm.meal,
+          notes: statsForm.notes,
+          observations: statsForm.observations,
+          updatedBy: user?.email
+        },
         timestamp: serverTimestamp(),
         read: false,
         type: 'health'
@@ -81,8 +91,8 @@ const AdminDashboard = ({ user, setView, db, appId }) => {
       {/* Sidebar */}
       <div className="w-full md:w-72 bg-purple-900 text-white p-6 flex flex-col shadow-2xl z-10">
         <div className="mb-10 flex items-center gap-3 font-bold text-2xl">
-          <div className="bg-white text-purple-900 p-2 rounded-lg shadow-lg">K</div>
-          <span>Staff Portal</span>
+          <div className="bg-white text-purple-900 p-2 rounded-lg shadow-lg">F</div>
+          <span>Fitday Staff</span>
         </div>
 
         <nav className="space-y-3 flex-1">
@@ -356,6 +366,26 @@ const AdminDashboard = ({ user, setView, db, appId }) => {
               />
             </div>
 
+            <div className="space-y-4">
+              <label className="block text-sm font-bold text-slate-700">Staff Notes</label>
+              <textarea
+                className="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-purple-500/20 outline-none h-24"
+                placeholder="Internal notes about behavior or health..."
+                value={statsForm.notes}
+                onChange={e => setStatsForm({ ...statsForm, notes: e.target.value })}
+              />
+            </div>
+
+            <div className="space-y-4">
+              <label className="block text-sm font-bold text-slate-700">Observations (Message to Parent)</label>
+              <textarea
+                className="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-purple-500/20 outline-none h-24"
+                placeholder="Details for parent to see..."
+                value={statsForm.observations}
+                onChange={e => setStatsForm({ ...statsForm, observations: e.target.value })}
+              />
+            </div>
+
             <div className="pt-4 flex gap-3">
               <Button onClick={() => setIsEditing(false)} variant="ghost" className="flex-1">Cancel</Button>
               <Button onClick={handleUpdateStats} isLoading={loading} className="flex-1">Save Updates</Button>
@@ -371,7 +401,7 @@ const AdminDashboard = ({ user, setView, db, appId }) => {
 
         {statsForm.activeModalTab === 'docs' && (
           <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-            <DoctorUpload studentId={selectedStudent?.id} />
+            <DoctorUpload studentId={selectedStudent?.id} uploader={user} appId={appId} db={db} />
           </div>
         )}
       </Modal>

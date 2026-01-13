@@ -1,39 +1,46 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, User, Phone, Mail, MapPin, Calendar, Activity, FileText } from 'lucide-react';
+import { doc, getDoc } from 'firebase/firestore';
+import { ArrowLeft, User, Phone, Mail, MapPin, Calendar, Activity, FileText, Loader2 } from 'lucide-react';
 import Card from '../ui/Card';
 import Badge from '../ui/Badge';
 
-const StudentProfile = ({ students }) => {
-    const { id } = useParams(); // Using Routing ID or similar. In this architecture, ParentDashboard passes data, but for direct link we need to find it.
+const StudentProfile = ({ db, appId }) => {
+    const { id } = useParams();
+    const [student, setStudent] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    // Since we rely on prop drill in ParentDashboard, let's assume we pass the student object or fetch it.
-    // For simplicity in this demo structure, we'll try to find from the `students` prop if available, 
-    // or show a placeholder if accessed directly without context (real app would fetch from Firestore by ID).
+    useEffect(() => {
+        const fetchStudent = async () => {
+            if (!id || !db) return;
+            try {
+                const docRef = doc(db, `artifacts/${appId}/public/data/students`, id);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    setStudent({ docId: docSnap.id, ...docSnap.data() });
+                }
+            } catch (e) {
+                console.error("Error fetching student:", e);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchStudent();
+    }, [id, db, appId]);
 
-    // Actually, to make this robust:
-    // We will assume this component is rendered inside ParentDashboard or similar Context, BUT users asked to "make kids profile"
-    // which implies a standalone page. 
+    if (loading) return (
+        <div className="h-screen flex items-center justify-center bg-slate-50">
+            <Loader2 className="animate-spin text-purple-600" size={40} />
+        </div>
+    );
 
-    // Let's rely on passed state or just mock for "Student Not Found" if directly accessed without fetching logic (which is in Dashboard).
-    // A better approach for this MVP: Accept `student` as prop if used solely as a modal/sub-view, OR fetch it.
-    // Given user request is simple, we will build a dedicated view that TAKES the student data via Location State.
-
-    // NOTE: This component is designed to be used via direct navigation with state.
-
-    const student = students?.find(s => s.docId === id) || {
-        name: "Demo Student",
-        id: id || "K-0000",
-        plan: "Growth Scholar",
-        age: "4",
-        gender: "Boy",
-        allergies: "Peanuts",
-        parentName: "John Doe",
-        phone: "(555) 123-4567",
-        email: "john@example.com",
-        address: "123 Maple St, Springfield",
-        dob: "2020-05-15"
-    };
+    if (!student) return (
+        <div className="h-screen flex flex-col items-center justify-center bg-slate-50 text-slate-500">
+            <User size={64} className="mb-4 opacity-20" />
+            <p className="text-xl font-bold">Student not found</p>
+            <Link to="/dashboard" className="mt-4 text-purple-600 font-bold hover:underline">Return to Dashboard</Link>
+        </div>
+    );
 
     return (
         <div className="min-h-screen bg-slate-50 font-sans pb-20">

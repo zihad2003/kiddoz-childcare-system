@@ -14,6 +14,7 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
   const [students, setStudents] = useState([]);
   const [selectedStudentId, setSelectedStudentId] = useState('');
   const [notifications, setNotifications] = useState([]);
+  const [medicalRecords, setMedicalRecords] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
 
   const currentChild = students.find(s => s.docId === selectedStudentId) || students[0];
@@ -35,7 +36,14 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
       setNotifications(notifs.filter(n => n.parentId === user.uid));
     });
 
-    return () => { unsub(); unsubNotifs(); };
+    // Subscribe to medical records
+    const qDocs = query(collection(db, `artifacts/${appId}/public/data/medical_records`), orderBy('timestamp', 'desc'));
+    const unsubDocs = onSnapshot(qDocs, (snapshot) => {
+      const docs = snapshot.docs.map(d => ({ docId: d.id, ...d.data() }));
+      setMedicalRecords(docs);
+    });
+
+    return () => { unsub(); unsubNotifs(); unsubDocs(); };
   }, [user]);
 
   const StatCard = ({ icon: Icon, color, label, value, subtext }) => (
@@ -63,7 +71,7 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
           <div>
             <Badge color="bg-purple-500/30 text-purple-100 border-0 mb-4 backdrop-blur-md">Welcome Back, {user?.displayName}</Badge>
             <div className="flex items-center gap-4">
-              <h1 className="text-4xl font-bold mb-2">Parent Portal</h1>
+              <h1 className="text-4xl font-bold mb-2">Fitday Parent Portal</h1>
               <div className="relative">
                 <button onClick={() => setShowNotifications(!showNotifications)} className="relative p-2 hover:bg-white/10 rounded-full transition">
                   <Bell size={24} />
@@ -81,9 +89,16 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
                       ) : (
                         notifications.map(n => (
                           <div key={n.docId} className="p-3 border-b border-slate-50 hover:bg-slate-50">
-                            <p className="font-bold text-sm text-purple-700">{n.title}</p>
-                            <p className="text-xs text-slate-600">{n.message}</p>
-                            <p className="text-[10px] text-slate-400 mt-1">{n.timestamp?.toDate().toLocaleTimeString()}</p>
+                            <div className="flex justify-between items-start mb-1">
+                              <p className="font-bold text-sm text-purple-700">{n.title}</p>
+                              <span className="text-[10px] text-slate-400">{n.timestamp?.toDate().toLocaleTimeString()}</span>
+                            </div>
+                            <p className="text-xs text-slate-600 line-clamp-2">{n.message}</p>
+                            {n.details?.observations && (
+                              <div className="mt-2 p-2 bg-purple-50 rounded-lg text-xs text-purple-700 italic border-l-2 border-purple-300">
+                                "{n.details.observations}"
+                              </div>
+                            )}
                           </div>
                         ))
                       )}
@@ -312,14 +327,21 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
                     </Card>
 
                     <Card className="p-6">
-                      <h3 className="font-bold text-lg text-slate-800 mb-4">Reports Download</h3>
+                      <h3 className="font-bold text-lg text-slate-800 mb-4">Medical Documents</h3>
                       <div className="space-y-3">
-                        <Button variant="outline" className="w-full justify-start text-slate-600" size="sm">
-                          <FileText size={16} className="mr-2 text-red-500" /> Monthly_Report_Jan.pdf
-                        </Button>
-                        <Button variant="outline" className="w-full justify-start text-slate-600" size="sm">
-                          <FileText size={16} className="mr-2 text-red-500" /> Vaccination_Records.pdf
-                        </Button>
+                        {medicalRecords.filter(r => r.studentId === currentChild.id).length === 0 ? (
+                          <p className="text-xs text-slate-400 text-center py-4">No documents uploaded yet.</p>
+                        ) : (
+                          medicalRecords.filter(r => r.studentId === currentChild.id).map(record => (
+                            <Button key={record.docId} variant="outline" className="w-full justify-between text-slate-600 group" size="sm">
+                              <div className="flex items-center">
+                                <FileText size={16} className="mr-2 text-purple-500" />
+                                <span className="truncate max-w-[150px]">{record.fileName}</span>
+                              </div>
+                              <span className="text-[10px] text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">View</span>
+                            </Button>
+                          ))
+                        )}
                       </div>
                     </Card>
                   </div>

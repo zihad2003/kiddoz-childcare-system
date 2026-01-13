@@ -259,7 +259,7 @@ const EnrollmentPage = ({ user, db, appId, PLANS }) => {
         </div>
         <h2 className="text-3xl font-bold mb-4 text-slate-900">Welcome to the Family!</h2>
         <p className="text-slate-500 mb-8 max-w-xs mx-auto">
-          Enrollment & Biometric Setup Complete. Your child is now protected by KiddoZ AI safety systems.
+          Enrollment & Biometric Setup Complete. Your child is now protected by Fitday AI safety systems.
         </p>
         <Button onClick={() => navigate('/dashboard')} size="lg" className="w-full">
           Go to Dashboard

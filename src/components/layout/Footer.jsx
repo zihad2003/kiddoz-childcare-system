@@ -6,18 +6,20 @@ const Footer = () => (
   <footer className="bg-purple-950 text-purple-200 py-16 font-sans">
     <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-4 gap-12 mb-12">
       <div>
-        <h3 className="text-3xl font-bold text-white mb-6">KiddoZ</h3>
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 bg-purple-600 rounded-xl flex items-center justify-center font-bold text-xl text-white">F</div>
+          <h3 className="text-3xl font-bold text-white leading-none">Fitday</h3>
+        </div>
         <p className="text-purple-200/80 leading-relaxed mb-6">We are a modern childcare ecosystem dedicated to making early education safer and smarter through the power of AI.</p>
         <div className="flex gap-4">
-          {/* Social Placeholders */}
           <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition cursor-pointer">
-            <span className="font-bold text-white">fb</span>
+            <span className="font-bold text-white text-xs">FB</span>
           </div>
           <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition cursor-pointer">
-            <span className="font-bold text-white">in</span>
+            <span className="font-bold text-white text-xs">IN</span>
           </div>
           <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition cursor-pointer">
-            <span className="font-bold text-white">tw</span>
+            <span className="font-bold text-white text-xs">TW</span>
           </div>
         </div>
       </div>
@@ -46,21 +48,21 @@ const Footer = () => (
         <ul className="space-y-4">
           <li className="flex items-start gap-3">
             <MapPin size={24} className="mt-1 text-amber-400 shrink-0" />
-            <span className="opacity-90">Room No 529<br />UIU Playground, Madani Avenue<br />Dhaka, Bangladesh</span>
+            <span className="opacity-90 text-sm">Room No 529<br />UIU Playground, Madani Avenue<br />Dhaka, Bangladesh</span>
           </li>
           <li className="flex items-center gap-3">
             <MessageCircle size={20} className="text-amber-400 shrink-0" />
-            <a href="mailto:hello@kiddoz.com" className="hover:text-white transition">hello@kiddoz.com</a>
+            <a href="mailto:hello@fitday.com" className="hover:text-white transition text-sm">hello@fitday.com</a>
           </li>
           <li className="flex items-center gap-3">
             <Calendar size={20} className="text-amber-400 shrink-0" />
-            <span className="opacity-90">Mon - Fri: 8:00 AM - 6:00 PM</span>
+            <span className="opacity-90 text-sm">Mon - Fri: 8:00 AM - 6:00 PM</span>
           </li>
         </ul>
       </div>
     </div>
     <div className="max-w-7xl mx-auto px-4 pt-8 border-t border-purple-900 flex flex-col md:flex-row justify-between items-center text-sm text-purple-400">
-      <p>© {new Date().getFullYear()} KiddoZ Inc. All rights reserved.</p>
+      <p>© {new Date().getFullYear()} Fitday Inc. All rights reserved.</p>
       <div className="flex gap-6 mt-4 md:mt-0">
         <Link to="/info/privacy" onClick={() => window.scrollTo(0, 0)} className="hover:text-white transition">Privacy Policy</Link>
         <Link to="/info/terms" onClick={() => window.scrollTo(0, 0)} className="hover:text-white transition">Terms & Conditions</Link>

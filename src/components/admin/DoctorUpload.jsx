@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Upload, FileText, X, Check, AlertCircle } from 'lucide-react';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useToast } from '../../context/ToastContext';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
 
-const DoctorUpload = ({ studentId, onUploadComplete }) => {
+const DoctorUpload = ({ studentId, uploader, appId, db }) => {
     const { addToast } = useToast();
     const [dragActive, setDragActive] = useState(false);
     const [file, setFile] = useState(null);
@@ -40,13 +41,24 @@ const DoctorUpload = ({ studentId, onUploadComplete }) => {
         if (!file) return;
         setUploading(true);
 
-        // Simulate upload delay
-        setTimeout(() => {
+        try {
+            await addDoc(collection(db, `artifacts/${appId}/public/data/medical_records`), {
+                studentId,
+                fileName: file.name,
+                fileSize: file.size,
+                type: file.type,
+                uploadedBy: uploader?.email || 'Staff',
+                timestamp: serverTimestamp(),
+            });
+
             setUploading(false);
             setFile(null);
-            if (onUploadComplete) onUploadComplete();
-            addToast("Medical document uploaded successfully!", 'success');
-        }, 2000);
+            addToast("Medical document recorded successfully!", 'success');
+        } catch (e) {
+            console.error(e);
+            addToast("Upload record failed", 'error');
+            setUploading(false);
+        }
     };
 
     return (

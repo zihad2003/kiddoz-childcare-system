@@ -148,7 +148,7 @@ export default function App() {
               <ParentDashboard user={user} db={db} appId={appId} />
             } />
 
-            <Route path="/student/:id" element={<StudentProfile />} />
+            <Route path="/student/:id" element={<StudentProfile db={db} appId={appId} />} />
 
             {/* Info Pages */}
             <Route path="/info/privacy" element={<InfoPage type="privacy" />} />
