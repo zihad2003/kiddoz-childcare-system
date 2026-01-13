@@ -15,7 +15,14 @@ const EnrollmentPage = ({ user, db, appId, PLANS }) => {
   const navigate = useNavigate();
   const { addToast } = useToast();
   const location = useLocation();
-  const [selectedPlan, setSelectedPlan] = useState(location.state?.plan || null);
+  const [selectedPlan, setSelectedPlan] = useState(() => {
+    if (location.state?.plan) return location.state.plan;
+    if (location.pathname.includes('/kidsinfo') || location.pathname.includes('/AIsetup')) {
+      return PLANS[1]; // Default to "Growth Scholar"
+    }
+    return null;
+  });
+
   const [childData, setChildData] = useState(location.state?.childData || {
     name: '',
     age: '',
@@ -34,14 +41,13 @@ const EnrollmentPage = ({ user, db, appId, PLANS }) => {
   if (location.pathname.includes('/AIsetup')) currentStep = 3;
   if (location.pathname.includes('/success')) currentStep = 4;
 
-  // Ensure state is synced or defaults are provided for direct link access
+  // Ensure state is synced
   useEffect(() => {
     if (location.state?.plan) {
       setSelectedPlan(location.state.plan);
-    } else if (!selectedPlan && (currentStep === 2 || currentStep === 3)) {
-      // Default for direct access (Design/Demo mode)
-      setSelectedPlan(PLANS[1]); // Default to "Growth Scholar"
     }
+    // Note: Default plan for direct access is now handled in initial state
+
 
     if (location.state?.childData) {
       setChildData(location.state.childData);
