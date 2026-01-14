@@ -1,15 +1,26 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import Webcam from 'react-webcam';
 import { Camera, RefreshCw, CheckCircle, User, Activity, AlertCircle } from 'lucide-react';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
 import Badge from '../ui/Badge';
 
-const BiometricRegistration = ({ onComplete, onBack }) => {
+const BiometricRegistration = ({ onComplete, onBack, defaultImages = { face: null, body: null } }) => {
     const [step, setStep] = useState('face'); // 'face' or 'body'
-    const [images, setImages] = useState({ face: null, body: null });
+    const [images, setImages] = useState(defaultImages);
     const [isCameraOpen, setIsCameraOpen] = useState(false);
     const webcamRef = useRef(null);
+
+    // If we have a face but no body, start at body
+    useEffect(() => {
+        if (defaultImages.face && !defaultImages.body) {
+            setStep('body');
+        } else if (defaultImages.face && defaultImages.body) {
+            // If both exist, maybe show completion or stay on body?
+            // Let's stay on body to allow retake
+            setStep('body');
+        }
+    }, []);
 
     const capture = useCallback(() => {
         const imageSrc = webcamRef.current.getScreenshot();
