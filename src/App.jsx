@@ -15,6 +15,9 @@ import Navbar from './components/layout/Navbar';
 import Hero from './components/layout/Hero';
 import Footer from './components/layout/Footer';
 import Programs from './components/layout/Programs';
+import NannyService from './components/layout/NannyService';
+import NannyServiceDetails from './components/layout/NannyServiceDetails';
+import NannyBookingPage from './components/layout/NannyBookingPage';
 import ProgramDetails from './components/layout/ProgramDetails'; // Import Details Page
 import AuthPage from './components/layout/AuthPage';
 
@@ -119,11 +122,14 @@ export default function App() {
               <>
                 <Hero />
                 <Programs />
+                <NannyService />
                 <TourCTA />
               </>
             } />
 
             <Route path="/programs" element={<Programs />} />
+            <Route path="/nanny-service" element={<NannyServiceDetails />} /> {/* Dedicated Nanny Route */}
+            <Route path="/book-nanny" element={<NannyBookingPage />} /> {/* Nanny Booking Route */}
             <Route path="/programs/:programId" element={<ProgramDetails />} /> {/* Dynamic Route */}
 
             <Route path="/login" element={<AuthPage auth={auth} db={db} />} />

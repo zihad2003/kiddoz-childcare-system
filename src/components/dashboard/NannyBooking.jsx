@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from '../ui/Card';
 import Badge from '../ui/Badge';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
-import Select from '../ui/Select';
 import { MOCK_NANNIES } from '../../data/mockData';
-import { MapPin, Star, Clock, Calendar, Search, Filter, Phone, CheckCircle } from 'lucide-react';
+import { MapPin, Star, Clock, CheckCircle, Video, Activity, Heart, Shield, Phone, MessageSquare } from 'lucide-react';
 
 const NannyBooking = ({ student }) => {
     const [filterArea, setFilterArea] = useState('Dhaka');
     const [filterPrice, setFilterPrice] = useState('');
     const [selectedNanny, setSelectedNanny] = useState(null);
-    const [bookingStep, setBookingStep] = useState('list'); // list | book | success
+    const [bookingStep, setBookingStep] = useState('list'); // list | book | success | active
+    const [childName, setChildName] = useState(student?.name || '');
+
+    useEffect(() => {
+        if (student?.name) setChildName(student.name);
+    }, [student]);
 
     // Filter nannies
     const filteredNannies = MOCK_NANNIES.filter(n =>
@@ -29,6 +33,97 @@ const NannyBooking = ({ student }) => {
         // For now, simulate success
         setBookingStep('success');
     };
+
+    // Mock Live View Component
+    const ActiveServiceView = ({ nanny }) => (
+        <div className="max-w-4xl mx-auto space-y-6">
+            <div className="flex justify-between items-center mb-4">
+                <h2 className="text-2xl font-bold flex items-center gap-2">
+                    <Activity className="text-green-500 animate-pulse" /> Live Service Active
+                </h2>
+                <Badge color="bg-green-100 text-green-700 font-bold border-green-200">On Duty</Badge>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Live Feed / Status Area */}
+                <div className="lg:col-span-2 space-y-6">
+                    <div className="bg-black rounded-3xl overflow-hidden relative shadow-2xl aspect-video group">
+                        {/* Placeholder for live feed */}
+                        <img
+                            src="https://images.unsplash.com/photo-1581056771107-24ca5f033842?auto=format&fit=crop&q=80"
+                            alt="Live Care"
+                            className="w-full h-full object-cover opacity-80"
+                        />
+                        <div className="absolute top-4 right-4 flex gap-2">
+                            <span className="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded animate-pulse">LIVE</span>
+                            <span className="bg-black/50 text-white text-xs font-bold px-2 py-1 rounded backdrop-blur-md">00:45:12</span>
+                        </div>
+                        <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
+                            <p className="text-white font-medium flex items-center gap-2">
+                                <Activity size={16} className="text-green-400" />
+                                {nanny.name} is playing with {childName || 'Child'}
+                            </p>
+                        </div>
+                    </div>
+
+                    <Card>
+                        <h3 className="font-bold text-lg mb-4">Live Updates</h3>
+                        <div className="space-y-4">
+                            {[
+                                { time: '10:00 AM', text: 'Arrived and checked in.', icon: CheckCircle, color: 'text-green-500' },
+                                { time: '10:15 AM', text: 'Started drawing activity.', icon: Heart, color: 'text-pink-500' },
+                                { time: '10:45 AM', text: 'Snack time prepared.', icon: Clock, color: 'text-amber-500' }
+                            ].map((update, i) => (
+                                <div key={i} className="flex gap-4 items-start">
+                                    <div className="w-12 text-xs text-slate-400 font-medium pt-1">{update.time}</div>
+                                    <div className="flex-1 flex gap-3 p-3 bg-slate-50 rounded-xl">
+                                        <update.icon size={16} className={`${update.color} mt-0.5`} />
+                                        <p className="text-sm text-slate-700">{update.text}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </Card>
+                </div>
+
+                {/* Control Panel */}
+                <div className="space-y-6">
+                    <Card className="bg-gradient-to-br from-purple-700 to-indigo-800 text-white border-0">
+                        <div className="flex items-center gap-4 mb-6">
+                            <img src={nanny.img} alt={nanny.name} className="w-16 h-16 rounded-full border-2 border-white/30" />
+                            <div>
+                                <h3 className="font-bold text-lg">{nanny.name}</h3>
+                                <p className="text-purple-200 text-xs">Certified Pro</p>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                            <Button size="sm" className="bg-white/10 hover:bg-white/20 border-0">
+                                <Phone size={16} className="mr-2" /> Call
+                            </Button>
+                            <Button size="sm" className="bg-white/10 hover:bg-white/20 border-0">
+                                <MessageSquare size={16} className="mr-2" /> Chat
+                            </Button>
+                        </div>
+                    </Card>
+
+                    <Card>
+                        <h4 className="font-bold text-slate-800 mb-3 text-sm">Vital Stats</h4>
+                        <div className="grid grid-cols-2 gap-3 mb-4">
+                            <div className="bg-rose-50 text-rose-600 p-3 rounded-xl text-center">
+                                <p className="text-xs uppercase font-bold text-rose-400">Heart Rate</p>
+                                <p className="text-xl font-black">98 <span className="text-xs">bpm</span></p>
+                            </div>
+                            <div className="bg-blue-50 text-blue-600 p-3 rounded-xl text-center">
+                                <p className="text-xs uppercase font-bold text-blue-400">Sleep</p>
+                                <p className="text-xl font-black">--</p>
+                            </div>
+                        </div>
+                        <Button variant="outline" className="w-full text-xs" onClick={() => setBookingStep('list')}>End Service</Button>
+                    </Card>
+                </div>
+            </div>
+        </div>
+    );
 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -93,7 +188,7 @@ const NannyBooking = ({ student }) => {
 
                                 <div className="flex gap-2">
                                     <Button variant="outline" className="flex-1 text-xs">View Profile</Button>
-                                    <Button onClick={() => handleBookClick(nanny)} className="flex-1 bg-rose-500 hover:bg-rose-600 text-xs">Book Now</Button>
+                                    <Button onClick={() => handleBookClick(nanny)} className="flex-1 bg-rose-500 hover:bg-rose-600 text-xs text-white shadow-lg shadow-rose-200">Book Now</Button>
                                 </div>
                             </Card>
                         ))}
@@ -116,11 +211,20 @@ const NannyBooking = ({ student }) => {
 
                         <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); confirmBooking(); }}>
                             <div>
-                                <label className="block text-sm font-bold text-slate-700 mb-2">Select Child (Auto-filled)</label>
-                                <select className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none" disabled>
-                                    <option>{student?.name || "No enrolled child found"}</option>
-                                </select>
-                                <p className="text-xs text-slate-400 mt-1">Using verified profile from your account.</p>
+                                <label className="block text-sm font-bold text-slate-700 mb-2">Child's Name</label>
+                                {student ? (
+                                    <select className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none" disabled>
+                                        <option>{student.name}</option>
+                                    </select>
+                                ) : (
+                                    <Input
+                                        placeholder="Enter child's name"
+                                        value={childName}
+                                        onChange={(e) => setChildName(e.target.value)}
+                                        required
+                                    />
+                                )}
+                                <p className="text-xs text-slate-400 mt-1">{student ? "Using verified profile." : "Guest booking mode."}</p>
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
@@ -157,7 +261,7 @@ const NannyBooking = ({ student }) => {
                                 <p>By proceeding, you agree to the Nanny Booking Policy. Cancellations within 2 hours are subject to a fee.</p>
                             </div>
 
-                            <Button size="lg" className="w-full bg-rose-600 hover:bg-rose-700">Proceed to Payment</Button>
+                            <Button size="lg" className="w-full bg-rose-600 hover:bg-rose-700 shadow-xl shadow-rose-200">Confirm & Pay</Button>
                         </form>
                     </Card>
                 </div>
@@ -165,16 +269,26 @@ const NannyBooking = ({ student }) => {
 
             {/* Success View */}
             {bookingStep === 'success' && (
-                <div className="text-center max-w-lg mx-auto py-12">
+                <div className="text-center max-w-lg mx-auto py-12 animate-in zoom-in duration-500">
                     <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                         <CheckCircle size={48} className="text-green-600" />
                     </div>
                     <h2 className="text-3xl font-bold text-slate-900 mb-2">Booking Confirmed!</h2>
                     <p className="text-slate-500 mb-8">
-                        {selectedNanny?.name} has been notified. You can track their arrival status in the "Live View" tab.
+                        {selectedNanny?.name} has been notified.
                     </p>
-                    <Button onClick={() => setBookingStep('list')}>Book Another</Button>
+                    <div className="flex flex-col gap-3">
+                        <Button onClick={() => setBookingStep('active')} className="bg-purple-600 hover:bg-purple-700 shadow-xl">
+                            Track Live Status
+                        </Button>
+                        <Button variant="ghost" onClick={() => setBookingStep('list')}>Book Another</Button>
+                    </div>
                 </div>
+            )}
+
+            {/* Active Service View */}
+            {bookingStep === 'active' && selectedNanny && (
+                <ActiveServiceView nanny={selectedNanny} />
             )}
 
         </div>
