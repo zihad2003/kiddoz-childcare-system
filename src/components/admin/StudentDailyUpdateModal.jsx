@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { updateDoc, doc, serverTimestamp, addDoc, collection } from 'firebase/firestore';
 import { Thermometer, Utensils, AlertCircle, Clock } from 'lucide-react';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
@@ -7,16 +6,16 @@ import Select from '../ui/Select';
 import Modal from '../ui/Modal';
 import HealthLogs from './HealthLogs';
 import DoctorUpload from './DoctorUpload';
+import api from '../../services/api';
 import { useToast } from '../../context/ToastContext';
 
 const StudentDailyUpdateModal = ({
     isOpen,
     onClose,
     student,
-    db,
-    appId,
     user,
-    currentRole = 'Staff'
+    currentRole = 'Staff',
+    onUpdate // Callback to refresh parent list if needed
 }) => {
     const { addToast } = useToast();
     const [loading, setLoading] = useState(false);
@@ -25,6 +24,14 @@ const StudentDailyUpdateModal = ({
         mood: '',
         attendance: '',
         meal: '',
+        mealType: '',
+        mealAmount: '',
+        foodDetails: '',
+        medName: '',
+        medDosage: '',
+        medGiven: false,
+        activityType: '',
+        activityDetails: '',
         notes: '',
         observations: '',
         activeModalTab: 'vitals'
@@ -57,38 +64,32 @@ const StudentDailyUpdateModal = ({
         setLoading(true);
         try {
             // Prepare the update object, filtering out undefined or UI-only fields if necessary
-            // But for now, we spread statsForm. Note: activeModalTab shouldn't be saved to DB usually, 
-            // but it doesn't hurt much if ignored. Better to destructure.
             const { activeModalTab, ...dataToSave } = statsForm;
 
-            await updateDoc(doc(db, `artifacts/${appId}/public/data/students`, student.docId), {
-                ...dataToSave,
-                lastUpdated: serverTimestamp()
-            });
+            // Update student record
+            await api.updateStudent(student.id, dataToSave);
 
             // Add notification for parent
-            await addDoc(collection(db, `artifacts/${appId}/public/data/notifications`), {
+            await api.addNotification({
                 studentId: student.id,
-                parentId: student.parentId || 'unknown', // Fallback if parentId missing
+                parentId: student.parentId || 'unknown',
                 title: `${currentRole === 'nurse' ? 'Medical Update' : 'Daily Activity Update'}`,
                 message: `${student.name}'s status updated by ${currentRole}.`,
                 details: {
                     ...dataToSave,
                     updatedBy: `${currentRole} (${user?.email || 'Staff'})`
                 },
-                timestamp: serverTimestamp(),
-                read: false,
                 type: 'health'
             });
 
             addToast(`Updated stats for ${student.name}`, 'success');
+            if (onUpdate) onUpdate(); // Notify parent component
             onClose();
-            setLoading(false);
         } catch (e) {
             console.error(e);
             addToast("Update failed. Please try again.", 'error');
-            setLoading(false);
         }
+        setLoading(false);
     };
 
     return (

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { collection, query, where, onSnapshot, orderBy, serverTimestamp } from 'firebase/firestore';
 import { BookOpen, ScanFace, Activity, ChevronDown, CheckCircle, Clock, Heart, Thermometer, User, Users, Utensils, Smile, FileText, Bell, DollarSign, UserCheck } from 'lucide-react';
+import api from '../../services/api';
 import LiveViewYOLO from '../ai/LiveViewYOLO';
 import ResourceTab from './ResourceTab';
 import BillingTab from './BillingTab';
@@ -38,34 +39,24 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
 
   useEffect(() => {
     if (!user) return;
-    const q = query(collection(db, `artifacts/${appId}/public/data/students`), where('parentId', '==', user.uid));
-    const unsub = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map(d => ({ docId: d.id, ...d.data() }));
-      if (data.length > 0) {
-        setStudents(data);
-        if (!selectedStudentId) setSelectedStudentId(data[0].docId);
+
+    const fetchData = async () => {
+      try {
+        const data = await api.getStudents(user.id);
+        if (data.length > 0) {
+          setStudents(data);
+          if (!selectedStudentId) setSelectedStudentId(data[0].id);
+        } else {
+          // Fallback / Empty state handled by UI
+        }
+      } catch (err) {
+        console.error("Failed to load students", err);
+        // Fallback handled by the other useEffect mock data
       }
-    }, (error) => {
-      console.error("Firestore Access Error:", error);
-      // Fallback handled by the other useEffect
-    });
+    };
 
-    // Subscribe to notifications
-    const qNotifs = query(collection(db, `artifacts/${appId}/public/data/notifications`), where('read', '==', false));
-    const unsubNotifs = onSnapshot(qNotifs, (snapshot) => {
-      const notifs = snapshot.docs.map(d => ({ docId: d.id, ...d.data() }));
-      // Filter for current user's students (or rely on security rules, but here filter client side for Demo simplicity)
-      setNotifications(notifs.filter(n => n.parentId === user.uid));
-    });
-
-    // Subscribe to medical records
-    const qDocs = query(collection(db, `artifacts/${appId}/public/data/medical_records`), orderBy('timestamp', 'desc'));
-    const unsubDocs = onSnapshot(qDocs, (snapshot) => {
-      const docs = snapshot.docs.map(d => ({ docId: d.id, ...d.data() }));
-      setMedicalRecords(docs);
-    });
-
-    return () => { unsub(); unsubNotifs(); unsubDocs(); };
+    fetchData();
+    // No realtime subscription for now, manual refresh or polling would be next step
   }, [user]);
 
   const StatCard = ({ icon: Icon, color, label, value, subtext }) => (
@@ -371,7 +362,7 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
                   </div>
 
                   <div className="lg:col-span-3 mt-4">
-                    <ProgressCharts />
+                    {/* Progress Charts removed as per request */}
                   </div>
                 </div>
               )}

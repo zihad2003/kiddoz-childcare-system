@@ -4,6 +4,7 @@ import { Zap, AlertCircle } from 'lucide-react';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useToast } from '../../context/ToastContext';
 import { useEnrollmentForm } from '../../hooks/useEnrollmentForm';
+import api from '../../services/api';
 
 import PaymentModal from '../dashboard/PaymentModal';
 import BiometricRegistration from './BiometricRegistration';
@@ -87,18 +88,10 @@ const EnrollmentPage = ({ user, db, appId, PLANS }) => {
       const studentId = `K-${Math.floor(1000 + Math.random() * 9000)}`;
       const finalPlan = formData.plan || PLANS[1];
 
-      await addDoc(collection(db, `artifacts/${appId}/public/data/students`), {
+      await api.addStudent({
         ...formData.childData,
-        id: studentId,
-        parentId: user.uid,
         plan: finalPlan.name,
-        enrollmentDate: serverTimestamp(),
-        temp: '98.6',
-        mood: 'Neutral',
-        attendance: 'Registered',
-        meal: 'Not checked in',
-        hasBiometrics: !!(formData.biometrics.face || formData.biometrics.body),
-        createdAt: serverTimestamp()
+        healthInfo: formData.biometrics // simplified mapping for demo
       });
 
       addToast('Enrollment & Subscription Successful!', 'success');

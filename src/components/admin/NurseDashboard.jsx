@@ -5,17 +5,24 @@ import Badge from '../ui/Badge';
 import Modal from '../ui/Modal';
 import Input from '../ui/Input';
 import { Users, Thermometer, Activity, Heart, Search, FileText, AlertCircle, CheckCircle } from 'lucide-react';
-import { updateDoc, doc, serverTimestamp, addDoc, collection } from 'firebase/firestore';
+import api from '../../services/api';
 import { useToast } from '../../context/ToastContext';
 
-const NurseDashboard = ({ students, db, appId, user }) => {
+const NurseDashboard = ({ students, user }) => {
     const { addToast } = useToast();
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [vitals, setVitals] = useState({ temp: '', notes: '', medication: '' });
 
-    const filteredStudents = students.filter(s =>
+    // Use local state for students to reflect immediate updates
+    const [localStudents, setLocalStudents] = useState(students);
+
+    React.useEffect(() => {
+        setLocalStudents(students);
+    }, [students]);
+
+    const filteredStudents = localStudents.filter(s =>
         s.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -32,21 +39,17 @@ const NurseDashboard = ({ students, db, appId, user }) => {
     const handleSubmitVitals = async () => {
         if (!selectedStudent) return;
         try {
-            await updateDoc(doc(db, `artifacts/${appId}/public/data/students`, selectedStudent.docId), {
+            await api.updateStudent(selectedStudent.id, {
                 temp: vitals.temp,
-                lastVitalsCheck: serverTimestamp()
             });
 
-            // Log the medical event
-            await addDoc(collection(db, `artifacts/${appId}/public/data/notifications`), {
-                studentId: selectedStudent.id,
-                parentId: selectedStudent.parentId,
+            setLocalStudents(prev => prev.map(s => s.id === selectedStudent.id ? { ...s, temp: vitals.temp } : s));
+
+            // Log the medical event as a notification
+            await api.addNotification({
                 title: 'Medical Log Updated',
-                message: `Nurse ${user?.email || ''} logged vitals. Temp: ${vitals.temp}°F.`,
-                details: { ...vitals, updatedBy: 'School Nurse' },
-                timestamp: serverTimestamp(),
-                read: false,
-                type: 'health'
+                message: `Nurse ${user?.email || ''} logged vitals for ${selectedStudent.name}. Temp: ${vitals.temp}°F.`,
+                type: 'info'
             });
 
             addToast(`Updated vitals for ${selectedStudent.name}`, 'success');
@@ -106,7 +109,7 @@ const NurseDashboard = ({ students, db, appId, user }) => {
                 {/* Student Health Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredStudents.map(student => (
-                        <Card key={student.docId} className="border-l-4 border-l-teal-500 hover:shadow-md transition-all group">
+                        <Card key={student.id} className="border-l-4 border-l-teal-500 hover:shadow-md transition-all group">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="flex items-center gap-3">
                                     <div className="w-12 h-12 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center font-bold text-lg">

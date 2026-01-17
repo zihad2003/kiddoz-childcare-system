@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { collection, query, orderBy, onSnapshot, writeBatch, doc, serverTimestamp, addDoc } from 'firebase/firestore';
 import { Users, Bell, LogOut, Search, Edit2, ShieldCheck, Clock, DollarSign, Settings, UserCheck, ScanFace, Database } from 'lucide-react';
 import { BANGLADESHI_STUDENTS } from '../../data/bangladeshiData';
 import DataQueryFilter from './DataQueryFilter';
@@ -17,8 +16,9 @@ import TeacherDashboard from './TeacherDashboard';
 import ChildCareTaskManager from './ChildCareTaskManager';
 import NannyDashboard from './NannyDashboard';
 import StudentDailyUpdateModal from './StudentDailyUpdateModal';
+import api from '../../services/api';
 
-const AdminDashboard = ({ user, db, appId }) => {
+const AdminDashboard = ({ user, handleLogout }) => {
   const { addToast } = useToast();
   const navigate = useNavigate();
   const [currentRole, setCurrentRole] = useState('admin'); // admin | teacher | nurse | nanny
@@ -38,14 +38,19 @@ const AdminDashboard = ({ user, db, appId }) => {
     return false;
   };
 
-  useEffect(() => {
-    const qStudents = query(collection(db, `artifacts/${appId}/public/data/students`), orderBy('name'));
-    const unsubStudents = onSnapshot(qStudents, (snapshot) => {
-      const data = snapshot.docs.map(d => ({ docId: d.id, ...d.data() }));
+  const fetchStudents = async () => {
+    try {
+      const data = await api.getStudents();
       setStudents(data);
-    });
-    return () => unsubStudents();
-  }, [db, appId]);
+    } catch (err) {
+      console.error("Failed to fetch students", err);
+      addToast("Failed to load students", "error");
+    }
+  };
+
+  useEffect(() => {
+    fetchStudents();
+  }, []);
 
   const openEditModal = (student) => {
     setSelectedStudent(student);
@@ -55,34 +60,22 @@ const AdminDashboard = ({ user, db, appId }) => {
   const [filterConfig, setFilterConfig] = useState({ status: 'All', payment: 'All', grade: 'All', minAge: '', maxAge: '' });
   const [sortConfig, setSortConfig] = useState({ field: 'name', direction: 'asc' });
 
-  // Add Notification Helper - To ensure alerts are centralized
-  const createNotification = async (title, message, type = 'info') => {
-    await addDoc(collection(db, `artifacts/${appId}/public/data/notifications`), {
-      title, message, type,
-      timestamp: serverTimestamp(),
-      read: false
-    });
-  };
 
   const enrollBangladeshiData = async () => {
     setLoading(true);
     try {
-      const batch = writeBatch(db);
-      BANGLADESHI_STUDENTS.forEach(student => {
-        const newRef = doc(collection(db, `artifacts/${appId}/public/data/students`));
-        batch.set(newRef, { ...student, enrollmentDate: new Date().toISOString() });
+      const randomStudent = BANGLADESHI_STUDENTS[Math.floor(Math.random() * BANGLADESHI_STUDENTS.length)];
+      await api.addStudent({
+        ...randomStudent,
+        plan: { name: randomStudent.plan },
+        childData: { ...randomStudent, enrollmentDate: new Date() }
       });
-      await batch.commit();
-      addToast(' enrolled 6 Bangladeshi students', 'success');
-      createNotification('New Enrollments', '6 new Bangladeshi students have been added to the roster.', 'admin');
+
+      addToast('Enrolled new student successfully', 'success');
+      fetchStudents();
     } catch (e) {
       console.error(e);
-      if (e.code === 'permission-denied') {
-        addToast('Permission Denied Check Firestore Rules', 'error');
-        console.warn("You need to update your Firestore Security Rules to allow writes to 'artifacts/{appId}/public/data/students'");
-      } else {
-        addToast('Failed to enroll data', 'error');
-      }
+      addToast('Failed to enroll data', 'error');
     }
     setLoading(false);
   };
@@ -100,9 +93,14 @@ const AdminDashboard = ({ user, db, appId }) => {
 
     // Filter
     if (filterConfig.status !== 'All') result = result.filter(s => s.attendance === filterConfig.status);
-    if (filterConfig.payment !== 'All') result = result.filter(s => s.paymentStatus === filterConfig.payment);
-    if (filterConfig.grade !== 'All') result = result.filter(s => s.grade === filterConfig.grade);
     if (filterConfig.minAge) result = result.filter(s => Number(s.age) >= Number(filterConfig.minAge));
+    if (filterConfig.date) {
+      // Filter by createdAt (Enrollment Date)
+      result = result.filter(s => {
+        const studentDate = s.createdAt ? new Date(s.createdAt).toISOString().split('T')[0] : '';
+        return studentDate === filterConfig.date;
+      });
+    }
 
     // Sort
     result.sort((a, b) => {
@@ -212,7 +210,7 @@ const AdminDashboard = ({ user, db, appId }) => {
           </div>
         </div>
 
-        <button onClick={() => navigate('/')} className="mt-auto flex items-center gap-3 px-4 py-3 rounded-xl text-purple-200 hover:text-red-300 hover:bg-white/5 transition">
+        <button onClick={() => handleLogout && handleLogout('/login')} className="mt-auto flex items-center gap-3 px-4 py-3 rounded-xl text-purple-200 hover:text-red-300 hover:bg-white/5 transition">
           <LogOut size={20} /> Exit Portal
         </button>
       </div>
@@ -233,11 +231,11 @@ const AdminDashboard = ({ user, db, appId }) => {
 
         <div className="p-8">
           {currentRole === 'nanny' ? (
-            <NannyDashboard db={db} appId={appId} user={user} />
+            <NannyDashboard user={user} />
           ) : (
             <>
-              {currentRole === 'nurse' && <NurseDashboard db={db} appId={appId} user={user} students={students} />}
-              {currentRole === 'teacher' && <TeacherDashboard db={db} appId={appId} user={user} students={students} />}
+              {currentRole === 'nurse' && <NurseDashboard user={user} students={students} />}
+              {currentRole === 'teacher' && <TeacherDashboard user={user} students={students} />}
 
               {currentRole === 'admin' && adminTab === 'roster' && (
                 <div className="space-y-8 animate-in fade-in duration-500">
@@ -268,7 +266,7 @@ const AdminDashboard = ({ user, db, appId }) => {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {filteredStudents.map(student => (
-                      <Card key={student.docId} className="group hover:border-purple-300 relative overflow-hidden">
+                      <Card key={student.id} className="group hover:border-purple-300 relative overflow-hidden">
                         <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
                           <button onClick={() => openEditModal(student)} className="p-2 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-lg transition"><Edit2 size={16} /></button>
                         </div>
@@ -297,7 +295,7 @@ const AdminDashboard = ({ user, db, appId }) => {
               )}
 
               {adminTab === 'care' && (
-                <ChildCareTaskManager db={db} appId={appId} students={students} currentUser={user} />
+                <ChildCareTaskManager students={students} currentUser={user} />
               )}
 
               {adminTab === 'live' && (
@@ -314,10 +312,10 @@ const AdminDashboard = ({ user, db, appId }) => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-in fade-in duration-500">
                   <div className="lg:col-span-2 space-y-4">
                     <h3 className="font-bold text-slate-800 text-lg mb-2">Real-time System Alerts</h3>
-                    <AlertsFeed db={db} appId={appId} />
+                    <AlertsFeed />
                   </div>
                   <div>
-                    <TaskManager db={db} appId={appId} currentUserRole={currentRole} currentUserEmail={user?.email} />
+                    <TaskManager currentUserRole={currentRole} currentUserEmail={user?.email} />
                   </div>
                 </div>
               )}
@@ -361,8 +359,6 @@ const AdminDashboard = ({ user, db, appId }) => {
                 isOpen={isEditing}
                 onClose={() => setIsEditing(false)}
                 student={selectedStudent}
-                db={db}
-                appId={appId}
                 user={user}
                 currentRole={currentRole}
               />
@@ -375,15 +371,14 @@ const AdminDashboard = ({ user, db, appId }) => {
   );
 };
 
-const AlertsFeed = ({ db, appId }) => {
+const AlertsFeed = () => {
   const [alerts, setAlerts] = useState([]);
+
   useEffect(() => {
-    const q = query(collection(db, `artifacts/${appId}/public/data/notifications`), orderBy('timestamp', 'desc'));
-    const unsub = onSnapshot(q, (snapshot) => {
-      setAlerts(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
-    });
-    return () => unsub();
-  }, [db, appId]);
+    api.getNotifications()
+      .then(setAlerts)
+      .catch(console.error);
+  }, []);
 
   if (alerts.length === 0) return <div className="text-slate-400 text-center py-10">No alerts yet.</div>;
 
@@ -398,7 +393,7 @@ const AlertsFeed = ({ db, appId }) => {
             <h4 className="font-bold text-slate-800">{alert.title}</h4>
             <p className="text-slate-600 text-sm">{alert.message}</p>
             <span className="text-xs text-slate-400 mt-2 block">
-              {alert.timestamp ? new Date(alert.timestamp.seconds * 1000).toLocaleString() : 'Just now'}
+              {new Date(alert.createdAt).toLocaleString()}
             </span>
           </div>
         </Card>

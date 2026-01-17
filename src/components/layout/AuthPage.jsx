@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { signInAnonymously, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { User, ShieldCheck, ArrowLeft, AlertCircle } from 'lucide-react';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
 import { useToast } from '../../context/ToastContext';
+import { useAuth } from '../../context/AuthContext';
 
-const AuthPage = ({ auth, db }) => {
+const AuthPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { addToast } = useToast();
+  const { login, register } = useAuth();
 
   // Determine mode based on URL
   const isSignUp = location.pathname === '/signup';
@@ -33,28 +34,43 @@ const AuthPage = ({ auth, db }) => {
 
     try {
       if (isSignUp) {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        await updateProfile(userCredential.user, {
-          displayName: fullName
+        await register({
+          email,
+          password,
+          fullName,
+          phone
         });
       } else {
-        await signInWithEmailAndPassword(auth, email, password);
+        await login(email, password);
       }
-      addToast(isSignUp ? 'Account created successfully! Welcome.' : 'Signed in successfully. Welcome back!', 'success');
+
+      // Navigation is handled by the caller or we do it here. 
+      // AuthContext handles the state update.
       navigate('/dashboard');
     } catch (err) {
       console.error(err);
-      let msg = "Authentication failed.";
-      if (err.code === 'auth/email-already-in-use') msg = "Email already registered.";
-      if (err.code === 'auth/invalid-email') msg = "Invalid email address.";
-      if (err.code === 'auth/weak-password') msg = "Password should be at least 6 chars.";
-      if (err.code === 'auth/wrong-password') msg = "Incorrect password.";
-      if (err.code === 'auth/user-not-found') msg = "No account found with this email.";
-      setError(msg);
+      setError(err.response?.data?.error || err.message || "Authentication failed.");
     } finally {
       setLoading(false);
     }
   };
+
+  const handleDemoLogin = async (role) => {
+    try {
+      setLoading(true);
+      if (role === 'admin') {
+        await login('admin@kiddoz.com', 'admin123');
+        navigate('/admin');
+      } else {
+        await login('rahim@gmail.com', 'password123'); // Updated to seeded Bangladeshi parent
+        navigate('/dashboard');
+      }
+    } catch (err) {
+      console.error("Demo login failed", err);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-purple-50 p-4 font-sans">
@@ -147,14 +163,14 @@ const AuthPage = ({ auth, db }) => {
           <p className="text-xs font-bold text-slate-400 uppercase tracking-wider text-center mb-3">One-Click Demo Entry</p>
           <div className="grid grid-cols-2 gap-3">
             <button
-              onClick={async () => { await signInAnonymously(auth); navigate('/dashboard'); }}
+              onClick={() => handleDemoLogin('parent')}
               className="flex flex-col items-center justify-center gap-1 p-3 bg-white border border-slate-200 rounded-xl hover:border-purple-300 hover:shadow-md transition group"
             >
               <div className="p-2 bg-purple-100 text-purple-600 rounded-full group-hover:scale-110 transition-transform"><User size={20} /></div>
               <span className="text-xs font-bold text-slate-700">Parent View</span>
             </button>
             <button
-              onClick={async () => { await signInAnonymously(auth); navigate('/admin'); }}
+              onClick={() => handleDemoLogin('admin')}
               className="flex flex-col items-center justify-center gap-1 p-3 bg-white border border-slate-200 rounded-xl hover:border-indigo-300 hover:shadow-md transition group"
             >
               <div className="p-2 bg-indigo-100 text-indigo-600 rounded-full group-hover:scale-110 transition-transform"><ShieldCheck size={20} /></div>

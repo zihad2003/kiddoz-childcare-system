@@ -5,6 +5,7 @@ import Input from '../ui/Input';
 import Badge from '../ui/Badge';
 import { useToast } from '../../context/ToastContext';
 import { DollarSign, UserCheck, Calendar, Clock, CreditCard, Plus, CheckCircle } from 'lucide-react';
+import api from '../../services/api';
 
 const MOCK_PAYROLL = [
     { id: 'p1', name: 'Sarah Karim', role: 'Nanny', amount: 500, status: 'Pending', type: 'Salary', date: '2023-11-01' },
@@ -15,27 +16,35 @@ const MOCK_PAYROLL = [
 
 const PayrollManager = () => {
     const { addToast } = useToast();
-    const [payments, setPayments] = useState(MOCK_PAYROLL);
+    const [payments, setPayments] = useState([]);
     const [showPayModal, setShowPayModal] = useState(false);
     const [newPayment, setNewPayment] = useState({ name: '', role: 'Nanny', amount: '', type: 'Salary' });
 
-    const handlePay = (id) => {
-        setPayments(prev => prev.map(p => p.id === id ? { ...p, status: 'Paid' } : p));
-        addToast('Payment Processed Successfully', 'success');
+    useEffect(() => {
+        api.getPayroll().then(setPayments).catch(err => console.error("Failed to load payroll", err));
+    }, []);
+
+    const handlePay = async (id) => {
+        try {
+            await api.markPaid(id);
+            setPayments(prev => prev.map(p => p.id === id ? { ...p, status: 'Paid' } : p));
+            addToast('Payment Processed Successfully', 'success');
+        } catch (err) {
+            addToast('Failed to process payment', 'error');
+        }
     };
 
-    const handleCreatePayment = (e) => {
+    const handleCreatePayment = async (e) => {
         e.preventDefault();
-        const payment = {
-            id: `p-${Date.now()}`,
-            ...newPayment,
-            status: 'Pending',
-            date: new Date().toISOString().split('T')[0]
-        };
-        setPayments([payment, ...payments]);
-        setShowPayModal(false);
-        setNewPayment({ name: '', role: 'Nanny', amount: '', type: 'Salary' });
-        addToast('Payment Request Added', 'success');
+        try {
+            const payment = await api.addPayroll(newPayment);
+            setPayments([payment, ...payments]);
+            setShowPayModal(false);
+            setNewPayment({ name: '', role: 'Nanny', amount: '', type: 'Salary' });
+            addToast('Payment Request Added', 'success');
+        } catch (err) {
+            addToast('Failed to create payment', 'error');
+        }
     };
 
     const totalPending = payments.filter(p => p.status === 'Pending').reduce((acc, curr) => acc + parseFloat(curr.amount), 0);

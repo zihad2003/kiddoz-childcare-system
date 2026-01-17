@@ -1,12 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { ToastProvider } from './context/ToastContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { initializeApp } from 'firebase/app';
-import {
-  getAuth,
-  onAuthStateChanged,
-  signOut
-} from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { Loader2 } from 'lucide-react';
 
@@ -41,9 +37,8 @@ const firebaseConfig = {
   appId: "1:352290108946:web:4a89579bfa3c6fa18d8acb"
 };
 
-// Initialize Firebase
+// Initialize Firebase (Data only)
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
 const db = getFirestore(app);
 const appId = 'kiddoz-163cd';
 
@@ -79,23 +74,13 @@ const PLANS = [
   }
 ];
 
-export default function App() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+function AppContent() {
+  const { user, loading, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Auth State Listener
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (u) => {
-      setUser(u);
-      setLoading(false);
-    });
-    return () => unsubscribe();
-  }, []);
-
-  const handleLogout = async () => {
-    await signOut(auth);
+  const handleLogout = () => {
+    logout();
     navigate('/');
   };
 
@@ -107,70 +92,76 @@ export default function App() {
   );
 
   return (
+    <div className="font-sans text-slate-800 bg-slate-50 min-h-screen flex flex-col">
+      <Navbar
+        user={user}
+        handleLogout={handleLogout}
+      />
+
+      <main className="flex-grow">
+        <Routes>
+          <Route path="/" element={
+            <>
+              <Hero />
+              <Programs />
+              <NannyService />
+              <TourCTA />
+            </>
+          } />
+
+          <Route path="/programs" element={<Programs />} />
+          <Route path="/nanny-service" element={<NannyServiceDetails />} /> {/* Dedicated Nanny Route */}
+          <Route path="/book-nanny" element={<NannyBookingPage />} /> {/* Nanny Booking Route */}
+          <Route path="/programs/:programId" element={<ProgramDetails />} /> {/* Dynamic Route */}
+
+          {/* Corrected: AuthPage now uses useAuth internally, but we can pass props if needed, though they are likely unused now */}
+          <Route path="/login" element={<AuthPage db={db} />} />
+          <Route path="/signup" element={<AuthPage db={db} />} />
+
+          <Route path="/enroll/*" element={
+            <EnrollmentPage
+              user={user}
+              db={db}
+              appId={appId}
+              PLANS={PLANS}
+            />
+          } />
+
+          <Route path="/tour" element={<TourBookingPage />} />
+
+          <Route path="/admin" element={
+            <AdminDashboard user={user} handleLogout={handleLogout} />
+          } />
+
+          <Route path="/dashboard" element={
+            <ParentDashboard user={user} db={db} appId={appId} />
+          } />
+
+          <Route path="/student/:id" element={<StudentProfile db={db} appId={appId} />} />
+
+          {/* Info Pages */}
+          <Route path="/info/privacy" element={<InfoPage type="privacy" />} />
+          <Route path="/info/terms" element={<InfoPage type="terms" />} />
+          <Route path="/info/help" element={<InfoPage type="help" />} />
+          <Route path="/info/safety" element={<InfoPage type="safety" />} />
+        </Routes>
+      </main>
+
+      {/* Hide footer on Admin pages */}
+      {!location.pathname.startsWith('/admin') && <Footer />}
+
+      {/* Persistent AI Assistant */}
+      <Chatbot user={user} />
+    </div>
+  );
+}
+
+export default function App() {
+  return (
     <ToastProvider>
-      <div className="font-sans text-slate-800 bg-slate-50 min-h-screen flex flex-col">
-        {/* Hide Navbar on Login page if desired, but usually we keep it or change it. 
-          For now, keeping logic similar: show navbar everywhere */}
-        <Navbar
-          user={user}
-          handleLogout={handleLogout}
-        />
-
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={
-              <>
-                <Hero />
-                <Programs />
-                <NannyService />
-                <TourCTA />
-              </>
-            } />
-
-            <Route path="/programs" element={<Programs />} />
-            <Route path="/nanny-service" element={<NannyServiceDetails />} /> {/* Dedicated Nanny Route */}
-            <Route path="/book-nanny" element={<NannyBookingPage />} /> {/* Nanny Booking Route */}
-            <Route path="/programs/:programId" element={<ProgramDetails />} /> {/* Dynamic Route */}
-
-            <Route path="/login" element={<AuthPage auth={auth} db={db} />} />
-            <Route path="/signup" element={<AuthPage auth={auth} db={db} />} />
-
-            <Route path="/enroll/*" element={
-              <EnrollmentPage
-                user={user}
-                db={db}
-                appId={appId}
-                PLANS={PLANS}
-              />
-            } />
-
-            <Route path="/tour" element={<TourBookingPage />} />
-
-            <Route path="/admin" element={
-              <AdminDashboard user={user} db={db} appId={appId} />
-            } />
-
-            <Route path="/dashboard" element={
-              <ParentDashboard user={user} db={db} appId={appId} />
-            } />
-
-            <Route path="/student/:id" element={<StudentProfile db={db} appId={appId} />} />
-
-            {/* Info Pages */}
-            <Route path="/info/privacy" element={<InfoPage type="privacy" />} />
-            <Route path="/info/terms" element={<InfoPage type="terms" />} />
-            <Route path="/info/help" element={<InfoPage type="help" />} />
-            <Route path="/info/safety" element={<InfoPage type="safety" />} />
-          </Routes>
-        </main>
-
-        {/* Hide footer on Admin pages */}
-        {!location.pathname.startsWith('/admin') && <Footer />}
-
-        {/* Persistent AI Assistant */}
-        {/* Persistent AI Assistant */}
-        <Chatbot user={user} />
-      </div>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </ToastProvider>
   );
 }
