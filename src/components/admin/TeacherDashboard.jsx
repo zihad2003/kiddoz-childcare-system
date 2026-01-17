@@ -1,18 +1,27 @@
 import React, { useState } from 'react';
 import Card from '../ui/Card';
-import Button from '../ui/Button';
 import Badge from '../ui/Badge';
-import { Users, Clock, BookOpen, Search, Sun, Moon, Coffee, ScanFace, Bell } from 'lucide-react';
-import { updateDoc, doc, serverTimestamp, addDoc, collection } from 'firebase/firestore';
+import { Users, Clock, BookOpen, Search, Coffee, Moon } from 'lucide-react';
+import api from '../../services/api';
 import { useToast } from '../../context/ToastContext';
 import LiveViewYOLO from '../ai/LiveViewYOLO';
 
-const TeacherDashboard = ({ students, db, appId, user }) => {
+const TeacherDashboard = ({ students, user }) => {
     const { addToast } = useToast();
     const [searchTerm, setSearchTerm] = useState('');
     const [activeTab, setActiveTab] = useState('classroom'); // classroom | live
 
-    const filteredStudents = students.filter(s =>
+    // Use local state for students to reflect immediate updates, 
+    // assuming 'students' prop is initial state or handled by parent.
+    // Ideally we should lift state up or refetch, but for now let's clone.
+    const [localStudents, setLocalStudents] = useState(students);
+
+    // Sync if parent updates
+    React.useEffect(() => {
+        setLocalStudents(students);
+    }, [students]);
+
+    const filteredStudents = localStudents.filter(s =>
         s.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -33,10 +42,9 @@ const TeacherDashboard = ({ students, db, appId, user }) => {
         }
 
         try {
-            await updateDoc(doc(db, `artifacts/${appId}/public/data/students`, student.docId), {
-                ...updates,
-                lastUpdated: serverTimestamp()
-            });
+            await api.updateStudent(student.id, updates);
+
+            setLocalStudents(prev => prev.map(s => s.id === student.id ? { ...s, ...updates } : s));
             addToast(`${student.name}: ${message}`, 'success');
         } catch (e) {
             console.error(e);
@@ -92,7 +100,7 @@ const TeacherDashboard = ({ students, db, appId, user }) => {
                             <Card className="px-6 py-3 bg-white border-orange-100  flex items-center gap-3">
                                 <Users className="text-orange-500" />
                                 <div className="text-center">
-                                    <span className="block text-2xl font-bold text-slate-800">{students.filter(s => s.attendance === 'Present').length}</span>
+                                    <span className="block text-2xl font-bold text-slate-800">{filteredStudents.filter(s => s.attendance === 'Present').length}</span>
                                     <span className="text-xs text-slate-500 uppercase font-bold">Present</span>
                                 </div>
                             </Card>
@@ -101,7 +109,7 @@ const TeacherDashboard = ({ students, db, appId, user }) => {
                         {/* Student Grid */}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                             {filteredStudents.map(student => (
-                                <Card key={student.docId} className="hover:border-orange-300 transition-all">
+                                <Card key={student.id} className="hover:border-orange-300 transition-all">
                                     <div className="flex items-center gap-4 mb-4">
                                         <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-400 to-red-500 text-white flex items-center justify-center font-bold text-xl shadow-lg shadow-orange-200">
                                             {student.name.charAt(0)}

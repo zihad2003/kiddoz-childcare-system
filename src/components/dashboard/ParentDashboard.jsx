@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { collection, query, where, onSnapshot, orderBy, serverTimestamp } from 'firebase/firestore';
 import { BookOpen, ScanFace, Activity, ChevronDown, CheckCircle, Clock, Heart, Thermometer, User, Users, Utensils, Smile, FileText, Bell, DollarSign, UserCheck } from 'lucide-react';
+import api from '../../services/api';
 import LiveViewYOLO from '../ai/LiveViewYOLO';
 import ResourceTab from './ResourceTab';
 import BillingTab from './BillingTab';
@@ -11,8 +11,6 @@ import Card from '../ui/Card';
 import Badge from '../ui/Badge';
 import Button from '../ui/Button';
 
-import { MOCK_STUDENTS } from '../../data/mockData';
-
 const ParentDashboard = ({ user, setView, db, appId }) => {
   const [activeTab, setActiveTab] = useState('overview');
   const [students, setStudents] = useState([]);
@@ -20,53 +18,57 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
   const [notifications, setNotifications] = useState([]);
   const [medicalRecords, setMedicalRecords] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [activities, setActivities] = useState([]);
 
-  // Fallback to mock data if user is active but no data flows (Permission Error protection)
-  useEffect(() => {
-    if (user && students.length === 0) {
-      // wait briefly for DB, then fallback
-      const timer = setTimeout(() => {
-        console.log("Using Mock Data for UI Preview");
-        setStudents(MOCK_STUDENTS);
-        setSelectedStudentId(MOCK_STUDENTS[0].docId);
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [user, students.length]);
-
-  const currentChild = students.find(s => s.docId === selectedStudentId) || students[0];
+  const currentChild = students.find(s => s.id === selectedStudentId) || students[0];
 
   useEffect(() => {
     if (!user) return;
-    const q = query(collection(db, `artifacts/${appId}/public/data/students`), where('parentId', '==', user.uid));
-    const unsub = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map(d => ({ docId: d.id, ...d.data() }));
-      if (data.length > 0) {
-        setStudents(data);
-        if (!selectedStudentId) setSelectedStudentId(data[0].docId);
+
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        // Fetch students for this parent
+        const studentsData = await api.getParentStudents();
+        setStudents(studentsData);
+        if (studentsData.length > 0 && !selectedStudentId) {
+          setSelectedStudentId(studentsData[0].id);
+        }
+
+        // Fetch notifications
+        const notifs = await api.getParentNotifications();
+        setNotifications(notifs);
+      } catch (err) {
+        console.error("Failed to load parent data", err);
+      } finally {
+        setLoading(false);
       }
-    }, (error) => {
-      console.error("Firestore Access Error:", error);
-      // Fallback handled by the other useEffect
-    });
+    };
 
-    // Subscribe to notifications
-    const qNotifs = query(collection(db, `artifacts/${appId}/public/data/notifications`), where('read', '==', false));
-    const unsubNotifs = onSnapshot(qNotifs, (snapshot) => {
-      const notifs = snapshot.docs.map(d => ({ docId: d.id, ...d.data() }));
-      // Filter for current user's students (or rely on security rules, but here filter client side for Demo simplicity)
-      setNotifications(notifs.filter(n => n.parentId === user.uid));
-    });
-
-    // Subscribe to medical records
-    const qDocs = query(collection(db, `artifacts/${appId}/public/data/medical_records`), orderBy('timestamp', 'desc'));
-    const unsubDocs = onSnapshot(qDocs, (snapshot) => {
-      const docs = snapshot.docs.map(d => ({ docId: d.id, ...d.data() }));
-      setMedicalRecords(docs);
-    });
-
-    return () => { unsub(); unsubNotifs(); unsubDocs(); };
+    fetchData();
   }, [user]);
+
+  // Fetch health records when student changes
+  useEffect(() => {
+    if (!currentChild) return;
+
+
+    const fetchHealthData = async () => {
+      try {
+        const records = await api.getStudentHealthRecords(currentChild.id);
+        setMedicalRecords(records);
+
+        // Fetch daily activities
+        const activitiesData = await api.getStudentActivities(currentChild.id);
+        setActivities(activitiesData);
+      } catch (err) {
+        console.error("Failed to load health data", err);
+      }
+    };
+
+    fetchHealthData();
+  }, [currentChild?.id]);
 
   const StatCard = ({ icon: Icon, color, label, value, subtext }) => (
     <Card className="border-0 shadow-lg relative overflow-hidden group">
@@ -138,7 +140,7 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
                     value={selectedStudentId}
                     onChange={(e) => setSelectedStudentId(e.target.value)}
                   >
-                    {students.map(s => (<option key={s.docId} value={s.docId} className="text-slate-800">{s.name}</option>))}
+                    {students.map(s => (<option key={s.id} value={s.id} className="text-slate-800">{s.name}</option>))}
                   </select>
                   <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
@@ -259,7 +261,7 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
                           </div>
 
 
-                          <Link to={`/student/${currentChild.docId}`} className="block w-full">
+                          <Link to={`/student/${currentChild.id}`} className="block w-full">
                             <Button className="w-full bg-white text-purple-900 hover:bg-purple-50 border-0 shadow-lg" variant="secondary">
                               View Full Profile
                             </Button>
@@ -314,25 +316,60 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
                         <Badge color="bg-purple-100 text-purple-700">This Week</Badge>
                       </div>
                       <div className="divide-y divide-slate-100">
-                        {[
-                          { icon: Thermometer, color: "text-rose-500 bg-rose-50", title: "Temperature Check", time: "Today, 8:30 AM", val: "98.6°F" },
-                          { icon: Smile, color: "text-amber-500 bg-amber-50", title: "Mood Update", time: "Today, 10:15 AM", val: "Happy" },
-                          { icon: Utensils, color: "text-emerald-500 bg-emerald-50", title: "Lunch Time", time: "Yesterday, 12:00 PM", val: "Finished" },
-                          { icon: Clock, color: "text-blue-500 bg-blue-50", title: "Nap Time", time: "Yesterday, 1:00 PM", val: "1hr 30m" },
-                        ].map((item, i) => (
-                          <div key={i} className="p-4 hover:bg-slate-50 transition flex items-center gap-4">
-                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${item.color}`}>
-                              <item.icon size={24} />
-                            </div>
-                            <div className="flex-grow">
-                              <h4 className="font-bold text-slate-800">{item.title}</h4>
-                              <p className="text-xs text-slate-400">{item.time}</p>
-                            </div>
-                            <div className="font-bold text-slate-700 bg-white border border-slate-200 px-3 py-1 rounded-lg">
-                              {item.val}
-                            </div>
+                        {activities.length === 0 ? (
+                          <div className="p-8 text-center text-slate-400">
+                            <Activity size={32} className="mx-auto mb-2 opacity-50" />
+                            <p>No recent activities recorded</p>
                           </div>
-                        ))}
+                        ) : (
+                          activities.slice(0, 10).map((activity, i) => {
+                            const getActivityIcon = (type) => {
+                              switch (type) {
+                                case 'temperature': return Thermometer;
+                                case 'mood': return Smile;
+                                case 'meal': return Utensils;
+                                case 'nap': return Clock;
+                                default: return Activity;
+                              }
+                            };
+
+                            const getActivityColor = (type) => {
+                              switch (type) {
+                                case 'temperature': return 'text-rose-500 bg-rose-50';
+                                case 'mood': return 'text-amber-500 bg-amber-50';
+                                case 'meal': return 'text-emerald-500 bg-emerald-50';
+                                case 'nap': return 'text-blue-500 bg-blue-50';
+                                default: return 'text-purple-500 bg-purple-50';
+                              }
+                            };
+
+                            const ActivityIcon = getActivityIcon(activity.activityType);
+
+                            return (
+                              <div key={activity.id} className="p-4 hover:bg-slate-50 transition flex items-center gap-4">
+                                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${getActivityColor(activity.activityType)}`}>
+                                  <ActivityIcon size={24} />
+                                </div>
+                                <div className="flex-grow">
+                                  <h4 className="font-bold text-slate-800 capitalize">{activity.activityType} {activity.details && `- ${activity.details}`}</h4>
+                                  <p className="text-xs text-slate-400">
+                                    {new Date(activity.timestamp).toLocaleString('en-US', {
+                                      month: 'short',
+                                      day: 'numeric',
+                                      hour: 'numeric',
+                                      minute: '2-digit',
+                                      hour12: true
+                                    })}
+                                    {activity.recordedBy && ` • by ${activity.recordedBy}`}
+                                  </p>
+                                </div>
+                                <div className="font-bold text-slate-700 bg-white border border-slate-200 px-3 py-1 rounded-lg">
+                                  {activity.value}
+                                </div>
+                              </div>
+                            );
+                          })
+                        )}
                       </div>
                     </Card>
                   </div>
@@ -371,7 +408,7 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
                   </div>
 
                   <div className="lg:col-span-3 mt-4">
-                    <ProgressCharts />
+                    {/* Progress Charts removed as per request */}
                   </div>
                 </div>
               )}

@@ -1,21 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from '../ui/Card';
 import Badge from '../ui/Badge';
 import Button from '../ui/Button';
 import { DollarSign, CreditCard, Download, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import PaymentModal from './PaymentModal';
+import api from '../../services/api';
 
 const BillingTab = ({ student }) => {
-    // Mock Invoice Data - eventually this would come from Firestore 'invoices' collection
-    const [invoices, setInvoices] = useState([
-        { id: 'INV-2024-001', date: 'Oct 01, 2023', amount: 1200, status: 'Paid', items: ['Growth Scholar Tuition (Oct)'], dueDate: 'Oct 05, 2023' },
-        { id: 'INV-2024-002', date: 'Nov 01, 2023', amount: 1200, status: 'Paid', items: ['Growth Scholar Tuition (Nov)'], dueDate: 'Nov 05, 2023' },
-        { id: 'INV-2024-003', date: 'Dec 01, 2023', amount: 1200, status: 'Due', items: ['Growth Scholar Tuition (Dec)'], dueDate: 'Dec 05, 2023' },
-    ]);
+    const [invoices, setInvoices] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchBilling = async () => {
+            try {
+                setLoading(true);
+                const billingData = await api.getParentBilling();
+                setInvoices(billingData);
+            } catch (err) {
+                console.error('Failed to fetch billing', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchBilling();
+    }, []);
 
     const outstandingBalance = invoices
-        .filter(inv => inv.status === 'Due')
-        .reduce((acc, curr) => acc + curr.amount, 0);
+        .filter(inv => inv.status === 'Pending' || inv.status === 'Overdue')
+        .reduce((acc, curr) => acc + parseFloat(curr.amount || 0), 0);
 
     const handlePayNow = () => {
         alert("Payment Gateway Integration would open here (Stripe/PayPal)");
@@ -86,26 +99,34 @@ const BillingTab = ({ student }) => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
-                            {invoices.map((inv) => (
-                                <tr key={inv.id} className="hover:bg-slate-50 transition-colors group">
-                                    <td className="py-4 pl-4 font-medium text-slate-700">{inv.id}</td>
-                                    <td className="py-4 text-slate-500 text-sm">{inv.date}</td>
-                                    <td className="py-4 text-slate-600 text-sm max-w-xs truncate">{inv.items.join(', ')}</td>
-                                    <td className="py-4 font-bold text-slate-800">${inv.amount.toFixed(2)}</td>
-                                    <td className="py-4">
-                                        <Badge
-                                            className={`${inv.status === 'Paid' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}
-                                        >
-                                            {inv.status}
-                                        </Badge>
-                                    </td>
-                                    <td className="py-4 pr-4 text-right">
-                                        <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity text-slate-400 hover:text-purple-600">
-                                            <Download size={16} />
-                                        </Button>
+                            {invoices.length === 0 ? (
+                                <tr>
+                                    <td colSpan="6" className="py-8 text-center text-slate-400">
+                                        {loading ? 'Loading invoices...' : 'No invoices found'}
                                     </td>
                                 </tr>
-                            ))}
+                            ) : (
+                                invoices.map((inv) => (
+                                    <tr key={inv.id} className="hover:bg-slate-50 transition-colors group">
+                                        <td className="py-4 pl-4 font-medium text-slate-700">{inv.invoiceNumber || inv.id}</td>
+                                        <td className="py-4 text-slate-500 text-sm">{new Date(inv.createdAt).toLocaleDateString()}</td>
+                                        <td className="py-4 text-slate-600 text-sm max-w-xs truncate">{inv.description}</td>
+                                        <td className="py-4 font-bold text-slate-800">${parseFloat(inv.amount).toFixed(2)}</td>
+                                        <td className="py-4">
+                                            <Badge
+                                                className={`${inv.status === 'Paid' ? 'bg-emerald-100 text-emerald-700' : (inv.status === 'Overdue' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700')}`}
+                                            >
+                                                {inv.status}
+                                            </Badge>
+                                        </td>
+                                        <td className="py-4 pr-4 text-right">
+                                            <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity text-slate-400 hover:text-purple-600">
+                                                <Download size={16} />
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
                         </tbody>
                     </table>
                 </div>

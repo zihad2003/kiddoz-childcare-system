@@ -4,7 +4,7 @@ import Button from '../ui/Button';
 import Input from '../ui/Input';
 import Badge from '../ui/Badge';
 import { useToast } from '../../context/ToastContext';
-import { DollarSign, UserCheck, Clock, CreditCard, Plus, CheckCircle, Wallet, ArrowRight, X, ShieldCheck } from 'lucide-react';
+import { DollarSign, UserCheck, Clock, Plus, CheckCircle, Wallet, ArrowRight, X } from 'lucide-react';
 import api from '../../services/api';
 
 const PaymentModal = ({ isOpen, onClose, payment, onConfirm }) => {
@@ -37,7 +37,7 @@ const PaymentModal = ({ isOpen, onClose, payment, onConfirm }) => {
             <Card className="w-full max-w-md relative overflow-hidden p-0">
                 <div className="bg-slate-50 p-4 border-b border-slate-100 flex justify-between items-center">
                     <h3 className="font-bold text-lg text-slate-800 flex items-center gap-2">
-                        <CreditCard className="text-purple-600" size={20} /> Secure Payment
+                        <Wallet className="text-purple-600" size={20} /> Secure Payment
                     </h3>
                     <button onClick={onClose} className="text-slate-400 hover:text-slate-600"><X size={20} /></button>
                 </div>
@@ -49,7 +49,7 @@ const PaymentModal = ({ isOpen, onClose, payment, onConfirm }) => {
                                 <p className="text-slate-500 text-sm">Payment Amount</p>
                                 <h2 className="text-4xl font-bold text-slate-800">${payment.amount.toLocaleString()}</h2>
                                 <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-xs font-bold">
-                                    <UserCheck size={12} /> {payment.recipientName} ({payment.role})
+                                    <UserCheck size={12} /> {payment.recipientName || payment.name} ({payment.role})
                                 </div>
                             </div>
 
@@ -60,7 +60,7 @@ const PaymentModal = ({ isOpen, onClose, payment, onConfirm }) => {
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="text-slate-500">Reference ID</span>
-                                    <span className="font-mono text-slate-400">TRX-{payment.id.substring(0, 8)}</span>
+                                    <span className="font-mono text-slate-400">TRX-{payment.id.toString().substring(0, 8)}</span>
                                 </div>
                             </div>
 
@@ -86,7 +86,7 @@ const PaymentModal = ({ isOpen, onClose, payment, onConfirm }) => {
                                     const v = e.target.value.replace(/\D/g, '').substring(0, 16);
                                     setCardNumber(v.replace(/(\d{4})/g, '$1 ').trim());
                                 }}
-                                icon={<CreditCard size={18} className="text-slate-400" />}
+                                icon={Wallet}
                             />
                             <div className="grid grid-cols-2 gap-4">
                                 <Input
@@ -120,7 +120,7 @@ const PaymentModal = ({ isOpen, onClose, payment, onConfirm }) => {
                             <div className="relative w-20 h-20 mx-auto mb-6">
                                 <div className="absolute inset-0 border-4 border-slate-100 rounded-full"></div>
                                 <div className="absolute inset-0 border-4 border-purple-600 rounded-full border-t-transparent animate-spin"></div>
-                                <ShieldCheck className="absolute inset-0 m-auto text-purple-600" size={24} />
+                                <CheckCircle className="absolute inset-0 m-auto text-purple-600" size={24} />
                             </div>
                             <h3 className="font-bold text-xl text-slate-800 mb-2">Processing Payment...</h3>
                             <p className="text-slate-500">Contacting bank gateway secure channel.</p>
@@ -144,7 +144,7 @@ const PaymentModal = ({ isOpen, onClose, payment, onConfirm }) => {
                 {step < 3 && (
                     <div className="bg-slate-50 p-3 text-center border-t border-slate-100">
                         <p className="text-[10px] text-slate-400 flex items-center justify-center gap-1">
-                            <ShieldCheck size={10} /> 256-bit SSL Data Encryption
+                            <CheckCircle size={10} /> 256-bit SSL Data Encryption
                         </p>
                     </div>
                 )}
@@ -161,7 +161,13 @@ const PayrollManager = () => {
     const [newPayment, setNewPayment] = useState({ name: '', role: 'Nanny', amount: '', type: 'Salary' });
 
     useEffect(() => {
-        api.getPayroll().then(setPayments).catch(err => console.error("Failed to load payroll", err));
+        api.getPayroll().then(data => {
+            console.log("Payroll data loaded:", data);
+            setPayments(data || []);
+        }).catch(err => {
+            console.error("Failed to load payroll", err);
+            addToast("Failed to load payroll records", "error");
+        });
     }, []);
 
     const handleConfirmPayment = async (id) => {
@@ -187,7 +193,7 @@ const PayrollManager = () => {
         }
     };
 
-    const totalPending = payments.filter(p => p.status === 'Pending').reduce((acc, curr) => acc + parseFloat(curr.amount), 0);
+    const totalPending = payments.filter(p => p.status === 'Pending').reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
 
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
@@ -233,10 +239,10 @@ const PayrollManager = () => {
                             <div key={p.id} className="flex justify-between items-center text-sm p-3 hover:bg-slate-50 rounded-lg transition-colors border border-transparent hover:border-slate-100">
                                 <div className="flex items-center gap-3">
                                     <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${p.status === 'Paid' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
-                                        {p.name.charAt(0)}
+                                        {(p.name || '?').charAt(0)}
                                     </div>
                                     <div>
-                                        <p className="font-bold text-slate-700">{p.name}</p>
+                                        <p className="font-bold text-slate-700">{p.name || 'Unknown'}</p>
                                         <p className="text-[10px] text-slate-400 uppercase font-bold">{p.role} • {p.type}</p>
                                     </div>
                                 </div>

@@ -75,6 +75,13 @@ const DataQueryFilter = ({ onFilterChange, onSortChange, onLayoutChange }) => {
                     <option value="KG-2">KG-2</option>
                 </select>
 
+
+                <input
+                    type="date"
+                    className="p-2 rounded-lg border border-slate-200 text-sm bg-slate-50 outline-none focus:ring-2 focus:ring-purple-200"
+                    onChange={(e) => handleFilterUpdate('date', e.target.value)}
+                />
+
                 <input
                     type="number"
                     placeholder="Min Age"

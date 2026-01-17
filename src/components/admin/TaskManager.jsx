@@ -1,106 +1,123 @@
 import React, { useState, useEffect } from 'react';
 import Card from '../ui/Card';
-import { CheckSquare, Square, Clock, Plus } from 'lucide-react';
-import { collection, addDoc, query, orderBy, onSnapshot, updateDoc, doc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+import Button from '../ui/Button';
+import { CheckCircle, Circle, Clock, Plus, Trash2 } from 'lucide-react';
+import api from '../../services/api';
+import { useToast } from '../../context/ToastContext';
 
-const TaskManager = ({ db, appId, currentUserRole, currentUserEmail }) => {
+const TaskManager = ({ currentUserRole, currentUserEmail }) => {
+    const { addToast } = useToast();
     const [tasks, setTasks] = useState([]);
     const [newTask, setNewTask] = useState('');
-    const [assignee, setAssignee] = useState('All');
+    const [assignTo, setAssignTo] = useState('All');
 
     useEffect(() => {
-        const q = query(collection(db, `artifacts/${appId}/public/data/tasks`), orderBy('createdAt', 'desc'));
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-            setTasks(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
-        });
-        return () => unsubscribe();
-    }, [db, appId]);
+        api.getTasks().then(setTasks).catch(console.error);
+    }, []);
 
     const handleAddTask = async (e) => {
         e.preventDefault();
         if (!newTask.trim()) return;
 
-        await addDoc(collection(db, `artifacts/${appId}/public/data/tasks`), {
-            title: newTask,
-            assignedTo: assignee,
-            completed: false,
-            createdBy: currentUserEmail,
-            createdAt: serverTimestamp()
-        });
-        setNewTask('');
+        try {
+            const task = await api.addTask({
+                title: newTask,
+                assignedTo: assignTo,
+                completed: false,
+                createdBy: currentUserEmail
+            });
+            setTasks([task, ...tasks]);
+            setNewTask('');
+            addToast('Task created', 'success');
+        } catch (err) {
+            console.error(err);
+            addToast('Failed to create task', 'error');
+        }
     };
 
     const toggleTask = async (task) => {
-        await updateDoc(doc(db, `artifacts/${appId}/public/data/tasks`, task.id), {
-            completed: !task.completed,
-            completedBy: !task.completed ? currentUserEmail : null,
-            completedAt: !task.completed ? serverTimestamp() : null
-        });
+        try {
+            const updated = await api.updateTask(task.id, {
+                completed: !task.completed,
+                completedBy: !task.completed ? currentUserEmail : null,
+                completedAt: !task.completed ? new Date() : null
+            });
+            setTasks(tasks.map(t => t.id === task.id ? updated : t));
+        } catch (err) {
+            console.error(err);
+            addToast('Failed to update task', 'error');
+        }
     };
 
     const deleteTask = async (id) => {
-        await deleteDoc(doc(db, `artifacts/${appId}/public/data/tasks`, id));
+        try {
+            await api.deleteTask(id);
+            setTasks(tasks.filter(t => t.id !== id));
+            addToast('Task deleted', 'success');
+        } catch (err) {
+            console.error(err);
+            addToast('Failed to delete task', 'error');
+        }
     };
 
-    // Filter tasks relevant to view
-    const visibleTasks = tasks.filter(t =>
-        currentUserRole === 'admin' || t.assignedTo === 'All' || t.assignedTo.toLowerCase() === currentUserRole.toLowerCase()
+    // Filter tasks relevant to current role
+    const filteredTasks = tasks.filter(t =>
+        t.assignedTo === 'All' ||
+        t.assignedTo === currentUserRole ||
+        t.assignedTo.includes(currentUserRole) // loose match
     );
 
     return (
-        <Card className="p-4 bg-white shadow-sm border border-slate-100">
+        <Card className="h-full flex flex-col">
             <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                <CheckSquare size={18} className="text-purple-600" />
-                {currentUserRole === 'admin' ? 'Staff Task Manager' : 'My Tasks'}
+                <Clock size={18} className="text-purple-600" /> Pending Tasks
             </h3>
 
-            {currentUserRole === 'admin' && (
-                <form onSubmit={handleAddTask} className="flex gap-2 mb-4">
-                    <input
-                        type="text"
-                        value={newTask}
-                        onChange={(e) => setNewTask(e.target.value)}
-                        placeholder="New task..."
-                        className="flex-1 text-sm p-2 rounded border border-slate-200 outline-none focus:border-purple-500"
-                    />
+            <div className="flex-1 overflow-y-auto space-y-3 mb-4 pr-2 custom-scrollbar" style={{ maxHeight: '300px' }}>
+                {filteredTasks.length === 0 && <p className="text-slate-400 text-sm text-center py-4">No pending tasks for your role.</p>}
+
+                {filteredTasks.map(task => (
+                    <div key={task.id} className={`p-3 rounded-lg border flex items-start gap-3 group transition-colors ${task.completed ? 'bg-slate-50 border-slate-100' : 'bg-white border-purple-100 hover:border-purple-300'}`}>
+                        <button onClick={() => toggleTask(task)} className={`mt-0.5 ${task.completed ? 'text-slate-300' : 'text-purple-500 hover:text-purple-600'}`}>
+                            {task.completed ? <CheckCircle size={18} /> : <Circle size={18} />}
+                        </button>
+                        <div className="flex-1">
+                            <p className={`text-sm font-medium ${task.completed ? 'text-slate-400 line-through' : 'text-slate-700'}`}>{task.title}</p>
+                            <div className="flex justify-between items-center mt-1">
+                                <span className="text-[10px] uppercase font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">{task.assignedTo}</span>
+                                {task.completed && <span className="text-[10px] text-green-600">Done by {task.completedBy?.split('@')[0]}</span>}
+                            </div>
+                        </div>
+                        <button onClick={() => deleteTask(task.id)} className="text-slate-300 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Trash2 size={16} />
+                        </button>
+                    </div>
+                ))}
+            </div>
+
+            <form onSubmit={handleAddTask} className="mt-auto border-t pt-4">
+                <input
+                    type="text"
+                    placeholder="Add new task..."
+                    className="w-full text-sm p-2 mb-2 rounded border border-slate-200 outline-none focus:border-purple-400"
+                    value={newTask}
+                    onChange={e => setNewTask(e.target.value)}
+                />
+                <div className="flex gap-2">
                     <select
-                        value={assignee}
-                        onChange={(e) => setAssignee(e.target.value)}
-                        className="text-sm p-2 rounded border border-slate-200 outline-none"
+                        value={assignTo}
+                        onChange={e => setAssignTo(e.target.value)}
+                        className="text-xs p-2 rounded border border-slate-200 outline-none bg-slate-50"
                     >
                         <option value="All">All Staff</option>
                         <option value="Teacher">Teachers</option>
                         <option value="Nurse">Nurses</option>
                         <option value="Nanny">Nannies</option>
+                        <option value="Admin">Admins</option>
                     </select>
-                    <button type="submit" className="bg-purple-600 text-white p-2 rounded hover:bg-purple-700">
-                        <Plus size={16} />
-                    </button>
-                </form>
-            )}
-
-            <div className="space-y-2 max-h-60 overflow-y-auto">
-                {visibleTasks.length === 0 && <p className="text-xs text-slate-400 text-center py-4">No tasks pending.</p>}
-
-                {visibleTasks.map(task => (
-                    <div key={task.id} className="flex items-center gap-3 group">
-                        <button onClick={() => toggleTask(task)} className={`transition-colors ${task.completed ? 'text-green-500' : 'text-slate-300 hover:text-purple-500'}`}>
-                            {task.completed ? <CheckSquare size={18} /> : <Square size={18} />}
-                        </button>
-                        <div className={`flex-1 text-sm ${task.completed ? 'line-through text-slate-400' : 'text-slate-700'}`}>
-                            {task.title}
-                            <span className="block text-[10px] text-slate-400">
-                                {task.assignedTo} • {task.completed ? 'Done' : 'Pending'}
-                            </span>
-                        </div>
-                        {currentUserRole === 'admin' && (
-                            <button onClick={() => deleteTask(task.id)} className="text-red-400 opacity-0 group-hover:opacity-100 text-xs hover:underline">
-                                Delete
-                            </button>
-                        )}
-                    </div>
-                ))}
-            </div>
+                    <Button size="sm" className="flex-1 justify-center"><Plus size={16} /> Add</Button>
+                </div>
+            </form>
         </Card>
     );
 };

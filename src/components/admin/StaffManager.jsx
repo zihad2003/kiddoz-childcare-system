@@ -1,20 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
 import Select from '../ui/Select';
 import { MOCK_NANNIES } from '../../data/mockData';
+import api from '../../services/api';
 import { UserCheck, Star, Trash2, Edit2, Plus, CheckCircle, XCircle, Search, Filter } from 'lucide-react';
 
 const StaffManager = () => {
     // Local state to simulate database (in real app, this would be Firestore collection 'staff')
     // We start with MOCK_NANNIES and pretend they are staff. Ideally, this list has a 'role' field.
     // For demo, we will add 'role' to the existing mock data logic.
-    const [staff, setStaff] = useState(MOCK_NANNIES.map(n => ({ ...n, role: 'Nanny' })));
+    const [staff, setStaff] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
     const [currentStaff, setCurrentStaff] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterRole, setFilterRole] = useState('All');
+
+    useEffect(() => {
+        api.getStaff().then(setStaff).catch(console.error);
+    }, []);
 
     // Form State
     const [formData, setFormData] = useState({
@@ -49,29 +54,36 @@ const StaffManager = () => {
         setIsEditing(true);
     };
 
-    const handleDelete = (id) => {
+    const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to remove this staff member?')) {
-            setStaff(val => val.filter(n => n.id !== id));
+            try {
+                await api.deleteStaff(id);
+                setStaff(val => val.filter(n => n.id !== id));
+            } catch (err) {
+                console.error(err);
+                alert('Failed to delete staff');
+            }
         }
     };
 
-    const handleSave = (e) => {
+    const handleSave = async (e) => {
         e.preventDefault();
 
-        if (currentStaff) {
-            // Edit Mode
-            setStaff(val => val.map(n => n.id === currentStaff.id ? { ...formData, id: currentStaff.id } : n));
-        } else {
-            // Add Mode
-            const newStaff = {
-                ...formData,
-                id: `s-${Date.now()}`,
-                rating: 5.0, // Default rating
-                reviews: 0
-            };
-            setStaff(val => [...val, newStaff]);
+        try {
+            if (currentStaff) {
+                // Edit Mode
+                await api.updateStaff(currentStaff.id, formData);
+                setStaff(val => val.map(n => n.id === currentStaff.id ? { ...formData, id: currentStaff.id } : n));
+            } else {
+                // Add Mode
+                const newStaff = await api.addStaff(formData);
+                setStaff(val => [...val, newStaff]);
+            }
+            setIsEditing(false);
+        } catch (err) {
+            console.error(err);
+            alert('Failed to save staff member');
         }
-        setIsEditing(false);
     };
 
     // Filter and Search Logic
@@ -143,7 +155,7 @@ const StaffManager = () => {
                             <div>
                                 <h3 className="font-bold text-lg text-slate-800">{member.name}</h3>
                                 <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${member.role === 'Nurse' ? 'bg-teal-100 text-teal-700' :
-                                        (member.role === 'Teacher' ? 'bg-orange-100 text-orange-700' : 'bg-pink-100 text-pink-700')
+                                    (member.role === 'Teacher' ? 'bg-orange-100 text-orange-700' : 'bg-pink-100 text-pink-700')
                                     }`}>
                                     {member.role || 'Nanny'}
                                 </span>

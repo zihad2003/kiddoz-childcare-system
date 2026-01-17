@@ -3,55 +3,67 @@ import Card from '../ui/Card';
 import Badge from '../ui/Badge';
 import Button from '../ui/Button';
 import { CheckCircle, Clock, Baby, AlertCircle, Filter, CalendarCheck, User } from 'lucide-react';
-import { collection, query, where, orderBy, onSnapshot, updateDoc, doc, serverTimestamp, writeBatch, getDocs } from 'firebase/firestore';
-import { generateDailyTasksForStudent } from '../../utils/taskAutomation';
+import api from '../../services/api';
 import { useToast } from '../../context/ToastContext';
 
-const ChildCareTaskManager = ({ db, appId, students, currentUser }) => {
+const ChildCareTaskManager = ({ students, currentUser }) => {
     const { addToast } = useToast();
     const [tasks, setTasks] = useState([]);
     const [filter, setFilter] = useState('All'); // All, Pending, Completed
     const [selectedGroup, setSelectedGroup] = useState('All'); // All, Infant, Toddler, Preschool
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        // Query tasks for today (simplified query for demo, ideally filter by date)
-        const q = query(collection(db, `artifacts/${appId}/public/data/care_tasks`), orderBy('scheduledTime', 'asc'));
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-            const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    const fetchTasks = async () => {
+        try {
+            // In a real app, you might pass date filter here
+            const data = await api.getCareTasks();
             setTasks(data);
-        });
-        return () => unsubscribe();
-    }, [db, appId]);
+        } catch (err) {
+            console.error("Failed to fetch care tasks", err);
+        }
+    };
+
+    useEffect(() => {
+        fetchTasks();
+    }, []);
 
     const handleGenerateTasks = async () => {
         setLoading(true);
         try {
             let count = 0;
             // Generate for all students (in real app, check if already generated for today)
-            for (const student of students) {
-                count += await generateDailyTasksForStudent(db, appId, student);
-            }
-            addToast(`Generated ${count} care tasks for today`, 'success');
+            // This can be slow if done client-side loop, better to have a bulk backend endpoint
+            // But we have /care-tasks/generate that takes studentId
+            // Let's do it sequentially for now or parallel
+            const promises = students.map(s => api.generateCareTasks(s.id));
+            await Promise.all(promises);
+
+            addToast(`Tasks generated for ${students.length} students`, 'success');
+            fetchTasks();
         } catch (e) {
             console.error(e);
-            if (e.code === 'permission-denied') {
-                addToast('Permission Denied Check Firestore Rules', 'error');
-            } else {
-                addToast('Task generation failed', 'error');
-            }
+            addToast('Task generation failed', 'error');
         }
         setLoading(false);
     };
 
     const handleCompleteTask = async (task) => {
         try {
-            await updateDoc(doc(db, `artifacts/${appId}/public/data/care_tasks`, task.id), {
+            await api.updateCareTask(task.id, {
                 status: 'Completed',
-                completedAt: serverTimestamp(),
+                completedAt: new Date(),
                 completedBy: currentUser?.email || 'Admin',
                 details: 'Routine check completed'
             });
+
+            // Optimistic update
+            setTasks(prev => prev.map(t => t.id === task.id ? {
+                ...t,
+                status: 'Completed',
+                completedAt: new Date().toISOString(),
+                completedBy: currentUser?.email || 'Admin'
+            } : t));
+
             addToast('Task marked as done', 'success');
         } catch (e) {
             console.error(e);
@@ -198,7 +210,7 @@ const ChildCareTaskManager = ({ db, appId, students, currentUser }) => {
                                         )}
                                         {task.status === 'Completed' && (
                                             <span className="text-xs text-slate-400 font-mono">
-                                                {task.completedAt ? new Date(task.completedAt.seconds * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Done'}
+                                                {task.completedAt ? new Date(task.completedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Done'}
                                             </span>
                                         )}
                                     </td>

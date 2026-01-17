@@ -3,7 +3,7 @@ import Card from '../ui/Card';
 import Badge from '../ui/Badge';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
-import { MOCK_NANNIES } from '../../data/mockData';
+import api from '../../services/api';
 import { MapPin, Star, Clock, CheckCircle, Video, Activity, Heart, Shield, Phone, MessageSquare } from 'lucide-react';
 
 const NannyBooking = ({ student }) => {
@@ -12,13 +12,33 @@ const NannyBooking = ({ student }) => {
     const [selectedNanny, setSelectedNanny] = useState(null);
     const [bookingStep, setBookingStep] = useState('list'); // list | book | success | active
     const [childName, setChildName] = useState(student?.name || '');
+    const [nannies, setNannies] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchNannies = async () => {
+            try {
+                setLoading(true);
+                const staffData = await api.getStaff();
+                // Filter only nannies
+                const nannyData = staffData.filter(s => s.role === 'Nanny');
+                setNannies(nannyData);
+            } catch (err) {
+                console.error('Failed to fetch nannies', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchNannies();
+    }, []);
 
     useEffect(() => {
         if (student?.name) setChildName(student.name);
     }, [student]);
 
     // Filter nannies
-    const filteredNannies = MOCK_NANNIES.filter(n =>
+    const filteredNannies = nannies.filter(n =>
         (filterArea === 'All' || n.area.includes(filterArea)) &&
         (!filterPrice || n.rate <= parseInt(filterPrice))
     );
@@ -28,10 +48,23 @@ const NannyBooking = ({ student }) => {
         setBookingStep('book');
     };
 
-    const confirmBooking = () => {
-        // Logic for payment would go here (Payment Modal)
-        // For now, simulate success
-        setBookingStep('success');
+    const confirmBooking = async () => {
+        try {
+            // Create booking via API
+            await api.createNannyBooking({
+                studentId: student?.id,
+                nannyId: selectedNanny.id,
+                date: new Date(), // In real app, get from form
+                startTime: '14:00',
+                endTime: '18:00',
+                duration: '4 hours',
+                notes: `Booking for ${childName}`
+            });
+            setBookingStep('success');
+        } catch (err) {
+            console.error('Failed to create booking', err);
+            alert('Failed to create booking. Please try again.');
+        }
     };
 
     // Mock Live View Component
