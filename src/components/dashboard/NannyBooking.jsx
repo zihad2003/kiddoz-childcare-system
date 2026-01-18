@@ -1,329 +1,665 @@
 import React, { useState, useEffect } from 'react';
+import {
+    Search, Filter, Star, MapPin, Clock, Heart, Shield, Phone, Mail,
+    MessageSquare, X, ChevronRight, Award, Languages, Calendar, Users,
+    CheckCircle, AlertCircle, Briefcase, GraduationCap, Baby
+} from 'lucide-react';
 import Card from '../ui/Card';
 import Badge from '../ui/Badge';
 import Button from '../ui/Button';
-import Input from '../ui/Input';
 import api from '../../services/api';
-import { MapPin, Star, Clock, CheckCircle, Video, Activity, Heart, Shield, Phone, MessageSquare } from 'lucide-react';
 
 const NannyBooking = ({ student }) => {
-    const [filterArea, setFilterArea] = useState('Dhaka');
-    const [filterPrice, setFilterPrice] = useState('');
-    const [selectedNanny, setSelectedNanny] = useState(null);
-    const [bookingStep, setBookingStep] = useState('list'); // list | book | success | active
-    const [childName, setChildName] = useState(student?.name || '');
     const [nannies, setNannies] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedNanny, setSelectedNanny] = useState(null);
+    const [showProfileModal, setShowProfileModal] = useState(false);
+    const [showContactModal, setShowContactModal] = useState(false);
+    const [favorites, setFavorites] = useState([]);
+
+    // Filter states
+    const [filters, setFilters] = useState({
+        availability: 'all',
+        experience: 'all',
+        specialization: 'all',
+        certification: 'all',
+        language: 'all',
+        priceRange: 'all'
+    });
 
     useEffect(() => {
-        const fetchNannies = async () => {
-            try {
-                setLoading(true);
-                const staffData = await api.getStaff();
-                // Filter only nannies
-                const nannyData = staffData.filter(s => s.role === 'Nanny');
-                setNannies(nannyData);
-            } catch (err) {
-                console.error('Failed to fetch nannies', err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchNannies();
     }, []);
 
-    useEffect(() => {
-        if (student?.name) setChildName(student.name);
-    }, [student]);
-
-    // Filter nannies
-    const filteredNannies = nannies.filter(n =>
-        (filterArea === 'All' || n.area.includes(filterArea)) &&
-        (!filterPrice || n.rate <= parseInt(filterPrice))
-    );
-
-    const handleBookClick = (nanny) => {
-        setSelectedNanny(nanny);
-        setBookingStep('book');
-    };
-
-    const confirmBooking = async () => {
+    const fetchNannies = async () => {
         try {
-            // Create booking via API
-            await api.createNannyBooking({
-                studentId: student?.id,
-                nannyId: selectedNanny.id,
-                date: new Date(), // In real app, get from form
-                startTime: '14:00',
-                endTime: '18:00',
-                duration: '4 hours',
-                notes: `Booking for ${childName}`
-            });
-            setBookingStep('success');
+            setLoading(true);
+            const staffData = await api.getStaff();
+            // Filter only nannies and add enhanced fields
+            const nannyData = staffData
+                .filter(s => s.role === 'Nanny')
+                .map(nanny => ({
+                    ...nanny,
+                    bio: nanny.bio || `Experienced ${nanny.specialty} specialist with ${nanny.experience} of dedicated childcare service.`,
+                    languages: nanny.languages || ['English', 'Bengali'],
+                    certifications: nanny.certifications || ['CPR Certified', 'First Aid', 'Background Checked'],
+                    verified: nanny.verified !== false,
+                    availabilityStatus: nanny.availabilityStatus || (nanny.availability === 'Available Now' ? 'available' : 'limited'),
+                    reviews: nanny.reviews || Math.floor(Math.random() * 50) + 10
+                }));
+            setNannies(nannyData);
         } catch (err) {
-            console.error('Failed to create booking', err);
-            alert('Failed to create booking. Please try again.');
+            console.error('Failed to fetch nannies', err);
+        } finally {
+            setLoading(false);
         }
     };
 
-    // Mock Live View Component
-    const ActiveServiceView = ({ nanny }) => (
-        <div className="max-w-4xl mx-auto space-y-6">
-            <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold flex items-center gap-2">
-                    <Activity className="text-green-500 animate-pulse" /> Live Service Active
-                </h2>
-                <Badge color="bg-green-100 text-green-700 font-bold border-green-200">On Duty</Badge>
-            </div>
+    const toggleFavorite = (nannyId) => {
+        setFavorites(prev =>
+            prev.includes(nannyId)
+                ? prev.filter(id => id !== nannyId)
+                : [...prev, nannyId]
+        );
+    };
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Live Feed / Status Area */}
-                <div className="lg:col-span-2 space-y-6">
-                    <div className="bg-black rounded-3xl overflow-hidden relative shadow-2xl aspect-video group">
-                        {/* Placeholder for live feed */}
-                        <img
-                            src="https://images.unsplash.com/photo-1581056771107-24ca5f033842?auto=format&fit=crop&q=80"
-                            alt="Live Care"
-                            className="w-full h-full object-cover opacity-80"
-                        />
-                        <div className="absolute top-4 right-4 flex gap-2">
-                            <span className="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded animate-pulse">LIVE</span>
-                            <span className="bg-black/50 text-white text-xs font-bold px-2 py-1 rounded backdrop-blur-md">00:45:12</span>
-                        </div>
-                        <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
-                            <p className="text-white font-medium flex items-center gap-2">
-                                <Activity size={16} className="text-green-400" />
-                                {nanny.name} is playing with {childName || 'Child'}
-                            </p>
-                        </div>
-                    </div>
+    const openProfileModal = (nanny) => {
+        setSelectedNanny(nanny);
+        setShowProfileModal(true);
+    };
 
-                    <Card>
-                        <h3 className="font-bold text-lg mb-4">Live Updates</h3>
-                        <div className="space-y-4">
-                            {[
-                                { time: '10:00 AM', text: 'Arrived and checked in.', icon: CheckCircle, color: 'text-green-500' },
-                                { time: '10:15 AM', text: 'Started drawing activity.', icon: Heart, color: 'text-pink-500' },
-                                { time: '10:45 AM', text: 'Snack time prepared.', icon: Clock, color: 'text-amber-500' }
-                            ].map((update, i) => (
-                                <div key={i} className="flex gap-4 items-start">
-                                    <div className="w-12 text-xs text-slate-400 font-medium pt-1">{update.time}</div>
-                                    <div className="flex-1 flex gap-3 p-3 bg-slate-50 rounded-xl">
-                                        <update.icon size={16} className={`${update.color} mt-0.5`} />
-                                        <p className="text-sm text-slate-700">{update.text}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </Card>
-                </div>
+    const openContactModal = (nanny) => {
+        setSelectedNanny(nanny);
+        setShowContactModal(true);
+    };
 
-                {/* Control Panel */}
-                <div className="space-y-6">
-                    <Card className="bg-gradient-to-br from-purple-700 to-indigo-800 text-white border-0">
-                        <div className="flex items-center gap-4 mb-6">
-                            <img src={nanny.img} alt={nanny.name} className="w-16 h-16 rounded-full border-2 border-white/30" />
-                            <div>
-                                <h3 className="font-bold text-lg">{nanny.name}</h3>
-                                <p className="text-purple-200 text-xs">Certified Pro</p>
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-3">
-                            <Button size="sm" className="bg-white/10 hover:bg-white/20 border-0">
-                                <Phone size={16} className="mr-2" /> Call
-                            </Button>
-                            <Button size="sm" className="bg-white/10 hover:bg-white/20 border-0">
-                                <MessageSquare size={16} className="mr-2" /> Chat
-                            </Button>
-                        </div>
-                    </Card>
+    // Filter nannies based on search and filters
+    const filteredNannies = nannies.filter(nanny => {
+        const matchesSearch = nanny.name.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesAvailability = filters.availability === 'all' || nanny.availabilityStatus === filters.availability;
+        const matchesExperience = filters.experience === 'all' ||
+            (filters.experience === '0-2' && parseInt(nanny.experience) <= 2) ||
+            (filters.experience === '2-5' && parseInt(nanny.experience) > 2 && parseInt(nanny.experience) <= 5) ||
+            (filters.experience === '5+' && parseInt(nanny.experience) > 5);
+        const matchesSpecialization = filters.specialization === 'all' || nanny.specialty?.toLowerCase().includes(filters.specialization.toLowerCase());
+        const matchesCertification = filters.certification === 'all' || nanny.certifications?.some(cert => cert.toLowerCase().includes(filters.certification.toLowerCase()));
+        const matchesLanguage = filters.language === 'all' || nanny.languages?.some(lang => lang.toLowerCase().includes(filters.language.toLowerCase()));
+        const matchesPrice = filters.priceRange === 'all' ||
+            (filters.priceRange === 'low' && nanny.rate <= 15) ||
+            (filters.priceRange === 'medium' && nanny.rate > 15 && nanny.rate <= 25) ||
+            (filters.priceRange === 'high' && nanny.rate > 25);
 
-                    <Card>
-                        <h4 className="font-bold text-slate-800 mb-3 text-sm">Vital Stats</h4>
-                        <div className="grid grid-cols-2 gap-3 mb-4">
-                            <div className="bg-rose-50 text-rose-600 p-3 rounded-xl text-center">
-                                <p className="text-xs uppercase font-bold text-rose-400">Heart Rate</p>
-                                <p className="text-xl font-black">98 <span className="text-xs">bpm</span></p>
-                            </div>
-                            <div className="bg-blue-50 text-blue-600 p-3 rounded-xl text-center">
-                                <p className="text-xs uppercase font-bold text-blue-400">Sleep</p>
-                                <p className="text-xl font-black">--</p>
-                            </div>
-                        </div>
-                        <Button variant="outline" className="w-full text-xs" onClick={() => setBookingStep('list')}>End Service</Button>
-                    </Card>
-                </div>
-            </div>
-        </div>
-    );
+        return matchesSearch && matchesAvailability && matchesExperience && matchesSpecialization && matchesCertification && matchesLanguage && matchesPrice;
+    });
+
+    const getAvailabilityColor = (status) => {
+        switch (status) {
+            case 'available': return 'bg-green-500';
+            case 'limited': return 'bg-yellow-500';
+            case 'unavailable': return 'bg-red-500';
+            default: return 'bg-gray-500';
+        }
+    };
+
+    const getAvailabilityText = (status) => {
+        switch (status) {
+            case 'available': return 'Available Now';
+            case 'limited': return 'Limited Availability';
+            case 'unavailable': return 'Currently Unavailable';
+            default: return 'Unknown';
+        }
+    };
 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {/* Header Section */}
+            <Card className="bg-gradient-to-r from-pink-500 via-rose-500 to-pink-600 text-white border-0 shadow-2xl">
+                <div className="text-center max-w-3xl mx-auto">
+                    <h2 className="text-4xl font-bold mb-3">Available Nanny Services</h2>
+                    <p className="text-pink-100 text-lg">
+                        Find the perfect caregiver for your child. Browse our verified nannies and contact us to arrange services.
+                    </p>
+                </div>
+            </Card>
 
-            {/* Search & Filter Header */}
-            {bookingStep === 'list' && (
-                <>
-                    <Card className="bg-gradient-to-r from-pink-500 to-rose-500 text-white border-0">
-                        <div className="md:flex justify-between items-center">
-                            <div>
-                                <h2 className="text-3xl font-bold mb-2">Find a Trusted Nanny</h2>
-                                <p className="text-pink-100">Professional care at your doorstep. Verified & Background Checked.</p>
+            {/* Search and Filter Section */}
+            <Card className="p-6">
+                <div className="space-y-4">
+                    {/* Search Bar */}
+                    <div className="relative">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                        <input
+                            type="text"
+                            placeholder="Search nannies by name..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full pl-12 pr-4 py-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition"
+                        />
+                    </div>
+
+                    {/* Filter Controls */}
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                        <select
+                            value={filters.availability}
+                            onChange={(e) => setFilters({ ...filters, availability: e.target.value })}
+                            className="px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500"
+                        >
+                            <option value="all">All Availability</option>
+                            <option value="available">Available Now</option>
+                            <option value="limited">Limited</option>
+                            <option value="unavailable">Unavailable</option>
+                        </select>
+
+                        <select
+                            value={filters.experience}
+                            onChange={(e) => setFilters({ ...filters, experience: e.target.value })}
+                            className="px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500"
+                        >
+                            <option value="all">All Experience</option>
+                            <option value="0-2">0-2 years</option>
+                            <option value="2-5">2-5 years</option>
+                            <option value="5+">5+ years</option>
+                        </select>
+
+                        <select
+                            value={filters.specialization}
+                            onChange={(e) => setFilters({ ...filters, specialization: e.target.value })}
+                            className="px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500"
+                        >
+                            <option value="all">All Specializations</option>
+                            <option value="infant">Infant Care</option>
+                            <option value="toddler">Toddler Care</option>
+                            <option value="special">Special Needs</option>
+                        </select>
+
+                        <select
+                            value={filters.certification}
+                            onChange={(e) => setFilters({ ...filters, certification: e.target.value })}
+                            className="px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500"
+                        >
+                            <option value="all">All Certifications</option>
+                            <option value="cpr">CPR Certified</option>
+                            <option value="first aid">First Aid</option>
+                            <option value="montessori">Montessori</option>
+                        </select>
+
+                        <select
+                            value={filters.language}
+                            onChange={(e) => setFilters({ ...filters, language: e.target.value })}
+                            className="px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500"
+                        >
+                            <option value="all">All Languages</option>
+                            <option value="english">English</option>
+                            <option value="bengali">Bengali</option>
+                            <option value="hindi">Hindi</option>
+                        </select>
+
+                        <select
+                            value={filters.priceRange}
+                            onChange={(e) => setFilters({ ...filters, priceRange: e.target.value })}
+                            className="px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500"
+                        >
+                            <option value="all">All Prices</option>
+                            <option value="low">$0-$15/hr</option>
+                            <option value="medium">$15-$25/hr</option>
+                            <option value="high">$25+/hr</option>
+                        </select>
+                    </div>
+
+                    <div className="flex items-center justify-between text-sm text-slate-600">
+                        <span>{filteredNannies.length} nannies found</span>
+                        {Object.values(filters).some(f => f !== 'all') && (
+                            <button
+                                onClick={() => setFilters({
+                                    availability: 'all',
+                                    experience: 'all',
+                                    specialization: 'all',
+                                    certification: 'all',
+                                    language: 'all',
+                                    priceRange: 'all'
+                                })}
+                                className="text-pink-600 hover:text-pink-700 font-medium"
+                            >
+                                Clear all filters
+                            </button>
+                        )}
+                    </div>
+                </div>
+            </Card>
+
+            {/* Loading State */}
+            {loading && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {[1, 2, 3, 4, 5, 6].map(i => (
+                        <Card key={i} className="animate-pulse">
+                            <div className="flex gap-4 mb-4">
+                                <div className="w-24 h-24 bg-slate-200 rounded-full"></div>
+                                <div className="flex-1 space-y-2">
+                                    <div className="h-4 bg-slate-200 rounded w-3/4"></div>
+                                    <div className="h-3 bg-slate-200 rounded w-1/2"></div>
+                                    <div className="h-3 bg-slate-200 rounded w-2/3"></div>
+                                </div>
                             </div>
-                            <div className="mt-6 md:mt-0 flex gap-4 bg-white/20 p-2 rounded-xl backdrop-blur-sm">
-                                <select
-                                    className="bg-transparent text-white font-bold outline-none cursor-pointer"
-                                    value={filterArea}
-                                    onChange={(e) => setFilterArea(e.target.value)}
+                            <div className="space-y-2">
+                                <div className="h-3 bg-slate-200 rounded"></div>
+                                <div className="h-3 bg-slate-200 rounded w-5/6"></div>
+                            </div>
+                        </Card>
+                    ))}
+                </div>
+            )}
+
+            {/* Empty State */}
+            {!loading && filteredNannies.length === 0 && (
+                <Card className="text-center py-16">
+                    <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Users size={40} className="text-slate-400" />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-800 mb-2">No nannies available</h3>
+                    <p className="text-slate-500 mb-4">
+                        {searchTerm || Object.values(filters).some(f => f !== 'all')
+                            ? 'No nannies match your search criteria. Try adjusting your filters.'
+                            : 'No nannies available at the moment. Please check back later or contact admin.'}
+                    </p>
+                    {(searchTerm || Object.values(filters).some(f => f !== 'all')) && (
+                        <Button
+                            onClick={() => {
+                                setSearchTerm('');
+                                setFilters({
+                                    availability: 'all',
+                                    experience: 'all',
+                                    specialization: 'all',
+                                    certification: 'all',
+                                    language: 'all',
+                                    priceRange: 'all'
+                                });
+                            }}
+                            variant="outline"
+                        >
+                            Clear search and filters
+                        </Button>
+                    )}
+                </Card>
+            )}
+
+            {/* Nanny Cards Grid */}
+            {!loading && filteredNannies.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {filteredNannies.map((nanny, index) => (
+                        <Card
+                            key={nanny.id}
+                            className="group hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 cursor-pointer relative overflow-hidden"
+                            style={{ animationDelay: `${index * 50}ms` }}
+                        >
+                            {/* Favorite Button */}
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleFavorite(nanny.id);
+                                }}
+                                className="absolute top-4 right-4 z-10 p-2 bg-white rounded-full shadow-lg hover:scale-110 transition-transform"
+                            >
+                                <Heart
+                                    size={20}
+                                    className={favorites.includes(nanny.id) ? 'fill-pink-500 text-pink-500' : 'text-slate-400'}
+                                />
+                            </button>
+
+                            {/* Profile Photo and Info */}
+                            <div className="flex gap-4 mb-4">
+                                <div className="relative flex-shrink-0">
+                                    {nanny.img ? (
+                                        <img
+                                            src={nanny.img}
+                                            alt={nanny.name}
+                                            className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg"
+                                        />
+                                    ) : (
+                                        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center text-white text-3xl font-bold border-4 border-white shadow-lg">
+                                            {nanny.name.charAt(0)}
+                                        </div>
+                                    )}
+
+                                    {/* Verified Badge */}
+                                    {nanny.verified && (
+                                        <div className="absolute -bottom-1 -right-1 bg-blue-500 rounded-full p-1.5 border-2 border-white shadow-lg">
+                                            <Shield size={14} className="text-white" />
+                                        </div>
+                                    )}
+
+                                    {/* Availability Indicator */}
+                                    <div className={`absolute -top-1 -left-1 w-5 h-5 ${getAvailabilityColor(nanny.availabilityStatus)} rounded-full border-2 border-white shadow-lg`}></div>
+                                </div>
+
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="font-bold text-lg text-slate-800 truncate">{nanny.name}</h3>
+                                    <div className="flex items-center gap-1 text-amber-500 text-sm font-bold mb-1">
+                                        <Star size={14} fill="currentColor" />
+                                        <span>{nanny.rating}</span>
+                                        <span className="text-slate-400 text-xs">({nanny.reviews} reviews)</span>
+                                    </div>
+                                    <div className="flex items-center gap-1 text-xs text-slate-500">
+                                        <MapPin size={12} />
+                                        <span>{nanny.area}</span>
+                                    </div>
+                                    <Badge color={`${getAvailabilityColor(nanny.availabilityStatus)} text-white text-xs mt-1`}>
+                                        {getAvailabilityText(nanny.availabilityStatus)}
+                                    </Badge>
+                                </div>
+                            </div>
+
+                            {/* Bio */}
+                            <p className="text-sm text-slate-600 mb-4 line-clamp-2">
+                                {nanny.bio}
+                            </p>
+
+                            {/* Details */}
+                            <div className="space-y-2 mb-4">
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-slate-500 flex items-center gap-1">
+                                        <Briefcase size={14} />
+                                        Experience
+                                    </span>
+                                    <span className="font-bold text-slate-800">{nanny.experience}</span>
+                                </div>
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-slate-500 flex items-center gap-1">
+                                        <Award size={14} />
+                                        Specialty
+                                    </span>
+                                    <span className="font-bold text-slate-800">{nanny.specialty}</span>
+                                </div>
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-slate-500 flex items-center gap-1">
+                                        <Clock size={14} />
+                                        Rate
+                                    </span>
+                                    <span className="font-bold text-pink-600">${nanny.rate}/hour</span>
+                                </div>
+                            </div>
+
+                            {/* Languages */}
+                            <div className="flex flex-wrap gap-1 mb-4">
+                                {nanny.languages?.slice(0, 3).map((lang, i) => (
+                                    <Badge key={i} color="bg-blue-50 text-blue-700 text-xs">
+                                        {lang}
+                                    </Badge>
+                                ))}
+                            </div>
+
+                            {/* Certifications */}
+                            <div className="flex flex-wrap gap-1 mb-4">
+                                {nanny.certifications?.slice(0, 2).map((cert, i) => (
+                                    <Badge key={i} color="bg-green-50 text-green-700 text-xs">
+                                        <CheckCircle size={12} className="mr-1" />
+                                        {cert}
+                                    </Badge>
+                                ))}
+                            </div>
+
+                            {/* Action Buttons */}
+                            <div className="grid grid-cols-2 gap-2">
+                                <Button
+                                    onClick={() => openProfileModal(nanny)}
+                                    variant="outline"
+                                    size="sm"
+                                    className="text-xs"
                                 >
-                                    <option className="text-slate-800" value="Dhaka">Greater Dhaka</option>
-                                    <option className="text-slate-800" value="Gulshan">Gulshan</option>
-                                    <option className="text-slate-800" value="Dhanmondi">Dhanmondi</option>
-                                    <option className="text-slate-800" value="Uttara">Uttara</option>
-                                </select>
+                                    View Full Profile
+                                </Button>
+                                <Button
+                                    onClick={() => openContactModal(nanny)}
+                                    size="sm"
+                                    className="bg-pink-500 hover:bg-pink-600 text-white shadow-lg shadow-pink-200 text-xs"
+                                >
+                                    Contact Admin
+                                </Button>
+                            </div>
+                        </Card>
+                    ))}
+                </div>
+            )}
+
+            {/* Full Profile Modal */}
+            {showProfileModal && selectedNanny && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+                    <div className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl animate-in zoom-in slide-in-from-bottom-8 duration-300">
+                        {/* Modal Header */}
+                        <div className="sticky top-0 bg-gradient-to-r from-pink-500 to-rose-500 text-white p-6 rounded-t-3xl z-10">
+                            <button
+                                onClick={() => setShowProfileModal(false)}
+                                className="absolute top-4 right-4 p-2 hover:bg-white/20 rounded-full transition"
+                            >
+                                <X size={24} />
+                            </button>
+                            <div className="flex items-center gap-6">
+                                {selectedNanny.img ? (
+                                    <img
+                                        src={selectedNanny.img}
+                                        alt={selectedNanny.name}
+                                        className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-xl"
+                                    />
+                                ) : (
+                                    <div className="w-32 h-32 rounded-full bg-white/20 flex items-center justify-center text-white text-5xl font-bold border-4 border-white shadow-xl">
+                                        {selectedNanny.name.charAt(0)}
+                                    </div>
+                                )}
+                                <div className="flex-1">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <h2 className="text-3xl font-bold">{selectedNanny.name}</h2>
+                                        {selectedNanny.verified && (
+                                            <div className="bg-blue-500 rounded-full p-1.5">
+                                                <Shield size={18} className="text-white" />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <p className="text-pink-100 text-lg mb-2">{selectedNanny.specialty} Specialist</p>
+                                    <div className="flex items-center gap-4 text-sm">
+                                        <div className="flex items-center gap-1">
+                                            <Star size={16} fill="currentColor" className="text-yellow-300" />
+                                            <span className="font-bold">{selectedNanny.rating}</span>
+                                            <span className="text-pink-100">({selectedNanny.reviews} reviews)</span>
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                            <MapPin size={16} />
+                                            <span>{selectedNanny.area}</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </Card>
 
-                    <div className="grid md:grid-cols-3 gap-6">
-                        {filteredNannies.map(nanny => (
-                            <Card key={nanny.id} className="hover:shadow-xl transition-shadow group relative overflow-hidden">
-                                <div className="flex gap-4 mb-4">
-                                    <img src={nanny.img} alt={nanny.name} className="w-16 h-16 rounded-full bg-slate-100" />
-                                    <div>
-                                        <h3 className="font-bold text-lg text-slate-800">{nanny.name}</h3>
-                                        <div className="flex items-center text-amber-500 text-sm font-bold">
-                                            <Star size={14} fill="currentColor" className="mr-1" />
-                                            {nanny.rating} ({nanny.reviews} reviews)
+                        {/* Modal Content */}
+                        <div className="p-8 space-y-8">
+                            {/* About Section */}
+                            <div>
+                                <h3 className="text-2xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+                                    <Baby className="text-pink-500" />
+                                    About
+                                </h3>
+                                <p className="text-slate-600 leading-relaxed">{selectedNanny.bio}</p>
+                            </div>
+
+                            {/* Experience & Details */}
+                            <div className="grid md:grid-cols-2 gap-6">
+                                <Card className="bg-gradient-to-br from-pink-50 to-rose-50 border-pink-200">
+                                    <h4 className="font-bold text-lg text-slate-800 mb-4 flex items-center gap-2">
+                                        <Briefcase className="text-pink-500" />
+                                        Experience
+                                    </h4>
+                                    <div className="space-y-3">
+                                        <div className="flex justify-between">
+                                            <span className="text-slate-600">Years of Experience</span>
+                                            <span className="font-bold text-slate-800">{selectedNanny.experience}</span>
                                         </div>
-                                        <p className="text-xs text-slate-400 mt-1 flex items-center gap-1">
-                                            <MapPin size={12} /> {nanny.area}
+                                        <div className="flex justify-between">
+                                            <span className="text-slate-600">Hourly Rate</span>
+                                            <span className="font-bold text-pink-600">${selectedNanny.rate}/hour</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-slate-600">Availability</span>
+                                            <Badge color={`${getAvailabilityColor(selectedNanny.availabilityStatus)} text-white`}>
+                                                {getAvailabilityText(selectedNanny.availabilityStatus)}
+                                            </Badge>
+                                        </div>
+                                    </div>
+                                </Card>
+
+                                <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+                                    <h4 className="font-bold text-lg text-slate-800 mb-4 flex items-center gap-2">
+                                        <Languages className="text-blue-500" />
+                                        Languages
+                                    </h4>
+                                    <div className="flex flex-wrap gap-2">
+                                        {selectedNanny.languages?.map((lang, i) => (
+                                            <Badge key={i} color="bg-blue-100 text-blue-700">
+                                                {lang}
+                                            </Badge>
+                                        ))}
+                                    </div>
+                                </Card>
+                            </div>
+
+                            {/* Certifications */}
+                            <div>
+                                <h3 className="text-2xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+                                    <GraduationCap className="text-pink-500" />
+                                    Certifications & Qualifications
+                                </h3>
+                                <div className="grid md:grid-cols-2 gap-3">
+                                    {selectedNanny.certifications?.map((cert, i) => (
+                                        <div key={i} className="flex items-center gap-3 p-4 bg-green-50 rounded-xl border border-green-200">
+                                            <CheckCircle size={20} className="text-green-600 flex-shrink-0" />
+                                            <span className="font-medium text-slate-800">{cert}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Contact Button */}
+                            <div className="pt-6 border-t border-slate-200">
+                                <Button
+                                    onClick={() => {
+                                        setShowProfileModal(false);
+                                        openContactModal(selectedNanny);
+                                    }}
+                                    size="lg"
+                                    className="w-full bg-pink-500 hover:bg-pink-600 text-white shadow-xl shadow-pink-200"
+                                >
+                                    <Phone size={20} className="mr-2" />
+                                    Contact Admin About {selectedNanny.name}
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Contact Admin Modal */}
+            {showContactModal && selectedNanny && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+                    <div className="bg-white rounded-3xl max-w-2xl w-full shadow-2xl animate-in zoom-in slide-in-from-bottom-8 duration-300">
+                        {/* Modal Header */}
+                        <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white p-6 rounded-t-3xl relative">
+                            <button
+                                onClick={() => setShowContactModal(false)}
+                                className="absolute top-4 right-4 p-2 hover:bg-white/20 rounded-full transition"
+                            >
+                                <X size={24} />
+                            </button>
+                            <h2 className="text-2xl font-bold mb-2">Interested in {selectedNanny.name}?</h2>
+                            <p className="text-pink-100">Contact our admin team to arrange nanny services</p>
+                        </div>
+
+                        {/* Contact Options */}
+                        <div className="p-8 space-y-6">
+                            <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
+                                <div className="flex items-start gap-4 mb-4">
+                                    <div className="p-3 bg-blue-500 rounded-full">
+                                        <AlertCircle size={24} className="text-white" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-lg text-slate-800 mb-1">How It Works</h3>
+                                        <p className="text-sm text-slate-600">
+                                            Contact our admin team using any of the methods below. They will discuss {selectedNanny.name}'s availability,
+                                            rates, and help you schedule services for your child.
                                         </p>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div className="space-y-3 mb-6">
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-slate-500">Hourly Rate</span>
-                                        <span className="font-bold text-slate-800">${nanny.rate}/hr</span>
+                            {/* Contact Methods */}
+                            <div className="space-y-4">
+                                <h3 className="font-bold text-lg text-slate-800">Contact Methods</h3>
+
+                                {/* Phone */}
+                                <a
+                                    href="tel:+8801234567890"
+                                    className="flex items-center gap-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl hover:shadow-lg transition-all group"
+                                >
+                                    <div className="p-3 bg-green-500 rounded-full group-hover:scale-110 transition-transform">
+                                        <Phone size={24} className="text-white" />
                                     </div>
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-slate-500">Experience</span>
-                                        <span className="font-bold text-slate-800">{nanny.experience}</span>
+                                    <div className="flex-1">
+                                        <p className="font-bold text-slate-800">Call Admin Office</p>
+                                        <p className="text-sm text-slate-600">+880 1234-567890</p>
+                                        <p className="text-xs text-slate-500 mt-1">Available: Mon-Sat, 9 AM - 6 PM</p>
                                     </div>
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-slate-500">Availability</span>
-                                        <span className="text-green-600 font-bold flex items-center gap-1">
-                                            <Clock size={12} /> {nanny.availability}
-                                        </span>
+                                    <ChevronRight className="text-green-600" />
+                                </a>
+
+                                {/* Email */}
+                                <a
+                                    href={`mailto:admin@kiddoz.com?subject=Inquiry about ${selectedNanny.name}&body=Hi, I'm interested in hiring ${selectedNanny.name} for my child ${student?.name || '[Child Name]'}. Please contact me to discuss availability and arrangements.`}
+                                    className="flex items-center gap-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl hover:shadow-lg transition-all group"
+                                >
+                                    <div className="p-3 bg-blue-500 rounded-full group-hover:scale-110 transition-transform">
+                                        <Mail size={24} className="text-white" />
                                     </div>
+                                    <div className="flex-1">
+                                        <p className="font-bold text-slate-800">Email Admin</p>
+                                        <p className="text-sm text-slate-600">admin@kiddoz.com</p>
+                                        <p className="text-xs text-slate-500 mt-1">Response within 24 hours</p>
+                                    </div>
+                                    <ChevronRight className="text-blue-600" />
+                                </a>
+
+                                {/* WhatsApp */}
+                                <a
+                                    href={`https://wa.me/8801234567890?text=Hi, I'm interested in hiring ${selectedNanny.name} for my child. Please contact me to discuss availability.`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-4 p-4 bg-gradient-to-r from-green-50 to-teal-50 border border-green-200 rounded-xl hover:shadow-lg transition-all group"
+                                >
+                                    <div className="p-3 bg-green-600 rounded-full group-hover:scale-110 transition-transform">
+                                        <MessageSquare size={24} className="text-white" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <p className="font-bold text-slate-800">WhatsApp</p>
+                                        <p className="text-sm text-slate-600">Chat with admin instantly</p>
+                                        <p className="text-xs text-slate-500 mt-1">Quick responses during office hours</p>
+                                    </div>
+                                    <ChevronRight className="text-green-600" />
+                                </a>
+                            </div>
+
+                            {/* Office Hours */}
+                            <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <Calendar size={18} className="text-slate-600" />
+                                    <h4 className="font-bold text-slate-800">Office Hours</h4>
                                 </div>
-
-                                <div className="flex gap-2">
-                                    <Button variant="outline" className="flex-1 text-xs">View Profile</Button>
-                                    <Button onClick={() => handleBookClick(nanny)} className="flex-1 bg-rose-500 hover:bg-rose-600 text-xs text-white shadow-lg shadow-rose-200">Book Now</Button>
+                                <div className="text-sm text-slate-600 space-y-1">
+                                    <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
+                                    <p>Saturday: 10:00 AM - 4:00 PM</p>
+                                    <p>Sunday: Closed</p>
                                 </div>
-                            </Card>
-                        ))}
-                    </div>
-                </>
-            )}
-
-            {/* Booking Form View */}
-            {bookingStep === 'book' && selectedNanny && (
-                <div className="max-w-2xl mx-auto">
-                    <Button variant="ghost" onClick={() => setBookingStep('list')} className="mb-4">← Back to Search</Button>
-                    <Card>
-                        <div className="flex items-center gap-4 mb-6 border-b border-slate-100 pb-6">
-                            <img src={selectedNanny.img} alt={selectedNanny.name} className="w-20 h-20 rounded-full bg-slate-100" />
-                            <div>
-                                <h2 className="text-2xl font-bold text-slate-800">Booking: {selectedNanny.name}</h2>
-                                <p className="text-slate-500">{selectedNanny.specialty} Specialist</p>
                             </div>
                         </div>
-
-                        <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); confirmBooking(); }}>
-                            <div>
-                                <label className="block text-sm font-bold text-slate-700 mb-2">Child's Name</label>
-                                {student ? (
-                                    <select className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none" disabled>
-                                        <option>{student.name}</option>
-                                    </select>
-                                ) : (
-                                    <Input
-                                        placeholder="Enter child's name"
-                                        value={childName}
-                                        onChange={(e) => setChildName(e.target.value)}
-                                        required
-                                    />
-                                )}
-                                <p className="text-xs text-slate-400 mt-1">{student ? "Using verified profile." : "Guest booking mode."}</p>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-4">
-                                <Input type="date" label="Date" required />
-                                <Input type="time" label="Start Time" required />
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-bold text-slate-700 mb-2">Duration</label>
-                                <div className="grid grid-cols-3 gap-3">
-                                    <button type="button" className="p-3 border-2 border-rose-500 bg-rose-50 text-rose-700 font-bold rounded-xl text-sm">Hourly</button>
-                                    <button type="button" className="p-3 border border-slate-200 hover:bg-slate-50 rounded-xl text-sm text-slate-600">Full Day</button>
-                                    <button type="button" className="p-3 border border-slate-200 hover:bg-slate-50 rounded-xl text-sm text-slate-600">Weekly</button>
-                                </div>
-                            </div>
-
-                            <div className="bg-slate-50 p-4 rounded-xl space-y-2">
-                                <div className="flex justify-between text-sm">
-                                    <span>Service Fee (4 Hours)</span>
-                                    <span className="font-bold">${selectedNanny.rate * 4}</span>
-                                </div>
-                                <div className="flex justify-between text-sm">
-                                    <span>Booking Fee</span>
-                                    <span className="font-bold">$5.00</span>
-                                </div>
-                                <div className="flex justify-between text-lg font-bold border-t border-slate-200 pt-2 mt-2">
-                                    <span>Total</span>
-                                    <span className="text-rose-600">${(selectedNanny.rate * 4) + 5}</span>
-                                </div>
-                            </div>
-
-                            <div className="flex items-start gap-2 text-xs text-slate-500 bg-blue-50 p-3 rounded-lg">
-                                <CheckCircle size={16} className="text-blue-500 mt-0.5" />
-                                <p>By proceeding, you agree to the Nanny Booking Policy. Cancellations within 2 hours are subject to a fee.</p>
-                            </div>
-
-                            <Button size="lg" className="w-full bg-rose-600 hover:bg-rose-700 shadow-xl shadow-rose-200">Confirm & Pay</Button>
-                        </form>
-                    </Card>
-                </div>
-            )}
-
-            {/* Success View */}
-            {bookingStep === 'success' && (
-                <div className="text-center max-w-lg mx-auto py-12 animate-in zoom-in duration-500">
-                    <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <CheckCircle size={48} className="text-green-600" />
-                    </div>
-                    <h2 className="text-3xl font-bold text-slate-900 mb-2">Booking Confirmed!</h2>
-                    <p className="text-slate-500 mb-8">
-                        {selectedNanny?.name} has been notified.
-                    </p>
-                    <div className="flex flex-col gap-3">
-                        <Button onClick={() => setBookingStep('active')} className="bg-purple-600 hover:bg-purple-700 shadow-xl">
-                            Track Live Status
-                        </Button>
-                        <Button variant="ghost" onClick={() => setBookingStep('list')}>Book Another</Button>
                     </div>
                 </div>
             )}
-
-            {/* Active Service View */}
-            {bookingStep === 'active' && selectedNanny && (
-                <ActiveServiceView nanny={selectedNanny} />
-            )}
-
         </div>
     );
 };

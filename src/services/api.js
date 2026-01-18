@@ -72,6 +72,47 @@ const api = {
     createNannyBooking: (data) => apiClient.post('/parent/nanny-booking', data).then(res => res.data),
     getParentBookings: () => apiClient.get('/parent/nanny-booking').then(res => res.data),
     getParentNotifications: () => apiClient.get('/parent/notifications').then(res => res.data),
+
+    // Settings Methods
+    getSettings: () => apiClient.get('/settings').then(res => res.data),
+    updateSettings: (data) => apiClient.put('/settings', data).then(res => res.data),
+    exportData: (type) => {
+        // Trigger download
+        const url = `${apiClient.defaults.baseURL}/students?export=${type}`;
+        window.open(url, '_blank');
+        return Promise.resolve();
+    },
+
+    // Super Admin Methods
+    getSuperAdminOverview: () => apiClient.get('/superadmin/overview').then(res => res.data),
+    getAnalyticsRevenue: () => apiClient.get('/superadmin/analytics/revenue').then(res => res.data),
+    getAnalyticsUsers: () => apiClient.get('/superadmin/analytics/users').then(res => res.data),
+
+    getAllUsers: (params) => apiClient.get('/superadmin/users', { params }).then(res => res.data),
+    suspendUser: (id) => apiClient.post(`/superadmin/users/${id}/suspend`).then(res => res.data),
+
+    getCenters: () => apiClient.get('/superadmin/centers').then(res => res.data),
+    addCenter: (data) => apiClient.post('/superadmin/centers', data).then(res => res.data),
+    updateCenter: (id, data) => apiClient.put(`/superadmin/centers/${id}`, data).then(res => res.data),
+
+    getApiKeys: () => apiClient.get('/superadmin/developer/api-keys').then(res => res.data),
+    createApiKey: (data) => apiClient.post('/superadmin/developer/api-keys', data).then(res => res.data),
+    revokeApiKey: (id) => apiClient.delete(`/superadmin/developer/api-keys/${id}`).then(res => res.data),
+
+    getWebhooks: () => apiClient.get('/superadmin/developer/webhooks').then(res => res.data),
+
+    getAppVersions: () => apiClient.get('/superadmin/app/versions').then(res => res.data),
+    createAppVersion: (data) => apiClient.post('/superadmin/app/versions', data).then(res => res.data),
+
+    getAuditLogs: () => apiClient.get('/superadmin/security/audit-logs').then(res => res.data),
+    getCompliance: () => apiClient.get('/superadmin/security/compliance').then(res => res.data),
+
+    getFeedback: () => apiClient.get('/superadmin/feedback').then(res => res.data),
+    respondFeedback: (id, response) => apiClient.put(`/superadmin/feedback/${id}/respond`, { response }).then(res => res.data),
+
+    getStaffAll: () => apiClient.get('/superadmin/staff/all').then(res => res.data),
+
+    getRecentActivity: () => apiClient.get('/superadmin/security/audit-logs?limit=5').then(res => res.data),
 };
 
 export default api;

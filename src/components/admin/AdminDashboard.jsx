@@ -16,6 +16,7 @@ import TeacherDashboard from './TeacherDashboard';
 import ChildCareTaskManager from './ChildCareTaskManager';
 import NannyDashboard from './NannyDashboard';
 import StudentDailyUpdateModal from './StudentDailyUpdateModal';
+import AppSettings from './AppSettings';
 import api from '../../services/api';
 
 const AdminDashboard = ({ user, handleLogout }) => {
@@ -146,8 +147,6 @@ const AdminDashboard = ({ user, handleLogout }) => {
           >
             <option value="admin" className="text-slate-900">Start Director (Admin)</option>
             <option value="teacher" className="text-slate-900">Lead Teacher</option>
-            <option value="nurse" className="text-slate-900">School Nurse</option>
-            <option value="nanny" className="text-slate-900">Home Nanny</option>
           </select>
         </div>
 
@@ -331,43 +330,7 @@ const AdminDashboard = ({ user, handleLogout }) => {
               )}
 
               {adminTab === 'settings' && (
-                <div className="max-w-2xl animate-in fade-in duration-500">
-                  <Card className="p-6 space-y-6">
-                    <div>
-                      <h3 className="font-bold text-lg text-slate-800 mb-4">General Settings</h3>
-                      <div className="flex items-center justify-between py-3 border-b border-slate-100">
-                        <div>
-                          <p className="font-semibold text-slate-700">System Notifications</p>
-                          <p className="text-xs text-slate-500">Enable email alerts for staff</p>
-                        </div>
-                        <div
-                          className={`w-12 h-6 rounded-full relative cursor-pointer transition-colors ${settings.notifications ? 'bg-purple-600' : 'bg-slate-200'}`}
-                          onClick={() => toggleSetting('notifications')}
-                        >
-                          <div className={`w-4 h-4 bg-white rounded-full absolute top-1 shadow-sm transition-all ${settings.notifications ? 'right-1' : 'left-1'}`}></div>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between py-3 border-b border-slate-100">
-                        <div>
-                          <p className="font-semibold text-slate-700">Maintenance Mode</p>
-                          <p className="text-xs text-slate-500">Disables parent access temporarily</p>
-                        </div>
-                        <div
-                          className={`w-12 h-6 rounded-full relative cursor-pointer transition-colors ${settings.maintenance ? 'bg-purple-600' : 'bg-slate-200'}`}
-                          onClick={() => toggleSetting('maintenance')}
-                        >
-                          <div className={`w-4 h-4 bg-white rounded-full absolute top-1 shadow-sm transition-all ${settings.maintenance ? 'right-1' : 'left-1'}`}></div>
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-lg text-slate-800 mb-4">Data Management</h3>
-                      <Button variant="outline" className="w-full justify-center text-red-500 hover:bg-red-50 border-red-200">
-                        <ShieldCheck size={18} className="mr-2" /> Export All Student Data (CSV)
-                      </Button>
-                    </div>
-                  </Card>
-                </div>
+                <AppSettings />
               )}
 
               {/* Centralized Modal */}

@@ -65,19 +65,114 @@ const seed = async () => {
         await Student.bulkCreate(studentsData);
         console.log(`Seeded ${studentsData.length} students`);
 
-        // --- 3. Seed Staff ---
-        const staffData = [
-            { id: 'ST-001', name: 'Salma Khatun', role: 'Nanny', experience: '5 Years', specialty: 'Infant Care', rate: 300, area: 'Gulshan', availability: 'Available', img: 'https://randomuser.me/api/portraits/women/1.jpg' },
-            { id: 'ST-002', name: 'Rokeya Sultana', role: 'Teacher', experience: '8 Years', specialty: 'Early Childhood', rate: 500, area: 'Bashundhara', availability: 'Available', img: 'https://randomuser.me/api/portraits/women/2.jpg' },
-            { id: 'ST-003', name: 'Abul Kalam', role: 'Driver', experience: '10 Years', specialty: 'Safe Driving', rate: 200, area: 'Uttara', availability: 'Busy', img: 'https://randomuser.me/api/portraits/men/1.jpg' },
-            { id: 'ST-004', name: 'Moushumi Akter', role: 'Nanny', experience: '3 Years', specialty: 'Toddlers', rate: 250, area: 'Dhanmondi', availability: 'Available', img: 'https://randomuser.me/api/portraits/women/3.jpg' },
-            { id: 'ST-005', name: 'Farhana Rahman', role: 'Nurse', experience: '6 Years', specialty: 'First Aid', rate: 600, area: 'Banani', availability: 'Available', img: 'https://randomuser.me/api/portraits/women/4.jpg' },
-            { id: 'ST-006', name: 'Jahor Ali', role: 'Security', experience: '4 Years', specialty: 'Gatekeeping', rate: 150, area: 'Mirpur', availability: 'Shift', img: 'https://randomuser.me/api/portraits/men/2.jpg' },
-            { id: 'ST-007', name: 'Sumaiya Islam', role: 'Teacher', experience: '5 Years', specialty: 'Art & Craft', rate: 450, area: 'Mohammadpur', availability: 'Available', img: 'https://randomuser.me/api/portraits/women/5.jpg' },
-            { id: 'ST-008', name: 'Bilkis Begum', role: 'Cook', experience: '12 Years', specialty: 'Healthy Meals', rate: 200, area: 'Badda', availability: 'Shift', img: 'https://randomuser.me/api/portraits/women/6.jpg' },
-            { id: 'ST-009', name: 'Kamal Hasan', role: 'Nanny', experience: '4 Years', specialty: 'Active Play', rate: 280, area: 'Tejgaon', availability: 'Available', img: 'https://randomuser.me/api/portraits/men/3.jpg' },
-            { id: 'ST-010', name: 'Sharmin Jahan', role: 'Teacher', experience: '7 Years', specialty: 'English Basics', rate: 550, area: 'Gulshan', availability: 'Available', img: 'https://randomuser.me/api/portraits/women/7.jpg' }
-        ];
+
+        // --- 3. Seed Staff (50 members) ---
+        const nannyNames = ['Salma Khatun', 'Moushumi Akter', 'Kamal Hasan', 'Rehana Begum', 'Nasima Akter', 'Sultana Razia', 'Amina Khatun', 'Rahima Begum', 'Taslima Akter', 'Hosne Ara', 'Shamima Begum', 'Roksana Parvin', 'Mahmuda Akter', 'Jesmin Nahar', 'Shahnaz Begum', 'Monowara Begum', 'Aleya Khatun', 'Farida Yasmin', 'Sabina Akter', 'Nazma Begum'];
+        const nurseNames = ['Farhana Rahman', 'Nusrat Jahan', 'Sadia Islam', 'Tahmina Akter', 'Shahana Parveen', 'Rubina Khatun', 'Dilruba Yasmin', 'Farzana Ahmed', 'Sharmin Sultana', 'Ayesha Siddika', 'Mahfuza Begum', 'Rowshan Ara', 'Kamrun Nahar', 'Shapla Akter', 'Lovely Khatun'];
+        const teacherNames = ['Rokeya Sultana', 'Sumaiya Islam', 'Sharmin Jahan', 'Tasnuva Rahman', 'Fahmida Khatun', 'Nargis Akter', 'Rupa Begum', 'Shirin Akter'];
+        const driverNames = ['Abul Kalam', 'Rafiqul Islam', 'Jahangir Alam'];
+        const cookNames = ['Bilkis Begum', 'Rahela Khatun'];
+        const securityNames = ['Jahor Ali', 'Motaleb Hossain'];
+
+        const areas = ['Gulshan', 'Banani', 'Dhanmondi', 'Uttara', 'Bashundhara', 'Mirpur', 'Mohammadpur', 'Badda', 'Tejgaon', 'Khilgaon'];
+        const availabilityOptions = ['Available', 'Busy', 'Shift', 'On Leave'];
+
+        const staffData = [];
+        let staffId = 1;
+
+        // Add 20 Nannies
+        nannyNames.forEach((name, index) => {
+            const specialties = ['Infant Care', 'Toddlers', 'Active Play', 'Newborn Care', 'Special Needs', 'Night Care'];
+            staffData.push({
+                id: `ST-${String(staffId++).padStart(3, '0')}`,
+                name: name,
+                role: 'Nanny',
+                experience: `${Math.floor(Math.random() * 10) + 2} Years`,
+                specialty: specialties[index % specialties.length],
+                rate: 250 + Math.floor(Math.random() * 150),
+                area: areas[index % areas.length],
+                availability: availabilityOptions[index % 3],
+                img: `https://randomuser.me/api/portraits/women/${index + 10}.jpg`
+            });
+        });
+
+        // Add 15 Nurses
+        nurseNames.forEach((name, index) => {
+            const specialties = ['First Aid', 'Pediatric Care', 'Emergency Care', 'Vaccination', 'Health Monitoring', 'Medical Records'];
+            staffData.push({
+                id: `ST-${String(staffId++).padStart(3, '0')}`,
+                name: name,
+                role: 'Nurse',
+                experience: `${Math.floor(Math.random() * 12) + 3} Years`,
+                specialty: specialties[index % specialties.length],
+                rate: 500 + Math.floor(Math.random() * 200),
+                area: areas[index % areas.length],
+                availability: availabilityOptions[index % 3],
+                img: `https://randomuser.me/api/portraits/women/${index + 30}.jpg`
+            });
+        });
+
+        // Add 8 Teachers
+        teacherNames.forEach((name, index) => {
+            const specialties = ['Early Childhood', 'Art & Craft', 'English Basics', 'Math & Science', 'Music & Dance', 'Physical Education', 'Montessori', 'Language Development'];
+            staffData.push({
+                id: `ST-${String(staffId++).padStart(3, '0')}`,
+                name: name,
+                role: 'Teacher',
+                experience: `${Math.floor(Math.random() * 10) + 4} Years`,
+                specialty: specialties[index % specialties.length],
+                rate: 450 + Math.floor(Math.random() * 200),
+                area: areas[index % areas.length],
+                availability: availabilityOptions[index % 3],
+                img: `https://randomuser.me/api/portraits/women/${index + 50}.jpg`
+            });
+        });
+
+        // Add 3 Drivers
+        driverNames.forEach((name, index) => {
+            staffData.push({
+                id: `ST-${String(staffId++).padStart(3, '0')}`,
+                name: name,
+                role: 'Driver',
+                experience: `${Math.floor(Math.random() * 15) + 5} Years`,
+                specialty: 'Safe Driving',
+                rate: 180 + Math.floor(Math.random() * 50),
+                area: areas[index % areas.length],
+                availability: index === 0 ? 'Busy' : 'Available',
+                img: `https://randomuser.me/api/portraits/men/${index + 1}.jpg`
+            });
+        });
+
+        // Add 2 Cooks
+        cookNames.forEach((name, index) => {
+            staffData.push({
+                id: `ST-${String(staffId++).padStart(3, '0')}`,
+                name: name,
+                role: 'Cook',
+                experience: `${Math.floor(Math.random() * 15) + 8} Years`,
+                specialty: index === 0 ? 'Healthy Meals' : 'Nutritious Food',
+                rate: 200 + Math.floor(Math.random() * 50),
+                area: areas[index % areas.length],
+                availability: 'Shift',
+                img: `https://randomuser.me/api/portraits/women/${index + 60}.jpg`
+            });
+        });
+
+        // Add 2 Security
+        securityNames.forEach((name, index) => {
+            staffData.push({
+                id: `ST-${String(staffId++).padStart(3, '0')}`,
+                name: name,
+                role: 'Security',
+                experience: `${Math.floor(Math.random() * 10) + 3} Years`,
+                specialty: index === 0 ? 'Gatekeeping' : 'Campus Security',
+                rate: 150 + Math.floor(Math.random() * 30),
+                area: areas[index % areas.length],
+                availability: 'Shift',
+                img: `https://randomuser.me/api/portraits/men/${index + 10}.jpg`
+            });
+        });
+
         await Staff.bulkCreate(staffData);
         console.log(`Seeded ${staffData.length} staff members`);
 

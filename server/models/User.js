@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING
         },
         role: {
-            type: DataTypes.ENUM('admin', 'parent', 'teacher', 'nurse', 'nanny'),
+            type: DataTypes.ENUM('superadmin', 'admin', 'parent', 'teacher', 'nurse', 'nanny'),
             defaultValue: 'parent'
         },
         address: {

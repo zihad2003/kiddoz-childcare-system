@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS Users (
     password_hash VARCHAR(255) NOT NULL,
     full_name VARCHAR(100) NOT NULL,
     phone VARCHAR(20),
-    role ENUM('admin', 'parent', 'staff', 'teacher') DEFAULT 'parent',
+    role ENUM('admin', 'parent', 'teacher', 'nurse', 'nanny') DEFAULT 'parent', -- Only 'admin' and 'teacher' have admin portal access
     address TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
