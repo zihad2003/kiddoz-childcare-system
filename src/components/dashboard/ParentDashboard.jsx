@@ -120,10 +120,12 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
                         <p className="p-4 text-center text-slate-400 text-sm">No new notifications</p>
                       ) : (
                         notifications.map(n => (
-                          <div key={n.docId} className="p-3 border-b border-slate-50 hover:bg-slate-50">
+                          <div key={n.docId || n.id} className="p-3 border-b border-slate-50 hover:bg-slate-50">
                             <div className="flex justify-between items-start mb-1">
                               <p className="font-bold text-sm text-purple-700">{n.title}</p>
-                              <span className="text-[10px] text-slate-400">{n.timestamp?.toDate().toLocaleTimeString()}</span>
+                              <span className="text-[10px] text-slate-400">
+                                {n.timestamp?.toDate ? n.timestamp.toDate().toLocaleTimeString() : new Date().toLocaleTimeString()}
+                              </span>
                             </div>
                             <p className="text-xs text-slate-600 line-clamp-2">{n.message}</p>
                             {n.details?.observations && (

@@ -10,7 +10,11 @@ export const BANGLADESHI_STUDENTS = [
         address: 'Dhanmondi, Dhaka',
         parentId: 'p-101',
         id: 'BD-001',
-        plan: 'Standard'
+        plan: 'Standard',
+        temp: 98.4,
+        mood: 'Happy',
+        meal: 'Rice & Fish',
+        parentName: 'Rahim Rahman'
     },
     {
         name: 'Sumaiya Akter',
@@ -22,7 +26,11 @@ export const BANGLADESHI_STUDENTS = [
         address: 'Uttara, Dhaka',
         parentId: 'p-102',
         id: 'BD-002',
-        plan: 'Premium'
+        plan: 'Premium',
+        temp: 98.6,
+        mood: 'Sleepy',
+        meal: 'Khichuri',
+        parentName: 'Fatema Akter'
     },
     {
         name: 'Tanvir Hossain',
@@ -34,7 +42,11 @@ export const BANGLADESHI_STUDENTS = [
         address: 'Gulshan, Dhaka',
         parentId: 'p-103',
         id: 'BD-003',
-        plan: 'Standard'
+        plan: 'Standard',
+        temp: 99.1,
+        mood: 'Energetic',
+        meal: 'Chicken Curry',
+        parentName: 'Kamal Hossain'
     },
     {
         name: 'Nusrat Jahan',
@@ -46,7 +58,11 @@ export const BANGLADESHI_STUDENTS = [
         address: 'Mirpur, Dhaka',
         parentId: 'p-104',
         id: 'BD-004',
-        plan: 'Basic'
+        plan: 'Basic',
+        temp: 98.2,
+        mood: 'Calm',
+        meal: 'Vegetables',
+        parentName: 'Nasreen Jahan'
     },
     {
         name: 'Kabir Ahmed',
@@ -58,7 +74,11 @@ export const BANGLADESHI_STUDENTS = [
         address: 'Banani, Dhaka',
         parentId: 'p-105',
         id: 'BD-005',
-        plan: 'Premium'
+        plan: 'Premium',
+        temp: 98.5,
+        mood: 'Playful',
+        meal: 'Beef Bhuna',
+        parentName: 'Ahmed Kabir'
     },
     {
         name: 'Farhana Yeasmin',
@@ -70,7 +90,11 @@ export const BANGLADESHI_STUDENTS = [
         address: 'Bashundhara, Dhaka',
         parentId: 'p-106',
         id: 'BD-006',
-        plan: 'Standard'
+        plan: 'Standard',
+        temp: 98.7,
+        mood: 'Creative',
+        meal: 'Pasta',
+        parentName: 'Yeasmin Begum'
     },
     {
         name: 'Rafiq Islam',
@@ -82,7 +106,11 @@ export const BANGLADESHI_STUDENTS = [
         address: 'Mohakhali, Dhaka',
         parentId: 'p-107',
         id: 'BD-007',
-        plan: 'Basic'
+        plan: 'Basic',
+        temp: 98.3,
+        mood: 'Crying',
+        meal: 'Milk & Porridge',
+        parentName: 'Islam Rafiq'
     },
     {
         name: 'Tasnim Zara',
@@ -94,6 +122,10 @@ export const BANGLADESHI_STUDENTS = [
         address: 'Banani, Dhaka',
         parentId: 'p-108',
         id: 'BD-008',
-        plan: 'Premium'
+        plan: 'Premium',
+        temp: 98.9,
+        mood: 'Happy',
+        meal: 'Fruits',
+        parentName: 'Zara Tasnim'
     }
 ];
