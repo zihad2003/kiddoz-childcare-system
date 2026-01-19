@@ -65,7 +65,11 @@ const Navbar = ({ user, handleLogout }) => {
           <div className="hidden md:flex items-center gap-4">
             {user ? (
               <>
-                <Link to="/dashboard" className="flex items-center gap-2 bg-purple-600 text-white px-6 py-2.5 rounded-full hover:bg-purple-700 transition shadow-lg font-semibold"><User size={18} /> Parent Portal</Link>
+                {user.role === 'admin' ? (
+                  <Link to="/admin" className="flex items-center gap-2 bg-slate-800 text-white px-6 py-2.5 rounded-full hover:bg-slate-900 transition shadow-lg font-semibold"><User size={18} /> Admin Panel</Link>
+                ) : (
+                  <Link to="/dashboard" className="flex items-center gap-2 bg-purple-600 text-white px-6 py-2.5 rounded-full hover:bg-purple-700 transition shadow-lg font-semibold"><User size={18} /> Parent Portal</Link>
+                )}
                 <button onClick={handleLogout} className="text-slate-400 hover:text-red-500 transition bg-slate-50 p-2 rounded-full hover:bg-red-50"><LogOut size={20} /></button>
               </>
             ) : (
