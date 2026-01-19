@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Users, Bell, LogOut, Search, Edit2, ShieldCheck, Clock, DollarSign, Settings, UserCheck, ScanFace, Database } from 'lucide-react';
 import { BANGLADESHI_STUDENTS } from '../../data/bangladeshiData';
 import DataQueryFilter from './DataQueryFilter';
@@ -22,8 +22,27 @@ import api from '../../services/api';
 const AdminDashboard = ({ user, handleLogout }) => {
   const { addToast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
   const [currentRole, setCurrentRole] = useState('admin'); // admin | teacher | nurse | nanny
-  const [adminTab, setAdminTab] = useState('roster');
+
+  // Map URL paths to tab keys
+  const getTabFromPath = (path) => {
+    const segments = path.split('/').filter(Boolean);
+    if (segments.length <= 1) return 'roster';
+    const subRoute = segments[1];
+    if (subRoute === 'student') return 'roster';
+    if (subRoute === 'staff') return 'nannies';
+    return subRoute;
+  };
+
+  const adminTab = getTabFromPath(location.pathname);
+
+  const setTab = (tab) => {
+    if (tab === 'roster') navigate('/admin/student');
+    else if (tab === 'nannies') navigate('/admin/staff');
+    else navigate(`/admin/${tab}`);
+  };
+
   const [students, setStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -142,7 +161,8 @@ const AdminDashboard = ({ user, handleLogout }) => {
           <label className="text-xs font-bold uppercase tracking-wider opacity-70 mb-2 block">Current Staff Profile</label>
           <select
             value={currentRole}
-            onChange={(e) => { setCurrentRole(e.target.value); setAdminTab('roster'); }}
+            onChange={(e) => { setCurrentRole(e.target.value); setTab('roster'); }}
+
             className="w-full bg-white/10 text-white font-bold rounded-lg p-2 border border-white/20 outline-none focus:bg-white/20"
           >
             <option value="admin" className="text-slate-900">Start Director (Admin)</option>
@@ -159,28 +179,28 @@ const AdminDashboard = ({ user, handleLogout }) => {
 
         <nav className="space-y-3 flex-1">
           <button
-            onClick={() => setAdminTab('roster')}
+            onClick={() => setTab('roster')}
             className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'roster' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-purple-100 hover:text-white'}`}
           >
             <Users size={20} /> {currentRole === 'nurse' ? 'Health Check' : 'Student Roster'}
           </button>
 
           <button
-            onClick={() => setAdminTab('nannies')}
+            onClick={() => setTab('nannies')}
             className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'nannies' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-purple-100 hover:text-white'}`}
           >
             <UserCheck size={20} /> Manage Staff
           </button>
 
           <button
-            onClick={() => setAdminTab('care')}
+            onClick={() => setTab('care')}
             className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'care' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-purple-100 hover:text-white'}`}
           >
             <Clock size={20} /> Care & Tasks
           </button>
 
           <button
-            onClick={() => setAdminTab('alerts')}
+            onClick={() => setTab('alerts')}
             className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'alerts' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-purple-100 hover:text-white'}`}
           >
             <Bell size={20} /> Alerts Center
@@ -190,13 +210,13 @@ const AdminDashboard = ({ user, handleLogout }) => {
             <div className="pt-6 pb-2">
               <p className="px-4 text-xs font-bold text-white/50 uppercase tracking-widest mb-2">Admin Tools</p>
               <button
-                onClick={() => setAdminTab('financials')}
+                onClick={() => setTab('financials')}
                 className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'financials' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-purple-100 hover:text-white'}`}
               >
                 <DollarSign size={20} /> Financials
               </button>
               <button
-                onClick={() => setAdminTab('settings')}
+                onClick={() => setTab('settings')}
                 className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'settings' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-purple-100 hover:text-white'}`}
               >
                 <Settings size={20} /> App Settings

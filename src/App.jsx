@@ -132,7 +132,7 @@ function AppContent() {
 
           <Route path="/tour" element={<TourBookingPage />} />
 
-          <Route path="/admin" element={
+          <Route path="/admin/*" element={
             <AdminDashboard user={user} handleLogout={handleLogout} />
           } />
 
