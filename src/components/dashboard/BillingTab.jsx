@@ -15,9 +15,12 @@ const BillingTab = ({ student }) => {
             try {
                 setLoading(true);
                 const billingData = await api.getParentBilling();
-                setInvoices(billingData);
+                // Check if the response matches our new mock structure (obj with invoices) or legacy array
+                const invoicesList = Array.isArray(billingData) ? billingData : (billingData.invoices || []);
+                setInvoices(invoicesList);
             } catch (err) {
                 console.error('Failed to fetch billing', err);
+                setInvoices([]); // Fallback to empty array
             } finally {
                 setLoading(false);
             }
@@ -26,8 +29,8 @@ const BillingTab = ({ student }) => {
         fetchBilling();
     }, []);
 
-    const outstandingBalance = invoices
-        .filter(inv => inv.status === 'Pending' || inv.status === 'Overdue')
+    const outstandingBalance = (invoices || [])
+        .filter(inv => inv.status === 'Pending' || inv.status === 'Unpaid' || inv.status === 'Overdue')
         .reduce((acc, curr) => acc + parseFloat(curr.amount || 0), 0);
 
     const handlePayNow = () => {
@@ -109,7 +112,7 @@ const BillingTab = ({ student }) => {
                                 invoices.map((inv) => (
                                     <tr key={inv.id} className="hover:bg-slate-50 transition-colors group">
                                         <td className="py-4 pl-4 font-medium text-slate-700">{inv.invoiceNumber || inv.id}</td>
-                                        <td className="py-4 text-slate-500 text-sm">{new Date(inv.createdAt).toLocaleDateString()}</td>
+                                        <td className="py-4 text-slate-500 text-sm">{new Date(inv.createdAt || inv.date).toLocaleDateString()}</td>
                                         <td className="py-4 text-slate-600 text-sm max-w-xs truncate">{inv.description}</td>
                                         <td className="py-4 font-bold text-slate-800">${parseFloat(inv.amount).toFixed(2)}</td>
                                         <td className="py-4">
