@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Users, Bell, LogOut, Search, Edit2, ShieldCheck, Clock, DollarSign, Settings, UserCheck, ScanFace, Database } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom'; import { Users, Bell, LogOut, Search, Edit2, ShieldCheck, Clock, DollarSign, Settings, UserCheck, ScanFace, Database } from 'lucide-react';
 import { BANGLADESHI_STUDENTS } from '../../data/bangladeshiData';
 import DataQueryFilter from './DataQueryFilter';
 import TaskManager from './TaskManager';
@@ -21,9 +20,19 @@ import api from '../../services/api';
 const AdminDashboard = ({ user, handleLogout }) => {
   const { addToast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const getInitialTab = () => {
+    if (location.pathname.includes('manage-staff')) return 'nannies';
+    if (location.pathname.includes('care-tasks')) return 'care';
+    if (location.pathname.includes('alerts')) return 'alerts';
+    if (location.pathname.includes('financials')) return 'financials';
+    if (location.pathname.includes('settings')) return 'settings';
+    return 'roster';
+  };
+
   const [currentRole, setCurrentRole] = useState('admin'); // admin | teacher | nurse | nanny
-  const [adminTab, setAdminTab] = useState('roster');
-  const [students, setStudents] = useState([]);
+  const [adminTab, setAdminTab] = useState(getInitialTab()); const [students, setStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');

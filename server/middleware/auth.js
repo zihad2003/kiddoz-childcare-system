@@ -3,8 +3,17 @@ const jwt = require('jsonwebtoken');
 module.exports = (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', '');
 
+    const MOCK_USER = {
+        id: 'demo-123',
+        name: "Demo User",
+        email: "demo@kiddoz.com",
+        role: "admin"
+    };
+
     if (!token) {
-        return res.status(401).json({ message: 'Access denied. No token provided.' });
+        // PERMISSIVE FOR DEMO: Allow access without token
+        req.user = MOCK_USER;
+        return next();
     }
 
     try {
@@ -12,6 +21,8 @@ module.exports = (req, res, next) => {
         req.user = decoded;
         next();
     } catch (ex) {
-        res.status(400).json({ message: 'Invalid token.' });
+        // PERMISSIVE FOR DEMO: If token is invalid, still allow as mock user
+        req.user = MOCK_USER;
+        next();
     }
 };

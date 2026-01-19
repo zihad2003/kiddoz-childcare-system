@@ -7,8 +7,7 @@ import api from '../../services/api';
 import { MapPin, Star, Clock, CheckCircle, Video, Activity, Heart, Shield, Phone, MessageSquare } from 'lucide-react';
 
 const NannyBooking = ({ student }) => {
-    const [filterArea, setFilterArea] = useState('Dhaka');
-    const [filterPrice, setFilterPrice] = useState('');
+    const [filterArea, setFilterArea] = useState('All'); const [filterPrice, setFilterPrice] = useState('');
     const [selectedNanny, setSelectedNanny] = useState(null);
     const [bookingStep, setBookingStep] = useState('list'); // list | book | success | active
     const [childName, setChildName] = useState(student?.name || '');
@@ -39,8 +38,7 @@ const NannyBooking = ({ student }) => {
 
     // Filter nannies
     const filteredNannies = nannies.filter(n =>
-        (filterArea === 'All' || n.area.includes(filterArea)) &&
-        (!filterPrice || n.rate <= parseInt(filterPrice))
+        (filterArea === 'All' || (n.area && n.area.toLowerCase().includes(filterArea.toLowerCase()))) && (!filterPrice || n.rate <= parseInt(filterPrice))
     );
 
     const handleBookClick = (nanny) => {
@@ -176,8 +174,7 @@ const NannyBooking = ({ student }) => {
                                     value={filterArea}
                                     onChange={(e) => setFilterArea(e.target.value)}
                                 >
-                                    <option className="text-slate-800" value="Dhaka">Greater Dhaka</option>
-                                    <option className="text-slate-800" value="Gulshan">Gulshan</option>
+                                    <option className="text-slate-800" value="All">All Locations</option>                                    <option className="text-slate-800" value="Gulshan">Gulshan</option>
                                     <option className="text-slate-800" value="Dhanmondi">Dhanmondi</option>
                                     <option className="text-slate-800" value="Uttara">Uttara</option>
                                 </select>

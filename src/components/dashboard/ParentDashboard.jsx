@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { BookOpen, ScanFace, Activity, ChevronDown, CheckCircle, Clock, Heart, Thermometer, User, Users, Utensils, Smile, FileText, Bell, DollarSign, UserCheck } from 'lucide-react';
 import api from '../../services/api';
 import LiveViewYOLO from '../ai/LiveViewYOLO';
@@ -12,9 +12,17 @@ import Badge from '../ui/Badge';
 import Button from '../ui/Button';
 
 const ParentDashboard = ({ user, setView, db, appId }) => {
-  const [activeTab, setActiveTab] = useState('overview');
-  const [students, setStudents] = useState([]);
-  const [selectedStudentId, setSelectedStudentId] = useState('');
+  const location = useLocation();
+  const getInitialTab = () => {
+    if (location.pathname.includes('live-view')) return 'live';
+    if (location.pathname.includes('health-data')) return 'health';
+    if (location.pathname.includes('nanny-service')) return 'nanny';
+    if (location.pathname.includes('billing')) return 'finance';
+    if (location.pathname.includes('resources')) return 'resources';
+    return 'overview';
+  };
+  const [activeTab, setActiveTab] = useState(getInitialTab());
+  const [students, setStudents] = useState([]); const [selectedStudentId, setSelectedStudentId] = useState('');
   const [notifications, setNotifications] = useState([]);
   const [medicalRecords, setMedicalRecords] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
