@@ -5,10 +5,6 @@ import { useToast } from './ToastContext';
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const { addToast } = useToast();
-
     const MOCK_USER = {
         id: 'demo-123',
         name: "Demo User",
@@ -16,6 +12,11 @@ export const AuthProvider = ({ children }) => {
         email: "demo@kiddoz.com",
         role: "admin"
     };
+
+    // DEMO MODE: Default to MOCK_USER immediately to prevent auth blocks
+    const [user, setUser] = useState(MOCK_USER);
+    const [loading, setLoading] = useState(false);
+    const { addToast } = useToast();
     useEffect(() => {
         const checkAuth = async () => {
             const token = localStorage.getItem('token');
