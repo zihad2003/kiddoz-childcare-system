@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { BANGLADESHI_STUDENTS } from '../data/bangladeshiData';
 
 const apiClient = axios.create({
     baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5001/api',
@@ -27,9 +28,59 @@ apiClient.interceptors.response.use(
     (error) => {
         const isConnectionError = !error.response && (error.code === 'ERR_NETWORK' || error.message.includes('Network Error'));
 
-        // If it's a connection error, return empty data structure to avoid crashing the UI during demo
+        // If it's a connection error, return MOCK DATA to simulate a working app
         if (isConnectionError) {
-            console.warn('Backend connection failed. Returning empty data for demo stability.');
+            console.warn('Backend connection failed. Serving MOCK DATA for demo.');
+
+            const url = error.config.url;
+
+            // Mock Responses based on URL
+            if (url.includes('/parent/students')) {
+                return Promise.resolve({ data: BANGLADESHI_STUDENTS.slice(0, 2) });
+            }
+            if (url.includes('/students')) {
+                return Promise.resolve({ data: BANGLADESHI_STUDENTS });
+            }
+            if (url.includes('/notifications')) {
+                return Promise.resolve({
+                    data: [
+                        { id: 1, title: 'Tuition Due', message: 'Monthly fee for February is due.', type: 'admin', createdAt: (new Date()).toISOString() },
+                        { id: 2, title: 'Health Update', message: 'Temperature check completed: Normal.', type: 'nurse', createdAt: (new Date()).toISOString() }
+                    ]
+                });
+            }
+            if (url.includes('/activities')) {
+                return Promise.resolve({
+                    data: [
+                        { id: 1, activityType: 'meal', details: 'Healthy Lunch', value: 'Finished', timestamp: new Date(), recordedBy: 'Staff' },
+                        { id: 2, activityType: 'nap', details: 'Afternoon Nap', value: '1h 30m', timestamp: new Date(), recordedBy: 'Staff' },
+                        { id: 3, activityType: 'mood', details: 'Playtime', value: 'Happy', timestamp: new Date(), recordedBy: 'Staff' }
+                    ]
+                });
+            }
+            if (url.includes('/health')) {
+                return Promise.resolve({ data: [] });
+            }
+            if (url.includes('/staff')) {
+                return Promise.resolve({
+                    data: [
+                        { id: 1, name: 'Fatima Begum', role: 'Nanny', area: 'Dhaka', rate: 15, rating: 4.8, experience: '5 Years', availability: 'Available', img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100' },
+                        { id: 2, name: 'Rohima Khatun', role: 'Nanny', area: 'Uttara', rate: 12, rating: 4.5, experience: '3 Years', availability: 'Busy', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100' }
+                    ]
+                });
+            }
+            if (url.includes('/billing')) {
+                return Promise.resolve({
+                    data: {
+                        invoices: [
+                            { id: 'INV-001', month: 'January', amount: 5000, status: 'Paid', date: new Date().toISOString() },
+                            { id: 'INV-002', month: 'February', amount: 5000, status: 'Unpaid', date: new Date().toISOString() }
+                        ]
+                    }
+                });
+            }
+
+            // Default empty array for list endpoints, empty object for others
             return Promise.resolve({ data: [] });
         }
 
