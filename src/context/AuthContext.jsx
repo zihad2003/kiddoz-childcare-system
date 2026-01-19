@@ -60,6 +60,26 @@ export const AuthProvider = ({ children }) => {
             return true;
         } catch (error) {
             console.error('Login error:', error);
+
+            // FALLBACK FOR DEMO: If backend is unreachable, allow demo login
+            const isConnectionError = !error.response && error.code === 'ERR_NETWORK' || error.message.includes('Network Error');
+            const isDemoAttempt = email === 'admin@kiddoz.com' || email === 'demo@kiddoz.com' || email.includes('rahim');
+
+            if (isConnectionError && isDemoAttempt) {
+                console.log('Backend unreachable, logging in as mock user for demo');
+                const demoUser = {
+                    ...MOCK_USER,
+                    email: email,
+                    role: email.includes('admin') ? 'admin' : 'parent',
+                    displayName: email.includes('admin') ? 'Demo Admin' : 'Demo Parent'
+                };
+                setUser(demoUser);
+                localStorage.setItem('user', JSON.stringify(demoUser));
+                localStorage.setItem('token', 'demo-token');
+                addToast('Logged in as Demo User (Offline Mode)', 'info');
+                return true;
+            }
+
             const message = error.response?.data?.error || 'Login failed';
             addToast(message, 'error');
             throw error;

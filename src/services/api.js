@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-    baseURL: 'http://localhost:5001/api',
+    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5001/api',
     headers: {
         'Content-Type': 'application/json'
     }
@@ -17,6 +17,22 @@ apiClient.interceptors.request.use(
         return config;
     },
     (error) => {
+        return Promise.reject(error);
+    }
+);
+
+// Add a response interceptor to handle network errors for demo
+apiClient.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        const isConnectionError = !error.response && (error.code === 'ERR_NETWORK' || error.message.includes('Network Error'));
+
+        // If it's a connection error, return empty data structure to avoid crashing the UI during demo
+        if (isConnectionError) {
+            console.warn('Backend connection failed. Returning empty data for demo stability.');
+            return Promise.resolve({ data: [] });
+        }
+
         return Promise.reject(error);
     }
 );
