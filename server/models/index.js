@@ -35,6 +35,7 @@ db.Feedback = require('./Feedback')(sequelize, Sequelize);
 db.PlatformAnalytics = require('./PlatformAnalytics')(sequelize, Sequelize);
 db.Center = require('./Center')(sequelize, Sequelize);
 db.Bulletin = require('./Bulletin')(sequelize, Sequelize);
+db.Milestone = require('./Milestone')(sequelize, Sequelize);
 
 // Associations
 // User has many Students (as parent)

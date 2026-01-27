@@ -100,7 +100,7 @@ const StudentDailyUpdateModal = ({
             maxWidth="max-w-4xl"
         >
             <div className="flex gap-4 mb-6 border-b border-slate-100">
-                {['vitals', 'logs', 'docs'].map(tab => (
+                {['vitals', 'milestones', 'logs', 'docs'].map(tab => (
                     <button
                         key={tab}
                         onClick={() => setStatsForm(prev => ({ ...prev, activeModalTab: tab }))}
@@ -111,6 +111,75 @@ const StudentDailyUpdateModal = ({
                     </button>
                 ))}
             </div>
+
+            {/* Milestones Tab */}
+            {statsForm.activeModalTab === 'milestones' && (
+                <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+                    <div className="bg-amber-50 p-6 rounded-2xl border border-amber-100">
+                        <h4 className="font-bold text-amber-800 mb-4 flex items-center gap-2 text-lg">
+                            🌟 Record New Milestone
+                        </h4>
+                        <div className="grid grid-cols-2 gap-4">
+                            <Input
+                                label="Milestone Title"
+                                placeholder="e.g. Walking, Counting to 10"
+                                value={statsForm.milestoneTitle || ''}
+                                onChange={e => setStatsForm({ ...statsForm, milestoneTitle: e.target.value })}
+                            />
+                            <Select
+                                label="Category"
+                                value={statsForm.milestoneCategory || ''}
+                                onChange={e => setStatsForm({ ...statsForm, milestoneCategory: e.target.value })}
+                                options={[
+                                    { label: 'Physical', value: 'Physical' },
+                                    { label: 'Cognitive', value: 'Cognitive' },
+                                    { label: 'Language', value: 'Language' },
+                                    { label: 'Social', value: 'Social' },
+                                    { label: 'Other', value: 'Other' },
+                                ]}
+                            />
+                        </div>
+                        <div className="mt-4">
+                            <label className="block text-sm font-bold text-amber-800 mb-1">Details / Observations</label>
+                            <textarea
+                                className="w-full p-3 rounded-xl border border-amber-200 focus:ring-2 focus:ring-amber-500/20 outline-none h-24"
+                                placeholder="Describe the achievement..."
+                                value={statsForm.milestoneDescription || ''}
+                                onChange={e => setStatsForm({ ...statsForm, milestoneDescription: e.target.value })}
+                            />
+                        </div>
+                        <div className="mt-6 flex justify-end">
+                            <Button
+                                onClick={async () => {
+                                    if (!statsForm.milestoneTitle) return addToast("Title is required", "error");
+                                    setLoading(true);
+                                    try {
+                                        await api.addMilestone(student.id, {
+                                            title: statsForm.milestoneTitle,
+                                            category: statsForm.milestoneCategory || 'Other',
+                                            description: statsForm.milestoneDescription,
+                                            achievedDate: new Date()
+                                        });
+                                        addToast("Milestone recorded! 🎉", "success");
+                                        setStatsForm(prev => ({ ...prev, milestoneTitle: '', milestoneDescription: '', activeModalTab: 'vitals' }));
+                                    } catch (err) {
+                                        addToast("Failed to save milestone", "error");
+                                    } finally {
+                                        setLoading(false);
+                                    }
+                                }}
+                                disabled={loading}
+                                className="bg-amber-600 hover:bg-amber-700 text-white"
+                            >
+                                Save Milestone
+                            </Button>
+                        </div>
+                    </div>
+                    <div className="p-4 text-center">
+                        <p className="text-sm text-slate-500 italic">Parents will be instantly notified of this milestone achievement.</p>
+                    </div>
+                </div>
+            )}
 
             {(!statsForm.activeModalTab || statsForm.activeModalTab === 'vitals') && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-left-4 duration-300 h-[60vh] overflow-y-auto pr-2">

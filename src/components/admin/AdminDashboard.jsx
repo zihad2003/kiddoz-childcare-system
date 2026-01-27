@@ -10,7 +10,7 @@ import Button from '../ui/Button';
 import Badge from '../ui/Badge';
 import StaffManager from './StaffManager';
 import PayrollManager from './PayrollManagerClean';
-import LiveViewYOLO from '../ai/LiveViewYOLO';
+import LiveStreamManager from './LiveStreamManager';
 import NurseDashboard from './NurseDashboard';
 import TeacherDashboard from './TeacherDashboard';
 import ChildCareTaskManager from './ChildCareTaskManager';
@@ -203,6 +203,13 @@ const AdminDashboard = ({ user, handleLogout }) => {
           </button>
 
           <button
+            onClick={() => setTab('live')}
+            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'live' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-purple-100 hover:text-white'}`}
+          >
+            <ScanFace size={20} /> AI Surveillance
+          </button>
+
+          <button
             onClick={() => setTab('alerts')}
             className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'alerts' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-purple-100 hover:text-white'}`}
           >
@@ -335,7 +342,7 @@ const AdminDashboard = ({ user, handleLogout }) => {
 
               {adminTab === 'live' && (
                 <div className="animate-in fade-in duration-500">
-                  <LiveViewYOLO />
+                  <LiveStreamManager />
                 </div>
               )}
 

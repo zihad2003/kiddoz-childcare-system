@@ -33,7 +33,10 @@ const DEFAULT_SETTINGS = {
     // Data Management Settings
     'data.autoDelete': { value: false, category: 'data', description: 'Automatically delete old records' },
     'data.retentionPeriod': { value: '5yr', category: 'data', description: 'Data retention period' },
-    'data.exportFormat': { value: 'csv', category: 'data', description: 'Default export format' }
+    'data.exportFormat': { value: 'csv', category: 'data', description: 'Default export format' },
+
+    // CCTV/Live Stream Settings
+    'yolo.liveStream': { value: { active: false, type: 'demo', url: '' }, category: 'yolo', description: 'Global Live Stream Configuration' }
 };
 
 // Initialize default settings
@@ -126,9 +129,17 @@ router.put('/', async (req, res) => {
                     settingValue: JSON.stringify(value),
                     updatedBy
                 });
-                results.push({ key, success: true });
+                results.push({ key, success: true, action: 'updated' });
             } else {
-                results.push({ key, success: false, error: 'Setting not found' });
+                // Upsert logic: Create if not found
+                await AppSettings.create({
+                    settingKey: key,
+                    settingValue: JSON.stringify(value),
+                    category: 'yolo', // default to yolo or dynamic
+                    description: 'Auto-created setting',
+                    updatedBy
+                });
+                results.push({ key, success: true, action: 'created' });
             }
         }
 

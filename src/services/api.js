@@ -24,10 +24,10 @@ apiClient.interceptors.request.use(
 // Define API Service Object
 const api = {
     // Expose generic Axios methods
-    get: (url, config) => apiClient.get(url, config),
-    post: (url, data, config) => apiClient.post(url, data, config),
-    put: (url, data, config) => apiClient.put(url, data, config),
-    delete: (url, config) => apiClient.delete(url, config),
+    get: (url, config) => apiClient.get(url, config).then(res => res.data),
+    post: (url, data, config) => apiClient.post(url, data, config).then(res => res.data),
+    put: (url, data, config) => apiClient.put(url, data, config).then(res => res.data),
+    delete: (url, config) => apiClient.delete(url, config).then(res => res.data),
 
     // Auth Methods
     login: (email, password) => apiClient.post('/auth/login', { email, password }),
@@ -43,6 +43,7 @@ const api = {
     getStudents: (parentId) => apiClient.get(`/students${parentId ? '?parentId=' + parentId : ''}`).then(res => res.data),
     addStudent: (data) => apiClient.post('/students', data).then(res => res.data),
     updateStudent: (id, data) => apiClient.put(`/students/${id}`, data).then(res => res.data),
+    addMilestone: (id, data) => apiClient.post(`/students/${id}/milestones`, data).then(res => res.data),
 
     getTasks: () => apiClient.get('/tasks').then(res => res.data),
     addTask: (data) => apiClient.post('/tasks', data).then(res => res.data),

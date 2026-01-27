@@ -54,6 +54,37 @@ module.exports = (sequelize, DataTypes) => {
         },
         meal: {
             type: DataTypes.STRING
+        },
+        mealType: {
+            type: DataTypes.STRING
+        },
+        mealAmount: {
+            type: DataTypes.STRING
+        },
+        foodDetails: {
+            type: DataTypes.TEXT
+        },
+        medName: {
+            type: DataTypes.STRING
+        },
+        medDosage: {
+            type: DataTypes.STRING
+        },
+        medGiven: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        activityType: {
+            type: DataTypes.STRING
+        },
+        activityDetails: {
+            type: DataTypes.TEXT
+        },
+        notes: {
+            type: DataTypes.TEXT
+        },
+        observations: {
+            type: DataTypes.TEXT
         }
     });
 
