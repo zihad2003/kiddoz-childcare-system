@@ -27,6 +27,9 @@ app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/financials', require('./routes/financials'));
 app.use('/api/care-tasks', require('./routes/careTasks'));
 app.use('/api/parent', require('./routes/parentRoutes'));
+app.use('/api/settings', require('./routes/settings'));
+app.use('/api/superadmin', require('./routes/superadmin'));
+app.use('/api/ai', require('./routes/ai'));
 
 // Root Route
 app.get('/', (req, res) => {

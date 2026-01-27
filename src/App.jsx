@@ -20,6 +20,7 @@ import AuthPage from './components/layout/AuthPage';
 // Modules - Functional Dashboards
 import EnrollmentPage from './components/enrollment/EnrollmentPage';
 import AdminDashboard from './components/admin/AdminDashboard';
+import SuperAdminDashboard from './components/superadmin/SuperAdminDashboard';
 import ParentDashboard from './components/dashboard/ParentDashboard';
 import StudentProfile from './components/dashboard/StudentProfile'; // Profile
 import Chatbot from './components/ai/Chatbot';
@@ -93,10 +94,12 @@ function AppContent() {
 
   return (
     <div className="font-sans text-slate-800 bg-slate-50 min-h-screen flex flex-col">
-      <Navbar
-        user={user}
-        handleLogout={handleLogout}
-      />
+      {!location.pathname.startsWith('/superadmin') && (
+        <Navbar
+          user={user}
+          handleLogout={handleLogout}
+        />
+      )}
 
       <main className="flex-grow">
         <Routes>
@@ -130,11 +133,35 @@ function AppContent() {
           <Route path="/tour" element={<TourBookingPage />} />
 
           <Route path="/admin/*" element={
+<<<<<<< HEAD
             <AdminDashboard user={user} handleLogout={handleLogout} />
           } />
 
           <Route path="/dashboard/*" element={
             <ParentDashboard user={user} db={db} appId={appId} />
+=======
+            user && user.role === 'admin' ? (
+              <AdminDashboard user={user} handleLogout={handleLogout} />
+            ) : (
+              <Navigate to="/login" />
+            )
+          } />
+
+          <Route path="/superadmin/*" element={
+            user && user.role === 'superadmin' ? (
+              <SuperAdminDashboard user={user} handleLogout={handleLogout} />
+            ) : (
+              <Navigate to="/login" />
+            )
+          } />
+
+          <Route path="/dashboard" element={
+            user ? (
+              <ParentDashboard user={user} db={db} appId={appId} />
+            ) : (
+              <Navigate to="/login" />
+            )
+>>>>>>> shoikot
           } />
 
           <Route path="/student/:id" element={<StudentProfile db={db} appId={appId} />} />
@@ -148,7 +175,7 @@ function AppContent() {
       </main>
 
       {/* Hide footer on Admin pages */}
-      {!location.pathname.startsWith('/admin') && <Footer />}
+      {!location.pathname.startsWith('/admin') && !location.pathname.startsWith('/superadmin') && <Footer />}
 
       {/* Persistent AI Assistant */}
       <Chatbot user={user} />

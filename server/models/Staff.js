@@ -8,6 +8,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false
         },
+        centerId: {
+            type: DataTypes.UUID,
+            allowNull: true
+        },
         role: {
             type: DataTypes.STRING, // Teacher, Nurse, Nanny
             allowNull: false

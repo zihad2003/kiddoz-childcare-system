@@ -1,4 +1,4 @@
-const { sequelize, User, Staff, Student, Payroll, Task, Notification, HealthRecord, DailyActivity, Billing, NannyBooking } = require('./models');
+const { sequelize, User, Staff, Student, Payroll, Task, Notification, HealthRecord, DailyActivity, Billing, NannyBooking, Center, Bulletin } = require('./models');
 const bcrypt = require('bcryptjs');
 
 const seed = async () => {
@@ -9,6 +9,27 @@ const seed = async () => {
         const passHash = await bcrypt.hash('password123', salt);
         const adminHash = await bcrypt.hash('admin123', salt);
 
+        console.log('Seeding Centers...');
+        const centerGulshan = await Center.create({
+            name: 'KiddoZ Gulshan',
+            location: 'Gulshan 2, Dhaka',
+            contactEmail: 'gulshan@kiddoz.com',
+            contactPhone: '01711223344',
+            capacity: 250,
+            status: 'active'
+        });
+
+        const centerUttara = await Center.create({
+            name: 'KiddoZ Uttara',
+            location: 'Sector 4, Uttara, Dhaka',
+            contactEmail: 'uttara@kiddoz.com',
+            contactPhone: '01711223355',
+            capacity: 200,
+            status: 'active'
+        });
+
+        const centers = [centerGulshan, centerUttara];
+
         console.log('Seeding Users...');
 
         // Helper to create user and return id
@@ -18,6 +39,7 @@ const seed = async () => {
         };
 
         const admin = await createUser({ email: 'admin@kiddoz.com', password: adminHash, fullName: 'Admin Iftikhar', role: 'admin', phone: '01700000000', address: 'Dhaka' });
+        const superAdmin = await createUser({ email: 'superadmin@kiddoz.com', password: adminHash, fullName: 'Super Admin', role: 'superadmin', phone: '01700000001', address: 'Dhaka HQ' });
         const rahim = await createUser({ email: 'rahim@gmail.com', password: passHash, fullName: 'Rahim Uddin', role: 'parent', phone: '01812345678', address: 'Gulshan, Dhaka' });
         const fatima = await createUser({ email: 'fatima@gmail.com', password: passHash, fullName: 'Fatima Begum', role: 'parent', phone: '01987654321', address: 'Banani, Dhaka' });
         const karim = await createUser({ email: 'karim@gmail.com', password: passHash, fullName: 'Karim Sheikh', role: 'parent', phone: '01711112222', address: 'Uttara, Dhaka' });
@@ -52,6 +74,7 @@ const seed = async () => {
                 id: `S-${1000 + i}`,
                 parentId: parent.id,
                 parentName: parent.fullName,
+                centerId: centers[i % centers.length].id,
                 name: `${firstName} ${lastName}`,
                 age: Math.floor(Math.random() * 4) + 2, // 2-5 years old
                 plan: plans[Math.floor(Math.random() * plans.length)],
@@ -65,19 +88,117 @@ const seed = async () => {
         await Student.bulkCreate(studentsData);
         console.log(`Seeded ${studentsData.length} students`);
 
-        // --- 3. Seed Staff ---
-        const staffData = [
-            { id: 'ST-001', name: 'Salma Khatun', role: 'Nanny', experience: '5 Years', specialty: 'Infant Care', rate: 300, area: 'Gulshan', availability: 'Available', img: 'https://randomuser.me/api/portraits/women/1.jpg' },
-            { id: 'ST-002', name: 'Rokeya Sultana', role: 'Teacher', experience: '8 Years', specialty: 'Early Childhood', rate: 500, area: 'Bashundhara', availability: 'Available', img: 'https://randomuser.me/api/portraits/women/2.jpg' },
-            { id: 'ST-003', name: 'Abul Kalam', role: 'Driver', experience: '10 Years', specialty: 'Safe Driving', rate: 200, area: 'Uttara', availability: 'Busy', img: 'https://randomuser.me/api/portraits/men/1.jpg' },
-            { id: 'ST-004', name: 'Moushumi Akter', role: 'Nanny', experience: '3 Years', specialty: 'Toddlers', rate: 250, area: 'Dhanmondi', availability: 'Available', img: 'https://randomuser.me/api/portraits/women/3.jpg' },
-            { id: 'ST-005', name: 'Farhana Rahman', role: 'Nurse', experience: '6 Years', specialty: 'First Aid', rate: 600, area: 'Banani', availability: 'Available', img: 'https://randomuser.me/api/portraits/women/4.jpg' },
-            { id: 'ST-006', name: 'Jahor Ali', role: 'Security', experience: '4 Years', specialty: 'Gatekeeping', rate: 150, area: 'Mirpur', availability: 'Shift', img: 'https://randomuser.me/api/portraits/men/2.jpg' },
-            { id: 'ST-007', name: 'Sumaiya Islam', role: 'Teacher', experience: '5 Years', specialty: 'Art & Craft', rate: 450, area: 'Mohammadpur', availability: 'Available', img: 'https://randomuser.me/api/portraits/women/5.jpg' },
-            { id: 'ST-008', name: 'Bilkis Begum', role: 'Cook', experience: '12 Years', specialty: 'Healthy Meals', rate: 200, area: 'Badda', availability: 'Shift', img: 'https://randomuser.me/api/portraits/women/6.jpg' },
-            { id: 'ST-009', name: 'Kamal Hasan', role: 'Nanny', experience: '4 Years', specialty: 'Active Play', rate: 280, area: 'Tejgaon', availability: 'Available', img: 'https://randomuser.me/api/portraits/men/3.jpg' },
-            { id: 'ST-010', name: 'Sharmin Jahan', role: 'Teacher', experience: '7 Years', specialty: 'English Basics', rate: 550, area: 'Gulshan', availability: 'Available', img: 'https://randomuser.me/api/portraits/women/7.jpg' }
-        ];
+
+        // --- 3. Seed Staff (50 members) ---
+        const nannyNames = ['Salma Khatun', 'Moushumi Akter', 'Kamal Hasan', 'Rehana Begum', 'Nasima Akter', 'Sultana Razia', 'Amina Khatun', 'Rahima Begum', 'Taslima Akter', 'Hosne Ara', 'Shamima Begum', 'Roksana Parvin', 'Mahmuda Akter', 'Jesmin Nahar', 'Shahnaz Begum', 'Monowara Begum', 'Aleya Khatun', 'Farida Yasmin', 'Sabina Akter', 'Nazma Begum'];
+        const nurseNames = ['Farhana Rahman', 'Nusrat Jahan', 'Sadia Islam', 'Tahmina Akter', 'Shahana Parveen', 'Rubina Khatun', 'Dilruba Yasmin', 'Farzana Ahmed', 'Sharmin Sultana', 'Ayesha Siddika', 'Mahfuza Begum', 'Rowshan Ara', 'Kamrun Nahar', 'Shapla Akter', 'Lovely Khatun'];
+        const teacherNames = ['Rokeya Sultana', 'Sumaiya Islam', 'Sharmin Jahan', 'Tasnuva Rahman', 'Fahmida Khatun', 'Nargis Akter', 'Rupa Begum', 'Shirin Akter'];
+        const driverNames = ['Abul Kalam', 'Rafiqul Islam', 'Jahangir Alam'];
+        const cookNames = ['Bilkis Begum', 'Rahela Khatun'];
+        const securityNames = ['Jahor Ali', 'Motaleb Hossain'];
+
+        const areas = ['Gulshan', 'Banani', 'Dhanmondi', 'Uttara', 'Bashundhara', 'Mirpur', 'Mohammadpur', 'Badda', 'Tejgaon', 'Khilgaon'];
+        const availabilityOptions = ['Available', 'Busy', 'Shift', 'On Leave'];
+
+        const staffData = [];
+        let staffId = 1;
+
+        // Add 20 Nannies
+        nannyNames.forEach((name, index) => {
+            const specialties = ['Infant Care', 'Toddlers', 'Active Play', 'Newborn Care', 'Special Needs', 'Night Care'];
+            staffData.push({
+                id: `ST-${String(staffId++).padStart(3, '0')}`,
+                name: name,
+                role: 'Nanny',
+                centerId: centers[index % centers.length].id,
+                experience: `${Math.floor(Math.random() * 10) + 2} Years`,
+                specialty: specialties[index % specialties.length],
+                rate: 250 + Math.floor(Math.random() * 150),
+                area: areas[index % areas.length],
+                availability: availabilityOptions[index % 3],
+                img: `https://randomuser.me/api/portraits/women/${index + 10}.jpg`
+            });
+        });
+
+        // Add 15 Nurses
+        nurseNames.forEach((name, index) => {
+            const specialties = ['First Aid', 'Pediatric Care', 'Emergency Care', 'Vaccination', 'Health Monitoring', 'Medical Records'];
+            staffData.push({
+                id: `ST-${String(staffId++).padStart(3, '0')}`,
+                name: name,
+                role: 'Nurse',
+                centerId: centers[index % centers.length].id,
+                experience: `${Math.floor(Math.random() * 12) + 3} Years`,
+                specialty: specialties[index % specialties.length],
+                rate: 500 + Math.floor(Math.random() * 200),
+                area: areas[index % areas.length],
+                availability: availabilityOptions[index % 3],
+                img: `https://randomuser.me/api/portraits/women/${index + 30}.jpg`
+            });
+        });
+
+        // Add 8 Teachers
+        teacherNames.forEach((name, index) => {
+            const specialties = ['Early Childhood', 'Art & Craft', 'English Basics', 'Math & Science', 'Music & Dance', 'Physical Education', 'Montessori', 'Language Development'];
+            staffData.push({
+                id: `ST-${String(staffId++).padStart(3, '0')}`,
+                name: name,
+                role: 'Teacher',
+                centerId: centers[index % centers.length].id,
+                experience: `${Math.floor(Math.random() * 10) + 4} Years`,
+                specialty: specialties[index % specialties.length],
+                rate: 450 + Math.floor(Math.random() * 200),
+                area: areas[index % areas.length],
+                availability: availabilityOptions[index % 3],
+                img: `https://randomuser.me/api/portraits/women/${index + 50}.jpg`
+            });
+        });
+
+        // Add 3 Drivers
+        driverNames.forEach((name, index) => {
+            staffData.push({
+                id: `ST-${String(staffId++).padStart(3, '0')}`,
+                name: name,
+                role: 'Driver',
+                experience: `${Math.floor(Math.random() * 15) + 5} Years`,
+                specialty: 'Safe Driving',
+                rate: 180 + Math.floor(Math.random() * 50),
+                area: areas[index % areas.length],
+                availability: index === 0 ? 'Busy' : 'Available',
+                img: `https://randomuser.me/api/portraits/men/${index + 1}.jpg`
+            });
+        });
+
+        // Add 2 Cooks
+        cookNames.forEach((name, index) => {
+            staffData.push({
+                id: `ST-${String(staffId++).padStart(3, '0')}`,
+                name: name,
+                role: 'Cook',
+                experience: `${Math.floor(Math.random() * 15) + 8} Years`,
+                specialty: index === 0 ? 'Healthy Meals' : 'Nutritious Food',
+                rate: 200 + Math.floor(Math.random() * 50),
+                area: areas[index % areas.length],
+                availability: 'Shift',
+                img: `https://randomuser.me/api/portraits/women/${index + 60}.jpg`
+            });
+        });
+
+        // Add 2 Security
+        securityNames.forEach((name, index) => {
+            staffData.push({
+                id: `ST-${String(staffId++).padStart(3, '0')}`,
+                name: name,
+                role: 'Security',
+                experience: `${Math.floor(Math.random() * 10) + 3} Years`,
+                specialty: index === 0 ? 'Gatekeeping' : 'Campus Security',
+                rate: 150 + Math.floor(Math.random() * 30),
+                area: areas[index % areas.length],
+                availability: 'Shift',
+                img: `https://randomuser.me/api/portraits/men/${index + 10}.jpg`
+            });
+        });
+
         await Staff.bulkCreate(staffData);
         console.log(`Seeded ${staffData.length} staff members`);
 
@@ -324,8 +445,54 @@ const seed = async () => {
                 });
             }
         }
+        // Create more bookings... (omitted for brevity)
         await NannyBooking.bulkCreate(nannyBookingsData);
         console.log(`Seeded ${nannyBookingsData.length} nanny bookings`);
+
+        // --- 11. Seed Bulletins ---
+        console.log('Seeding Bulletins...');
+        const bulletinsData = [
+            { title: 'System Infrastructure Upgrade', content: 'We are upgrading our core servers this Sunday. Expect minor blips between 2 AM and 4 AM.', category: 'Maintenance', priority: 'High', status: 'Published' },
+            { title: 'Spring Festival 2026', content: 'Join us for the annual KiddoZ Spring Festival! Games, food, and fun for all students and parents.', category: 'Event', priority: 'Medium', status: 'Published' },
+            { title: 'New Vaccination Policy', content: 'Updated health guidelines require all students to have the latest flu shots by next month.', category: 'Policy', priority: 'Critical', status: 'Published' },
+            { title: 'Extended Hours Now Available', content: 'By popular demand, we are extending our closing time to 7 PM at the Gulshan center.', category: 'Announcement', priority: 'Low', status: 'Published' },
+            { title: 'Monthly Staff Excellence Award', content: 'Congratulations to Teacher Rokeya for her outstanding contribution to student development!', category: 'Announcement', priority: 'Medium', status: 'Published' }
+        ];
+        await Bulletin.bulkCreate(bulletinsData);
+        console.log(`Seeded ${bulletinsData.length} bulletins`);
+
+        // --- 12. More Financial Data for Richer Charts ---
+        console.log('Seeding more financial records...');
+        const moreBilling = [];
+        for (let i = 2; i <= 6; i++) { // Previous 5 months
+            for (const parent of parents.slice(0, 5)) {
+                const amount = 4000 + Math.floor(Math.random() * 3000);
+                moreBilling.push({
+                    parentId: parent.id,
+                    amount: amount,
+                    dueDate: new Date(new Date().getFullYear(), new Date().getMonth() - i, 25),
+                    status: 'Paid',
+                    description: `Historical tuition - Month ${-i}`,
+                    invoiceNumber: `INV-HIST-${i}-${parent.id}`
+                });
+            }
+        }
+        await Billing.bulkCreate(moreBilling);
+
+        const morePayroll = [];
+        for (let i = 1; i <= 4; i++) {
+            staffData.slice(0, 10).forEach(staff => {
+                morePayroll.push({
+                    recipientName: staff.name,
+                    role: staff.role,
+                    amount: staff.rate || 300,
+                    status: 'Paid',
+                    type: 'Salary',
+                    date: daysAgo(30 * i)
+                });
+            });
+        }
+        await Payroll.bulkCreate(morePayroll);
 
         console.log('Database seeded successfully completely.');
         process.exit();

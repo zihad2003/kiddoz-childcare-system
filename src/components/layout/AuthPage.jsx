@@ -40,13 +40,17 @@ const AuthPage = () => {
           fullName,
           phone
         });
+        navigate('/dashboard'); // New users go to parent dashboard by default
       } else {
-        await login(email, password);
+        const user = await login(email, password);
+        if (user.role === 'superadmin') {
+          navigate('/superadmin');
+        } else if (user.role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/dashboard');
+        }
       }
-
-      // Navigation is handled by the caller or we do it here. 
-      // AuthContext handles the state update.
-      navigate('/dashboard');
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.error || err.message || "Authentication failed.");

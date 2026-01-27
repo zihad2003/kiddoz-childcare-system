@@ -23,11 +23,15 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING
         },
         role: {
-            type: DataTypes.ENUM('admin', 'parent', 'teacher', 'nurse', 'nanny'),
+            type: DataTypes.ENUM('superadmin', 'admin', 'parent', 'teacher', 'nurse', 'nanny'),
             defaultValue: 'parent'
         },
         address: {
             type: DataTypes.STRING
+        },
+        status: {
+            type: DataTypes.ENUM('active', 'suspended', 'pending'),
+            defaultValue: 'active'
         }
     });
 

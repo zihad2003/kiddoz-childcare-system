@@ -26,10 +26,30 @@ db.HealthRecord = require('./HealthRecord')(sequelize, Sequelize);
 db.DailyActivity = require('./DailyActivity')(sequelize, Sequelize);
 db.Billing = require('./Billing')(sequelize, Sequelize);
 db.NannyBooking = require('./NannyBooking')(sequelize, Sequelize);
+db.AppSettings = require('./AppSettings')(sequelize, Sequelize);
+db.AuditLog = require('./AuditLog')(sequelize, Sequelize);
+db.ApiKey = require('./ApiKey')(sequelize, Sequelize);
+db.Webhook = require('./Webhook')(sequelize, Sequelize);
+db.AppVersion = require('./AppVersion')(sequelize, Sequelize);
+db.Feedback = require('./Feedback')(sequelize, Sequelize);
+db.PlatformAnalytics = require('./PlatformAnalytics')(sequelize, Sequelize);
+db.Center = require('./Center')(sequelize, Sequelize);
+db.Bulletin = require('./Bulletin')(sequelize, Sequelize);
+db.Milestone = require('./Milestone')(sequelize, Sequelize);
 
 // Associations
 // User has many Students (as parent)
 db.User.hasMany(db.Student, { foreignKey: 'parentId', as: 'students' });
 db.Student.belongsTo(db.User, { foreignKey: 'parentId', as: 'parent' });
+
+// Super Admin Associations
+db.User.hasMany(db.AuditLog, { foreignKey: 'userId', as: 'auditLogs' });
+db.AuditLog.belongsTo(db.User, { foreignKey: 'userId', as: 'user' });
+
+db.User.hasMany(db.ApiKey, { foreignKey: 'createdBy', as: 'apiKeys' });
+db.ApiKey.belongsTo(db.User, { foreignKey: 'createdBy', as: 'creator' });
+
+db.User.hasMany(db.Feedback, { foreignKey: 'userId', as: 'feedback' });
+db.Feedback.belongsTo(db.User, { foreignKey: 'userId', as: 'user' });
 
 module.exports = db;

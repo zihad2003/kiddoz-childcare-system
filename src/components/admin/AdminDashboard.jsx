@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react';
+<<<<<<< HEAD
 import { useNavigate, useLocation } from 'react-router-dom'; import { Users, Bell, LogOut, Search, Edit2, ShieldCheck, Clock, DollarSign, Settings, UserCheck, ScanFace, Database } from 'lucide-react';
+=======
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Users, Bell, LogOut, Search, Edit2, ShieldCheck, Clock, DollarSign, Settings, UserCheck, ScanFace, Database } from 'lucide-react';
+>>>>>>> shoikot
 import { BANGLADESHI_STUDENTS } from '../../data/bangladeshiData';
 import DataQueryFilter from './DataQueryFilter';
 import TaskManager from './TaskManager';
@@ -9,18 +14,20 @@ import Button from '../ui/Button';
 import Badge from '../ui/Badge';
 import StaffManager from './StaffManager';
 import PayrollManager from './PayrollManagerClean';
-import LiveViewYOLO from '../ai/LiveViewYOLO';
+import LiveStreamManager from './LiveStreamManager';
 import NurseDashboard from './NurseDashboard';
 import TeacherDashboard from './TeacherDashboard';
 import ChildCareTaskManager from './ChildCareTaskManager';
 import NannyDashboard from './NannyDashboard';
 import StudentDailyUpdateModal from './StudentDailyUpdateModal';
+import AppSettings from './AppSettings';
 import api from '../../services/api';
 
 const AdminDashboard = ({ user, handleLogout }) => {
   const { addToast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
+<<<<<<< HEAD
 
   const getInitialTab = () => {
     if (location.pathname.includes('manage-staff')) return 'nannies';
@@ -33,6 +40,29 @@ const AdminDashboard = ({ user, handleLogout }) => {
 
   const [currentRole, setCurrentRole] = useState('admin'); // admin | teacher | nurse | nanny
   const [adminTab, setAdminTab] = useState(getInitialTab()); const [students, setStudents] = useState([]);
+=======
+  const [currentRole, setCurrentRole] = useState('admin'); // admin | teacher | nurse | nanny
+
+  // Map URL paths to tab keys
+  const getTabFromPath = (path) => {
+    const segments = path.split('/').filter(Boolean);
+    if (segments.length <= 1) return 'roster';
+    const subRoute = segments[1];
+    if (subRoute === 'student') return 'roster';
+    if (subRoute === 'staff') return 'nannies';
+    return subRoute;
+  };
+
+  const adminTab = getTabFromPath(location.pathname);
+
+  const setTab = (tab) => {
+    if (tab === 'roster') navigate('/admin/student');
+    else if (tab === 'nannies') navigate('/admin/staff');
+    else navigate(`/admin/${tab}`);
+  };
+
+  const [students, setStudents] = useState([]);
+>>>>>>> shoikot
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -77,7 +107,9 @@ const AdminDashboard = ({ user, handleLogout }) => {
 
 
   const enrollBangladeshiData = async () => {
+    if (loading) return;
     setLoading(true);
+    addToast('Initializing Bangladeshi student data synchronization...', 'info');
     try {
       const randomStudent = BANGLADESHI_STUDENTS[Math.floor(Math.random() * BANGLADESHI_STUDENTS.length)];
       await api.addStudent({
@@ -86,13 +118,14 @@ const AdminDashboard = ({ user, handleLogout }) => {
         childData: { ...randomStudent, enrollmentDate: new Date() }
       });
 
-      addToast('Enrolled new student successfully', 'success');
-      fetchStudents();
+      addToast(`Successfully enrolled ${randomStudent.name} into the system.`, 'success');
+      await fetchStudents();
     } catch (e) {
       console.error(e);
-      addToast('Failed to enroll data', 'error');
+      addToast(e.response?.data?.message || 'Failed to sync data with the server. Please check your connection.', 'error');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const processStudents = () => {
@@ -150,13 +183,12 @@ const AdminDashboard = ({ user, handleLogout }) => {
           <label className="text-xs font-bold uppercase tracking-wider opacity-70 mb-2 block">Current Staff Profile</label>
           <select
             value={currentRole}
-            onChange={(e) => { setCurrentRole(e.target.value); setAdminTab('roster'); }}
+            onChange={(e) => { setCurrentRole(e.target.value); setTab('roster'); }}
+
             className="w-full bg-white/10 text-white font-bold rounded-lg p-2 border border-white/20 outline-none focus:bg-white/20"
           >
             <option value="admin" className="text-slate-900">Start Director (Admin)</option>
             <option value="teacher" className="text-slate-900">Lead Teacher</option>
-            <option value="nurse" className="text-slate-900">School Nurse</option>
-            <option value="nanny" className="text-slate-900">Home Nanny</option>
           </select>
         </div>
 
@@ -169,28 +201,35 @@ const AdminDashboard = ({ user, handleLogout }) => {
 
         <nav className="space-y-3 flex-1">
           <button
-            onClick={() => setAdminTab('roster')}
+            onClick={() => setTab('roster')}
             className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'roster' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-purple-100 hover:text-white'}`}
           >
             <Users size={20} /> {currentRole === 'nurse' ? 'Health Check' : 'Student Roster'}
           </button>
 
           <button
-            onClick={() => setAdminTab('nannies')}
+            onClick={() => setTab('nannies')}
             className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'nannies' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-purple-100 hover:text-white'}`}
           >
             <UserCheck size={20} /> Manage Staff
           </button>
 
           <button
-            onClick={() => setAdminTab('care')}
+            onClick={() => setTab('care')}
             className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'care' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-purple-100 hover:text-white'}`}
           >
             <Clock size={20} /> Care & Tasks
           </button>
 
           <button
-            onClick={() => setAdminTab('alerts')}
+            onClick={() => setTab('live')}
+            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'live' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-purple-100 hover:text-white'}`}
+          >
+            <ScanFace size={20} /> AI Surveillance
+          </button>
+
+          <button
+            onClick={() => setTab('alerts')}
             className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'alerts' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-purple-100 hover:text-white'}`}
           >
             <Bell size={20} /> Alerts Center
@@ -200,13 +239,13 @@ const AdminDashboard = ({ user, handleLogout }) => {
             <div className="pt-6 pb-2">
               <p className="px-4 text-xs font-bold text-white/50 uppercase tracking-widest mb-2">Admin Tools</p>
               <button
-                onClick={() => setAdminTab('financials')}
+                onClick={() => setTab('financials')}
                 className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'financials' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-purple-100 hover:text-white'}`}
               >
                 <DollarSign size={20} /> Financials
               </button>
               <button
-                onClick={() => setAdminTab('settings')}
+                onClick={() => setTab('settings')}
                 className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'settings' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-purple-100 hover:text-white'}`}
               >
                 <Settings size={20} /> App Settings
@@ -266,8 +305,15 @@ const AdminDashboard = ({ user, handleLogout }) => {
                       />
                     </div>
                     <div className="flex gap-2">
-                      <Button onClick={enrollBangladeshiData} variant="outline" size="sm" className="border-green-200 bg-green-50 text-green-700 hover:bg-green-100">
-                        <Database size={16} className="mr-2" /> Load BD Data
+                      <Button
+                        onClick={enrollBangladeshiData}
+                        variant="outline"
+                        size="sm"
+                        className="border-green-200 bg-green-50 text-green-700 hover:bg-green-100"
+                        disabled={loading}
+                      >
+                        {loading ? <Loader2 size={16} className="mr-2 animate-spin" /> : <Database size={16} className="mr-2" />}
+                        {loading ? 'Processing...' : 'Load BD Data'}
                       </Button>
                       <Badge color="bg-purple-100 text-purple-700">{students.length} Total Students</Badge>
                       <Badge color="bg-green-100 text-green-700">{students.filter(s => s.attendance === 'Present').length} Present</Badge>
@@ -315,7 +361,7 @@ const AdminDashboard = ({ user, handleLogout }) => {
 
               {adminTab === 'live' && (
                 <div className="animate-in fade-in duration-500">
-                  <LiveViewYOLO />
+                  <LiveStreamManager />
                 </div>
               )}
 
@@ -340,43 +386,7 @@ const AdminDashboard = ({ user, handleLogout }) => {
               )}
 
               {adminTab === 'settings' && (
-                <div className="max-w-2xl animate-in fade-in duration-500">
-                  <Card className="p-6 space-y-6">
-                    <div>
-                      <h3 className="font-bold text-lg text-slate-800 mb-4">General Settings</h3>
-                      <div className="flex items-center justify-between py-3 border-b border-slate-100">
-                        <div>
-                          <p className="font-semibold text-slate-700">System Notifications</p>
-                          <p className="text-xs text-slate-500">Enable email alerts for staff</p>
-                        </div>
-                        <div
-                          className={`w-12 h-6 rounded-full relative cursor-pointer transition-colors ${settings.notifications ? 'bg-purple-600' : 'bg-slate-200'}`}
-                          onClick={() => toggleSetting('notifications')}
-                        >
-                          <div className={`w-4 h-4 bg-white rounded-full absolute top-1 shadow-sm transition-all ${settings.notifications ? 'right-1' : 'left-1'}`}></div>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between py-3 border-b border-slate-100">
-                        <div>
-                          <p className="font-semibold text-slate-700">Maintenance Mode</p>
-                          <p className="text-xs text-slate-500">Disables parent access temporarily</p>
-                        </div>
-                        <div
-                          className={`w-12 h-6 rounded-full relative cursor-pointer transition-colors ${settings.maintenance ? 'bg-purple-600' : 'bg-slate-200'}`}
-                          onClick={() => toggleSetting('maintenance')}
-                        >
-                          <div className={`w-4 h-4 bg-white rounded-full absolute top-1 shadow-sm transition-all ${settings.maintenance ? 'right-1' : 'left-1'}`}></div>
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-lg text-slate-800 mb-4">Data Management</h3>
-                      <Button variant="outline" className="w-full justify-center text-red-500 hover:bg-red-50 border-red-200">
-                        <ShieldCheck size={18} className="mr-2" /> Export All Student Data (CSV)
-                      </Button>
-                    </div>
-                  </Card>
-                </div>
+                <AppSettings />
               )}
 
               {/* Centralized Modal */}
