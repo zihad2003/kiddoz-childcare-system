@@ -88,7 +88,9 @@ const AdminDashboard = ({ user, handleLogout }) => {
 
 
   const enrollBangladeshiData = async () => {
+    if (loading) return;
     setLoading(true);
+    addToast('Initializing Bangladeshi student data synchronization...', 'info');
     try {
       const randomStudent = BANGLADESHI_STUDENTS[Math.floor(Math.random() * BANGLADESHI_STUDENTS.length)];
       await api.addStudent({
@@ -97,13 +99,14 @@ const AdminDashboard = ({ user, handleLogout }) => {
         childData: { ...randomStudent, enrollmentDate: new Date() }
       });
 
-      addToast('Enrolled new student successfully', 'success');
-      fetchStudents();
+      addToast(`Successfully enrolled ${randomStudent.name} into the system.`, 'success');
+      await fetchStudents();
     } catch (e) {
       console.error(e);
-      addToast('Failed to enroll data', 'error');
+      addToast(e.response?.data?.message || 'Failed to sync data with the server. Please check your connection.', 'error');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const processStudents = () => {
@@ -276,8 +279,15 @@ const AdminDashboard = ({ user, handleLogout }) => {
                       />
                     </div>
                     <div className="flex gap-2">
-                      <Button onClick={enrollBangladeshiData} variant="outline" size="sm" className="border-green-200 bg-green-50 text-green-700 hover:bg-green-100">
-                        <Database size={16} className="mr-2" /> Load BD Data
+                      <Button
+                        onClick={enrollBangladeshiData}
+                        variant="outline"
+                        size="sm"
+                        className="border-green-200 bg-green-50 text-green-700 hover:bg-green-100"
+                        disabled={loading}
+                      >
+                        {loading ? <Loader2 size={16} className="mr-2 animate-spin" /> : <Database size={16} className="mr-2" />}
+                        {loading ? 'Processing...' : 'Load BD Data'}
                       </Button>
                       <Badge color="bg-purple-100 text-purple-700">{students.length} Total Students</Badge>
                       <Badge color="bg-green-100 text-green-700">{students.filter(s => s.attendance === 'Present').length} Present</Badge>

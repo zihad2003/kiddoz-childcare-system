@@ -1,4 +1,4 @@
-const { sequelize, User, Staff, Student, Payroll, Task, Notification, HealthRecord, DailyActivity, Billing, NannyBooking } = require('./models');
+const { sequelize, User, Staff, Student, Payroll, Task, Notification, HealthRecord, DailyActivity, Billing, NannyBooking, Center, Bulletin } = require('./models');
 const bcrypt = require('bcryptjs');
 
 const seed = async () => {
@@ -9,6 +9,27 @@ const seed = async () => {
         const passHash = await bcrypt.hash('password123', salt);
         const adminHash = await bcrypt.hash('admin123', salt);
 
+        console.log('Seeding Centers...');
+        const centerGulshan = await Center.create({
+            name: 'KiddoZ Gulshan',
+            location: 'Gulshan 2, Dhaka',
+            contactEmail: 'gulshan@kiddoz.com',
+            contactPhone: '01711223344',
+            capacity: 250,
+            status: 'active'
+        });
+
+        const centerUttara = await Center.create({
+            name: 'KiddoZ Uttara',
+            location: 'Sector 4, Uttara, Dhaka',
+            contactEmail: 'uttara@kiddoz.com',
+            contactPhone: '01711223355',
+            capacity: 200,
+            status: 'active'
+        });
+
+        const centers = [centerGulshan, centerUttara];
+
         console.log('Seeding Users...');
 
         // Helper to create user and return id
@@ -18,6 +39,7 @@ const seed = async () => {
         };
 
         const admin = await createUser({ email: 'admin@kiddoz.com', password: adminHash, fullName: 'Admin Iftikhar', role: 'admin', phone: '01700000000', address: 'Dhaka' });
+        const superAdmin = await createUser({ email: 'superadmin@kiddoz.com', password: adminHash, fullName: 'Super Admin', role: 'superadmin', phone: '01700000001', address: 'Dhaka HQ' });
         const rahim = await createUser({ email: 'rahim@gmail.com', password: passHash, fullName: 'Rahim Uddin', role: 'parent', phone: '01812345678', address: 'Gulshan, Dhaka' });
         const fatima = await createUser({ email: 'fatima@gmail.com', password: passHash, fullName: 'Fatima Begum', role: 'parent', phone: '01987654321', address: 'Banani, Dhaka' });
         const karim = await createUser({ email: 'karim@gmail.com', password: passHash, fullName: 'Karim Sheikh', role: 'parent', phone: '01711112222', address: 'Uttara, Dhaka' });
@@ -52,6 +74,7 @@ const seed = async () => {
                 id: `S-${1000 + i}`,
                 parentId: parent.id,
                 parentName: parent.fullName,
+                centerId: centers[i % centers.length].id,
                 name: `${firstName} ${lastName}`,
                 age: Math.floor(Math.random() * 4) + 2, // 2-5 years old
                 plan: plans[Math.floor(Math.random() * plans.length)],
@@ -87,6 +110,7 @@ const seed = async () => {
                 id: `ST-${String(staffId++).padStart(3, '0')}`,
                 name: name,
                 role: 'Nanny',
+                centerId: centers[index % centers.length].id,
                 experience: `${Math.floor(Math.random() * 10) + 2} Years`,
                 specialty: specialties[index % specialties.length],
                 rate: 250 + Math.floor(Math.random() * 150),
@@ -103,6 +127,7 @@ const seed = async () => {
                 id: `ST-${String(staffId++).padStart(3, '0')}`,
                 name: name,
                 role: 'Nurse',
+                centerId: centers[index % centers.length].id,
                 experience: `${Math.floor(Math.random() * 12) + 3} Years`,
                 specialty: specialties[index % specialties.length],
                 rate: 500 + Math.floor(Math.random() * 200),
@@ -119,6 +144,7 @@ const seed = async () => {
                 id: `ST-${String(staffId++).padStart(3, '0')}`,
                 name: name,
                 role: 'Teacher',
+                centerId: centers[index % centers.length].id,
                 experience: `${Math.floor(Math.random() * 10) + 4} Years`,
                 specialty: specialties[index % specialties.length],
                 rate: 450 + Math.floor(Math.random() * 200),
@@ -419,8 +445,54 @@ const seed = async () => {
                 });
             }
         }
+        // Create more bookings... (omitted for brevity)
         await NannyBooking.bulkCreate(nannyBookingsData);
         console.log(`Seeded ${nannyBookingsData.length} nanny bookings`);
+
+        // --- 11. Seed Bulletins ---
+        console.log('Seeding Bulletins...');
+        const bulletinsData = [
+            { title: 'System Infrastructure Upgrade', content: 'We are upgrading our core servers this Sunday. Expect minor blips between 2 AM and 4 AM.', category: 'Maintenance', priority: 'High', status: 'Published' },
+            { title: 'Spring Festival 2026', content: 'Join us for the annual KiddoZ Spring Festival! Games, food, and fun for all students and parents.', category: 'Event', priority: 'Medium', status: 'Published' },
+            { title: 'New Vaccination Policy', content: 'Updated health guidelines require all students to have the latest flu shots by next month.', category: 'Policy', priority: 'Critical', status: 'Published' },
+            { title: 'Extended Hours Now Available', content: 'By popular demand, we are extending our closing time to 7 PM at the Gulshan center.', category: 'Announcement', priority: 'Low', status: 'Published' },
+            { title: 'Monthly Staff Excellence Award', content: 'Congratulations to Teacher Rokeya for her outstanding contribution to student development!', category: 'Announcement', priority: 'Medium', status: 'Published' }
+        ];
+        await Bulletin.bulkCreate(bulletinsData);
+        console.log(`Seeded ${bulletinsData.length} bulletins`);
+
+        // --- 12. More Financial Data for Richer Charts ---
+        console.log('Seeding more financial records...');
+        const moreBilling = [];
+        for (let i = 2; i <= 6; i++) { // Previous 5 months
+            for (const parent of parents.slice(0, 5)) {
+                const amount = 4000 + Math.floor(Math.random() * 3000);
+                moreBilling.push({
+                    parentId: parent.id,
+                    amount: amount,
+                    dueDate: new Date(new Date().getFullYear(), new Date().getMonth() - i, 25),
+                    status: 'Paid',
+                    description: `Historical tuition - Month ${-i}`,
+                    invoiceNumber: `INV-HIST-${i}-${parent.id}`
+                });
+            }
+        }
+        await Billing.bulkCreate(moreBilling);
+
+        const morePayroll = [];
+        for (let i = 1; i <= 4; i++) {
+            staffData.slice(0, 10).forEach(staff => {
+                morePayroll.push({
+                    recipientName: staff.name,
+                    role: staff.role,
+                    amount: staff.rate || 300,
+                    status: 'Paid',
+                    type: 'Salary',
+                    date: daysAgo(30 * i)
+                });
+            });
+        }
+        await Payroll.bulkCreate(morePayroll);
 
         console.log('Database seeded successfully completely.');
         process.exit();

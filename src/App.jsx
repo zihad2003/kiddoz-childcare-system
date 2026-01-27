@@ -133,15 +133,27 @@ function AppContent() {
           <Route path="/tour" element={<TourBookingPage />} />
 
           <Route path="/admin/*" element={
-            <AdminDashboard user={user} handleLogout={handleLogout} />
+            user && user.role === 'admin' ? (
+              <AdminDashboard user={user} handleLogout={handleLogout} />
+            ) : (
+              <Navigate to="/login" />
+            )
           } />
 
-          <Route path="/superadmin" element={
-            <SuperAdminDashboard user={user} handleLogout={handleLogout} />
+          <Route path="/superadmin/*" element={
+            user && user.role === 'superadmin' ? (
+              <SuperAdminDashboard user={user} handleLogout={handleLogout} />
+            ) : (
+              <Navigate to="/login" />
+            )
           } />
 
           <Route path="/dashboard" element={
-            <ParentDashboard user={user} db={db} appId={appId} />
+            user ? (
+              <ParentDashboard user={user} db={db} appId={appId} />
+            ) : (
+              <Navigate to="/login" />
+            )
           } />
 
           <Route path="/student/:id" element={<StudentProfile db={db} appId={appId} />} />

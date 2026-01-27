@@ -46,20 +46,32 @@ router.get('/:id', auth, async (req, res) => {
 router.post('/', auth, async (req, res) => {
     try {
         const { name, dob, gender, plan, photoUrl, childData } = req.body;
+
+        // Basic Validation
+        if (!name || name.trim().length === 0) {
+            return res.status(400).json({ message: 'Student name is required' });
+        }
+        if (!dob) {
+            return res.status(400).json({ message: 'Date of birth is required' });
+        }
+
         let parentId = req.user.id;
 
         // Admins can enroll for others if they provide parentId
         if (req.user.role === 'admin' && req.body.parentId) {
             parentId = req.body.parentId;
+            // Verify parent exists if provided by admin
+            const parent = await User.findByPk(parentId);
+            if (!parent) return res.status(400).json({ message: 'Specified parent does not exist' });
         }
 
         const newStudent = await Student.create({
             id: `K-${Math.floor(1000 + Math.random() * 9000)}`, // Simple ID generation
             parentId,
-            name,
+            name: name.trim(),
             dob,
-            gender,
-            plan: plan?.name || plan, // Handle object or string
+            gender: gender || 'Other',
+            plan: plan?.name || plan || 'Little Explorer', // Handle object or string with default
             photoUrl,
             healthInfo: childData, // Storing raw extra data here for now
             attendance: 'Registered'
@@ -67,8 +79,8 @@ router.post('/', auth, async (req, res) => {
 
         res.status(201).json(newStudent);
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server Error' });
+        console.error('Enrollment Error:', err);
+        res.status(500).json({ message: 'Enrollment failed due to a server error. Please try again later.' });
     }
 });
 

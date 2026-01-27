@@ -89,11 +89,15 @@ const api = {
     getAnalyticsUsers: () => apiClient.get('/superadmin/analytics/users').then(res => res.data),
 
     getAllUsers: (params) => apiClient.get('/superadmin/users', { params }).then(res => res.data),
-    suspendUser: (id) => apiClient.post(`/superadmin/users/${id}/suspend`).then(res => res.data),
+    addUser: (data) => apiClient.post('/superadmin/users', data).then(res => res.data),
+    updateUser: (id, data) => apiClient.put(`/superadmin/users/${id}`, data).then(res => res.data),
+    deleteUser: (id) => apiClient.delete(`/superadmin/users/${id}`).then(res => res.data),
 
     getCenters: () => apiClient.get('/superadmin/centers').then(res => res.data),
     addCenter: (data) => apiClient.post('/superadmin/centers', data).then(res => res.data),
     updateCenter: (id, data) => apiClient.put(`/superadmin/centers/${id}`, data).then(res => res.data),
+    deleteCenter: (id) => apiClient.delete(`/superadmin/centers/${id}`).then(res => res.data),
+    getCenterDetails: (id) => apiClient.get(`/superadmin/centers/${id}/details`).then(res => res.data),
 
     getApiKeys: () => apiClient.get('/superadmin/developer/api-keys').then(res => res.data),
     createApiKey: (data) => apiClient.post('/superadmin/developer/api-keys', data).then(res => res.data),
@@ -113,6 +117,7 @@ const api = {
     getStaffAll: () => apiClient.get('/superadmin/staff/all').then(res => res.data),
 
     getRecentActivity: () => apiClient.get('/superadmin/security/audit-logs?limit=5').then(res => res.data),
+    getFinancialOverview: () => apiClient.get('/superadmin/financials/overview').then(res => res.data),
 };
 
 export default api;

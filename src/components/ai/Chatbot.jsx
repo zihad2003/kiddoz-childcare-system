@@ -26,28 +26,22 @@ const Chatbot = ({ user }) => {
     setIsLoading(true);
 
     try {
-      const apiKey = ""; // Runtime key
-      let systemPrompt = mode === 'health' 
-        ? `You are a Health Analysis AI for KiddoZ. Tone: Professional. If user asks about a specific child ID, pretend to look up their specific vitals (Temp, Mood, Meal) from the database context provided in the previous turn.`
-        : "You are the friendly AI assistant for KiddoZ. Answer questions about Pre-School, Day Care, and Nanny services. Tone: Warm, helpful.";
+      const response = await fetch('/api/ai/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}` // Current auth approach
+        },
+        body: JSON.stringify({ message: input, mode })
+      });
 
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: input }] }],
-            systemInstruction: { parts: [{ text: systemPrompt }] }
-          })
-        }
-      );
-      
       const data = await response.json();
-      const botText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Connection glitch. Please try again.";
-      setMessages(prev => [...prev, { role: 'assistant', text: botText }]);
+      if (!response.ok) throw new Error(data.message || 'Chat error');
+
+      setMessages(prev => [...prev, { role: 'assistant', text: data.text }]);
     } catch (error) {
-      setMessages(prev => [...prev, { role: 'assistant', text: "I'm offline momentarily." }]);
+      console.error('Chat error:', error);
+      setMessages(prev => [...prev, { role: 'assistant', text: error.message || "I'm offline momentarily." }]);
     } finally {
       setIsLoading(false);
     }

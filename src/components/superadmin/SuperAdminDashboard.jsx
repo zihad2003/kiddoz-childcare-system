@@ -33,30 +33,20 @@ const SuperAdminDashboard = ({ user, handleLogout }) => {
         { id: 'financials', label: 'Financials', icon: DollarSign },
         { id: 'content', label: 'Content', icon: FileText },
         { id: 'staff', label: 'Staff Directory', icon: BadgeCheck },
-        { id: 'security', label: 'Security', icon: Shield },
         { id: 'settings', label: 'Settings', icon: Settings },
-        { id: 'developer', label: 'Developer', icon: Code },
-        { id: 'app', label: 'App Management', icon: Smartphone },
-        { id: 'support', label: 'Support', icon: MessageSquare },
-        { id: 'reports', label: 'Reports', icon: FileBarChart },
     ];
 
     const renderContent = () => {
         switch (activeTab) {
-            case 'overview': return <PlatformOverview />;
+            case 'overview': return <PlatformOverview setActiveTab={setActiveTab} />;
             case 'users': return <UserManagement />;
             case 'centers': return <CenterManagement />;
             case 'analytics': return <AnalyticsReports />;
             case 'financials': return <FinancialOverview />;
             case 'content': return <ContentManagement />;
             case 'staff': return <StaffDirectory />;
-            case 'security': return <SecurityCompliance />;
             case 'settings': return <SystemSettings />;
-            case 'developer': return <DeveloperTools />;
-            case 'app': return <AppManagement />;
-            case 'support': return <SupportFeedback />;
-            case 'reports': return <ReportsGenerator />;
-            default: return <PlatformOverview />;
+            default: return <PlatformOverview setActiveTab={setActiveTab} />;
         }
     };
 

@@ -28,6 +28,10 @@ module.exports = (sequelize, DataTypes) => {
         },
         address: {
             type: DataTypes.STRING
+        },
+        status: {
+            type: DataTypes.ENUM('active', 'suspended', 'pending'),
+            defaultValue: 'active'
         }
     });
 
