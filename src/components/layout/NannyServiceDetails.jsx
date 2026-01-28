@@ -15,7 +15,7 @@ const NannyServiceDetails = () => {
         <div className="bg-slate-50 min-h-screen">
             {/* Hero Section */}
             <div className="bg-purple-900 text-white relative overflow-hidden pt-32 pb-20 px-4">
-                <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1542037104857-ffbb0b9155fb?auto=format&fit=crop&q=80')] bg-cover bg-center"></div>
+                <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&q=80')] bg-cover bg-center"></div>
                 <div className="relative z-10 max-w-7xl mx-auto text-center">
                     <Link to="/" className="inline-flex items-center text-purple-200 hover:text-white mb-8 transition font-medium">
                         <ArrowLeft size={20} className="mr-2" /> Back to Home

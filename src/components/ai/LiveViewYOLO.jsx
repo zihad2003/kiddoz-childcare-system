@@ -112,7 +112,17 @@ const LiveViewYOLO = ({ student }) => {
       }
       frameCount++;
 
-      // 1. Clear Canvas
+      // 1. Dynamic Canvas Sizing
+      const container = videoRef.current?.parentElement || canvasRef.current.parentElement;
+      const clientWidth = container.clientWidth;
+      const clientHeight = container.clientHeight;
+
+      // Update canvas internal resolution to match display size for sharp rendering
+      if (canvasRef.current.width !== clientWidth || canvasRef.current.height !== clientHeight) {
+        canvasRef.current.width = clientWidth;
+        canvasRef.current.height = clientHeight;
+      }
+
       const width = canvasRef.current.width;
       const height = canvasRef.current.height;
       ctx.clearRect(0, 0, width, height);
@@ -122,19 +132,54 @@ const LiveViewYOLO = ({ student }) => {
 
       if (config.type === 'ip-cam') {
         if (videoRef.current && videoRef.current.readyState >= 2) { // HAVE_CURRENT_DATA
+          // Draw video scaled to canvas size
           ctx.drawImage(videoRef.current, 0, 0, width, height);
 
           if (frameCount % 4 === 0) { // Throttle detection
-            predictions = await detectObjects(videoRef.current);
+            // Note: coco-ssd expects the video element. Logic might need scaling if video element size differs from canvas.
+            // Best practice: Let model detect on video, then scale box coordinates to canvas.
+            const rawPredictions = await detectObjects(videoRef.current);
+
+            // Calculate Scale Factors
+            const videoW = videoRef.current.videoWidth;
+            const videoH = videoRef.current.videoHeight;
+            const scaleX = width / videoW;
+            const scaleY = height / videoH;
+
+            predictions = rawPredictions.map(p => ({
+              ...p,
+              bbox: [
+                p.bbox[0] * scaleX,
+                p.bbox[1] * scaleY,
+                p.bbox[2] * scaleX,
+                p.bbox[3] * scaleY
+              ]
+            }));
           }
         }
       } else if (config.type === 'demo') {
         // Draw a placeholder background
-        ctx.fillStyle = '#1e293b';
+        // Create a gradient background
+        const gradient = ctx.createLinearGradient(0, 0, 0, height);
+        gradient.addColorStop(0, '#1e293b');
+        gradient.addColorStop(1, '#0f172a');
+        ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, width, height);
-        ctx.font = "30px sans-serif";
-        ctx.fillStyle = "#334155";
+
+        // Grid pattern
+        ctx.strokeStyle = '#334155';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for (let i = 0; i < width; i += 50) { ctx.moveTo(i, 0); ctx.lineTo(i, height); }
+        for (let j = 0; j < height; j += 50) { ctx.moveTo(0, j); ctx.lineTo(width, j); }
+        ctx.stroke();
+
+        ctx.font = "bold 24px sans-serif";
+        ctx.fillStyle = "rgba(255, 255, 255, 0.1)";
         ctx.fillText("LIVE DEMO FEED", width / 2 - 100, height / 2);
+
+        ctx.fillStyle = "rgba(255, 255, 255, 0.05)";
+        ctx.fillText(new Date().toLocaleTimeString(), 20, 40);
 
         predictions = generateDemoFrame(width, height, (performance.now() / 50));
       }

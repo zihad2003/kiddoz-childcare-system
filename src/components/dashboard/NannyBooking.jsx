@@ -81,7 +81,7 @@ const NannyBooking = ({ student }) => {
                     <div className="bg-black rounded-3xl overflow-hidden relative shadow-2xl aspect-video group">
                         {/* Placeholder for live feed */}
                         <img
-                            src="https://images.unsplash.com/photo-1581056771107-24ca5f033842?auto=format&fit=crop&q=80"
+                            src="https://images.unsplash.com/photo-1587502536575-6dfba0a6e017?auto=format&fit=crop&q=80"
                             alt="Live Care"
                             className="w-full h-full object-cover opacity-80"
                         />

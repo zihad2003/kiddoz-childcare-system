@@ -25,7 +25,13 @@ export const AuthProvider = ({ children }) => {
             if (token && storedUser) {
                 try {
                     // Start with stored user for immediate UI
-                    setUser(JSON.parse(storedUser));
+                    try {
+                        const parsedUser = JSON.parse(storedUser);
+                        if (parsedUser) setUser(parsedUser);
+                    } catch (e) {
+                        console.error("Auth: Failed to parse user from storage", e);
+                        localStorage.removeItem('user');
+                    }
 
                     // Verify with backend
                     const response = await api.get('/auth/me');

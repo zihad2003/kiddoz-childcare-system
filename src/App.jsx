@@ -5,7 +5,9 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { Loader2 } from 'lucide-react';
+import ErrorBoundary from './components/ui/ErrorBoundary';
 
+// Modules - Layout & UI
 // Modules - Layout & UI
 import Navbar from './components/layout/Navbar';
 import Hero from './components/layout/Hero';
@@ -17,16 +19,20 @@ import NannyBookingPage from './components/layout/NannyBookingPage';
 import ProgramDetails from './components/layout/ProgramDetails'; // Import Details Page
 import AuthPage from './components/layout/AuthPage';
 
-// Modules - Functional Dashboards
-import EnrollmentPage from './components/enrollment/EnrollmentPage';
-import AdminDashboard from './components/admin/AdminDashboard';
-import SuperAdminDashboard from './components/superadmin/SuperAdminDashboard';
-import ParentDashboard from './components/dashboard/ParentDashboard';
-import StudentProfile from './components/dashboard/StudentProfile'; // Profile
+// Modules - Functional Dashboards (Lazy Loaded)
+const EnrollmentPage = React.lazy(() => import('./components/enrollment/EnrollmentPage'));
+const AdminDashboard = React.lazy(() => import('./components/admin/AdminDashboard'));
+const SuperAdminDashboard = React.lazy(() => import('./components/superadmin/SuperAdminDashboard'));
+const ParentDashboard = React.lazy(() => import('./components/dashboard/ParentDashboard'));
+const StudentProfile = React.lazy(() => import('./components/dashboard/StudentProfile'));
+
 import Chatbot from './components/ai/Chatbot';
 import InfoPage from './components/layout/InfoPage';
 import TourBookingPage from './components/layout/TourBookingPage';
 import TourCTA from './components/layout/TourCTA';
+
+import Preloader from './components/ui/Preloader';
+import InteractivePreloader from './components/ui/InteractivePreloader';
 
 // Firebase Configuration
 const firebaseConfig = {
@@ -39,8 +45,13 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase (Data only)
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+let app, db;
+try {
+  app = initializeApp(firebaseConfig);
+  db = getFirestore(app);
+} catch (e) {
+  console.error("Firebase Error:", e);
+}
 const appId = 'kiddoz-163cd';
 
 // Pricing Plans Constant
@@ -79,6 +90,7 @@ function AppContent() {
   const { user, loading, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [showApp, setShowApp] = React.useState(false);
 
   const handleLogout = () => {
     logout();
@@ -94,6 +106,8 @@ function AppContent() {
 
   return (
     <div className="font-sans text-slate-800 bg-slate-50 min-h-screen flex flex-col">
+      {!showApp && <InteractivePreloader onComplete={() => setShowApp(true)} />}
+      <div className="bg-purple-600 text-white p-1 text-center text-[10px] z-[200] fixed top-0 w-full opacity-50">KiddoZ System Active</div>
       {!location.pathname.startsWith('/superadmin') && (
         <Navbar
           user={user}
@@ -102,60 +116,65 @@ function AppContent() {
       )}
 
       <main className="flex-grow">
-        <Routes>
-          <Route path="/" element={
-            <>
-              <Hero />
-              <Programs />
-              <NannyService />
-              <TourCTA />
-            </>
-          } />
+        <React.Suspense fallback={
+          <div className="h-screen flex items-center justify-center">
+            <Loader2 className="animate-spin text-purple-600 w-12 h-12" />
+          </div>
+        }>
+          <Routes>
+            <Route path="/" element={
+              <>
+                <Hero />
+                <Programs />
+                <NannyService />
+                <TourCTA />
+              </>
+            } />
 
-          <Route path="/programs" element={<Programs />} />
-          <Route path="/nanny-service" element={<NannyServiceDetails />} /> {/* Dedicated Nanny Route */}
-          <Route path="/book-nanny" element={<NannyBookingPage />} /> {/* Nanny Booking Route */}
-          <Route path="/programs/:programId" element={<ProgramDetails />} /> {/* Dynamic Route */}
+            <Route path="/programs" element={<Programs />} />
+            <Route path="/nanny-service" element={<NannyServiceDetails />} /> {/* Dedicated Nanny Route */}
+            <Route path="/book-nanny" element={<NannyBookingPage />} /> {/* Nanny Booking Route */}
+            <Route path="/programs/:programId" element={<ProgramDetails />} /> {/* Dynamic Route */}
 
-          {/* Corrected: AuthPage now uses useAuth internally, but we can pass props if needed, though they are likely unused now */}
-          <Route path="/login" element={<AuthPage db={db} />} />
-          <Route path="/signup" element={<AuthPage db={db} />} />
+            <Route path="/login" element={<AuthPage db={db} />} />
+            <Route path="/signup" element={<AuthPage db={db} />} />
 
-          <Route path="/enroll/*" element={
-            <EnrollmentPage
-              user={user}
-              db={db}
-              appId={appId}
-              PLANS={PLANS}
-            />
-          } />
+            <Route path="/enroll/*" element={
+              <EnrollmentPage
+                user={user}
+                db={db}
+                appId={appId}
+                PLANS={PLANS}
+              />
+            } />
 
-          <Route path="/tour" element={<TourBookingPage />} />
+            <Route path="/tour" element={<TourBookingPage />} />
 
-          <Route path="/admin/*" element={
-            <AdminDashboard user={user} handleLogout={handleLogout} />
-          } />
+            <Route path="/admin/*" element={
+              <AdminDashboard user={user} handleLogout={handleLogout} />
+            } />
 
-          <Route path="/dashboard/*" element={
-            <ParentDashboard user={user} db={db} appId={appId} />
-          } />
+            <Route path="/dashboard/*" element={
+              <ParentDashboard user={user} db={db} appId={appId} />
+            } />
 
-          <Route path="/superadmin/*" element={
-            <SuperAdminDashboard user={user} handleLogout={handleLogout} />
-          } />
+            <Route path="/superadmin/*" element={
+              <SuperAdminDashboard user={user} handleLogout={handleLogout} />
+            } />
 
-          <Route path="/dashboard" element={
-            <ParentDashboard user={user} db={db} appId={appId} />
-          } />
+            <Route path="/dashboard" element={
+              <ParentDashboard user={user} db={db} appId={appId} />
+            } />
 
-          <Route path="/student/:id" element={<StudentProfile db={db} appId={appId} />} />
+            <Route path="/student/:id" element={<StudentProfile db={db} appId={appId} />} />
 
-          {/* Info Pages */}
-          <Route path="/info/privacy" element={<InfoPage type="privacy" />} />
-          <Route path="/info/terms" element={<InfoPage type="terms" />} />
-          <Route path="/info/help" element={<InfoPage type="help" />} />
-          <Route path="/info/safety" element={<InfoPage type="safety" />} />
-        </Routes>
+            {/* Info Pages */}
+            <Route path="/info/privacy" element={<InfoPage type="privacy" />} />
+            <Route path="/info/terms" element={<InfoPage type="terms" />} />
+            <Route path="/info/help" element={<InfoPage type="help" />} />
+            <Route path="/info/safety" element={<InfoPage type="safety" />} />
+          </Routes>
+        </React.Suspense>
       </main>
 
       {/* Hide footer on Admin pages */}
@@ -171,7 +190,9 @@ export default function App() {
   return (
     <ToastProvider>
       <AuthProvider>
-        <AppContent />
+        <ErrorBoundary>
+          <AppContent />
+        </ErrorBoundary>
       </AuthProvider>
     </ToastProvider>
   );

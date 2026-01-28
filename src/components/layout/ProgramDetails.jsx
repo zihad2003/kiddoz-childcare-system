@@ -23,7 +23,7 @@ const ProgramDetails = () => {
         <div className="min-h-screen bg-slate-50 pt-20 pb-20">
             {/* Hero Header */}
             <div className="bg-purple-900 text-white relative overflow-hidden py-20 px-4 mb-12">
-                <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1502086223501-8351e36ae966?auto=format&fit=crop&q=80')] bg-cover bg-center"></div>
+                <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80')] bg-cover bg-center"></div>
                 <div className="relative max-w-7xl mx-auto z-10 text-center">
                     <Link to="/programs" className="inline-flex items-center text-purple-200 hover:text-white mb-6 transition">
                         <ArrowLeft size={20} className="mr-2" /> Back to All Programs

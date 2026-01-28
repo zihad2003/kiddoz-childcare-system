@@ -306,6 +306,7 @@ const Chatbot = ({ user }) => {
             }}
           />
           <button
+            data-testid="send-button"
             onClick={() => handleSendMessage()}
             disabled={isTyping || !input.trim()}
             className={`p-2.5 rounded-full text-white shadow-lg transition transform hover:scale-105 disabled:opacity-50 disabled:scale-100 ${contextMode === 'health' ? 'bg-green-600 hover:bg-green-700' : 'bg-purple-600 hover:bg-purple-700'

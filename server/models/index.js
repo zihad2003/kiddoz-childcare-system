@@ -4,7 +4,23 @@ const path = require('path');
 const sequelize = new Sequelize({
     dialect: 'sqlite',
     storage: path.join(__dirname, '../database.sqlite'),
-    logging: false
+    logging: false,
+    pool: {
+        max: 10,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
+    },
+    retry: {
+        match: [
+            /SQLITE_BUSY/,
+        ],
+        name: 'query',
+        backoffBase: 100,
+        backoffExponent: 1.1,
+        timeout: 60000,
+        max: 5
+    }
 });
 
 const db = {};

@@ -19,8 +19,8 @@ router.get('/', auth, async (req, res) => {
         const students = await Student.findAll({ where: whereClause });
         res.json(students);
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server Error' });
+        console.error('STUDENTS_FETCH_ERROR:', err);
+        res.status(500).json({ message: 'Server Error', error: err.message });
     }
 });
 

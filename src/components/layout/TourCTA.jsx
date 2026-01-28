@@ -62,7 +62,7 @@ const TourCTA = () => {
                         <div className="relative z-10 grid grid-cols-2 gap-4">
                             <Card className="p-4 bg-white shadow-xl rotate-3 translate-y-8">
                                 <img
-                                    src="https://images.unsplash.com/photo-1571426027636-2ce9d57a9226?auto=format&fit=crop&q=80"
+                                    src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80"
                                     alt="Classroom"
                                     className="rounded-2xl w-full h-40 object-cover mb-4"
                                 />
@@ -73,7 +73,7 @@ const TourCTA = () => {
                             </Card>
                             <Card className="p-4 bg-white shadow-xl -rotate-3">
                                 <img
-                                    src="https://images.unsplash.com/photo-1549643265-276ce4b02534?auto=format&fit=crop&q=80"
+                                    src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&q=80"
                                     alt="Teacher"
                                     className="rounded-2xl w-full h-40 object-cover mb-4"
                                 />

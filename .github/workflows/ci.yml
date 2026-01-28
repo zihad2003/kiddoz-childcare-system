@@ -1,0 +1,52 @@
+name: KiddoZ CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    # Backend
+    - name: Use Node.js ${{ matrix.node-version }} (Backend)
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: server/package-lock.json
+    
+    - name: Install Backend Dependencies
+      run: |
+        cd server
+        npm ci
+
+    - name: Run Backend Tests
+      run: |
+        cd server
+        npm test
+
+    # Frontend
+    - name: Use Node.js ${{ matrix.node-version }} (Frontend)
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: package-lock.json
+
+    - name: Install Frontend Dependencies
+      run: npm ci
+
+    - name: Run Frontend Tests
+      run: npm run test
+
+    - name: Build Frontend
+      run: npm run build

@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "5001:5001"
+    environment:
+      - NODE_ENV=production
+      - PORT=5001
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    volumes:
+      - ./server/logs:/app/server/logs
+      - ./server/uploads:/app/server/uploads
+    restart: always
+
+  # Optional: Prometheus for monitoring
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+  # Optional: Grafana for dashboards
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3001:3000"
+    depends_on:
+      - prometheus

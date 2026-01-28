@@ -82,8 +82,18 @@ const LiveStreamManager = () => {
             // For now, let's assume Admin sees what is possible to stream.
 
             frameCount++;
+            const container = videoRef.current?.parentElement || canvasRef.current.parentElement;
+            const clientWidth = container.clientWidth;
+            const clientHeight = container.clientHeight;
+
+            if (canvasRef.current.width !== clientWidth || canvasRef.current.height !== clientHeight) {
+                canvasRef.current.width = clientWidth;
+                canvasRef.current.height = clientHeight;
+            }
+
             const width = canvasRef.current.width;
             const height = canvasRef.current.height;
+
             ctx.clearRect(0, 0, width, height);
 
             let predictions = [];
@@ -92,14 +102,43 @@ const LiveStreamManager = () => {
             if (config.type === 'ip-cam') {
                 if (videoRef.current && videoRef.current.readyState >= 2) {
                     ctx.drawImage(videoRef.current, 0, 0, width, height);
-                    if (frameCount % 4 === 0) predictions = await detectObjects(videoRef.current);
+                    if (frameCount % 4 === 0) {
+                        const rawPredictions = await detectObjects(videoRef.current);
+                        // Scale box to canvas
+                        const videoW = videoRef.current.videoWidth;
+                        const videoH = videoRef.current.videoHeight;
+                        const scaleX = width / videoW;
+                        const scaleY = height / videoH;
+
+                        predictions = rawPredictions.map(p => ({
+                            ...p,
+                            bbox: [
+                                p.bbox[0] * scaleX,
+                                p.bbox[1] * scaleY,
+                                p.bbox[2] * scaleX,
+                                p.bbox[3] * scaleY
+                            ]
+                        }));
+                    }
                 }
             } else {
                 // Demo
-                ctx.fillStyle = '#1e293b';
+                const gradient = ctx.createLinearGradient(0, 0, 0, height);
+                gradient.addColorStop(0, '#1e293b');
+                gradient.addColorStop(1, '#0f172a');
+                ctx.fillStyle = gradient;
                 ctx.fillRect(0, 0, width, height);
+
+                // Grid
+                ctx.strokeStyle = '#334155';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                for (let i = 0; i < width; i += 50) { ctx.moveTo(i, 0); ctx.lineTo(i, height); }
+                for (let j = 0; j < height; j += 50) { ctx.moveTo(0, j); ctx.lineTo(width, j); }
+                ctx.stroke();
+
                 ctx.font = "20px sans-serif";
-                ctx.fillStyle = "#334155";
+                ctx.fillStyle = "#475569";
                 ctx.fillText("ADMIN PREVIEW", 20, 30);
                 predictions = generateDemoFrame(width, height, (performance.now() / 50));
             }

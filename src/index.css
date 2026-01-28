@@ -12,18 +12,75 @@
   .animate-gradient-x {
     animation: gradient-x 15s ease infinite;
   }
-  
+
   .glass {
     @apply bg-white/10 backdrop-blur-lg border border-white/20;
   }
-  
+
   .glass-dark {
     @apply bg-black/10 backdrop-blur-lg border border-white/10;
   }
-  
+
   .text-shadow {
-    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
+
+  @keyframes blob {
+    0% {
+      transform: translate(0px, 0px) scale(1);
+    }
+
+    33% {
+      transform: translate(30px, -50px) scale(1.1);
+    }
+
+    66% {
+      transform: translate(-20px, 20px) scale(0.9);
+    }
+
+    100% {
+      transform: translate(0px, 0px) scale(1);
+    }
+  }
+
+  .animate-blob {
+    animation: blob 7s infinite;
+  }
+
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes gradient-x {
+
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+}
+
+.animate-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 5s ease infinite;
 }
 
 :root {
@@ -44,9 +101,11 @@ body {
   width: 8px;
   height: 8px;
 }
+
 ::-webkit-scrollbar-track {
   @apply bg-slate-100;
 }
+
 ::-webkit-scrollbar-thumb {
   @apply bg-slate-300 rounded-full hover:bg-slate-400;
 }
