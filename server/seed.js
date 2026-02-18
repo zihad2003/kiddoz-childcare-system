@@ -267,11 +267,12 @@ const seed = async () => {
 
         // --- 6. Seed Notifications ---
         const notificationsData = [
-            { title: 'New Student Enrollment', message: 'Ayan Uddin has joined the Growth Scholar plan.', type: 'info' },
-            { title: 'Payment Pending', message: 'Salma Khatun salary is pending approval.', type: 'warning' },
-            { title: 'System Update', message: 'The server will undergo maintenance tonight at 2 AM.', type: 'system' },
-            { title: 'Low Inventory', message: 'Diaper stock is running low in Storage Room B.', type: 'admin' },
-            { title: 'Staff Meeting', message: 'Weekly staff meeting scheduled for Sunday 10 AM.', type: 'info' }
+            { title: 'New Student Enrollment', message: 'Ayan Uddin has joined the Growth Scholar plan.', type: 'info', targetRole: 'admin' },
+            { title: 'Payment Pending', message: 'Salma Khatun salary is pending approval.', type: 'warning', targetRole: 'admin' },
+            { title: 'System Update', message: 'The server will undergo maintenance tonight at 2 AM.', type: 'system', targetRole: 'all' },
+            { title: 'Low Inventory', message: 'Diaper stock is running low in Storage Room B.', type: 'admin', targetRole: 'staff' },
+            { title: 'Staff Meeting', message: 'Weekly staff meeting scheduled for Sunday 10 AM.', type: 'info', targetRole: 'staff' },
+            { title: 'Welcome to KiddoZ', message: 'We are excited to launch our new parent portal!', type: 'info', targetRole: 'parent' }
         ];
         await Notification.bulkCreate(notificationsData);
         console.log(`Seeded ${notificationsData.length} notifications`);

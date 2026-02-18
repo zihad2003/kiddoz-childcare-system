@@ -49,7 +49,11 @@ const NurseDashboard = ({ students, user }) => {
             await api.addNotification({
                 title: 'Medical Log Updated',
                 message: `Nurse ${user?.email || ''} logged vitals for ${selectedStudent.name}. Temp: ${vitals.temp}°F.`,
-                type: 'info'
+                type: 'health',
+                targetRole: 'parent',
+                recipientId: selectedStudent.parentId,
+                studentId: selectedStudent.id,
+                details: { temp: vitals.temp, notes: vitals.notes }
             });
 
             addToast(`Updated vitals for ${selectedStudent.name}`, 'success');

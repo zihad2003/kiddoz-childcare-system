@@ -51,10 +51,11 @@ router.post('/', auth, async (req, res) => {
         // Trigger Notification to Parent
         await Notification.create({
             studentId: student.id,
-            parentId: student.parentId,
+            recipientId: student.parentId,
+            targetRole: 'parent',
             title: `⚠️ Security Incident Report: ${student.name}`,
             message: `A new ${type} report has been filed for ${student.name}. Please review and authorize.`,
-            type: 'health'
+            type: 'warning'
         });
 
         res.status(201).json(incident);

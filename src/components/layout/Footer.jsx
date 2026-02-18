@@ -27,19 +27,19 @@ const Footer = () => (
       <div>
         <h4 className="font-bold text-white text-lg mb-6">Our Programs</h4>
         <ul className="space-y-4">
-          <li><Link to="/programs" onClick={() => window.scrollTo(0, 0)} className="hover:text-amber-400 transition text-left block">Pre-School (3-5 Yrs)</Link></li>
-          <li><Link to="/programs" onClick={() => window.scrollTo(0, 0)} className="hover:text-amber-400 transition text-left block">Day Care (6mo-3 Yrs)</Link></li>
-          <li><Link to="/programs" onClick={() => window.scrollTo(0, 0)} className="hover:text-amber-400 transition text-left block">Nanny Service</Link></li>
+          <li><Link to="/programs/preschool" className="hover:text-amber-400 transition text-left block">Pre-School (3-5 Yrs)</Link></li>
+          <li><Link to="/programs/daycare" className="hover:text-amber-400 transition text-left block">Day Care (6mo-3 Yrs)</Link></li>
+          <li><Link to="/programs/nanny" className="hover:text-amber-400 transition text-left block">Nanny Service</Link></li>
         </ul>
       </div>
 
       <div>
         <h4 className="font-bold text-white text-lg mb-6">Support</h4>
         <ul className="space-y-4">
-          <li><Link to="/info/help" onClick={() => window.scrollTo(0, 0)} className="hover:text-amber-400 transition text-left block">Help Center</Link></li>
-          <li><Link to="/info/safety" onClick={() => window.scrollTo(0, 0)} className="hover:text-amber-400 transition text-left block">Safety Protocols</Link></li>
-          <li><Link to="/login" onClick={() => window.scrollTo(0, 0)} className="hover:text-amber-400 transition text-left block">Parent Login</Link></li>
-          <li><Link to="/admin" onClick={() => window.scrollTo(0, 0)} className="hover:text-amber-400 transition text-left block">Admin Portal</Link></li>
+          <li><Link to="/info/help" className="hover:text-amber-400 transition text-left block">Help Center</Link></li>
+          <li><Link to="/info/safety" className="hover:text-amber-400 transition text-left block">Safety Protocols</Link></li>
+          <li><Link to="/login" className="hover:text-amber-400 transition text-left block">Parent Login</Link></li>
+          <li><Link to="/admin" className="hover:text-amber-400 transition text-left block">Admin Portal</Link></li>
         </ul>
       </div>
 
@@ -64,8 +64,8 @@ const Footer = () => (
     <div className="max-w-7xl mx-auto px-4 pt-8 border-t border-purple-900 flex flex-col md:flex-row justify-between items-center text-sm text-purple-400">
       <p>© {new Date().getFullYear()} KiddoZ Inc. All rights reserved.</p>
       <div className="flex gap-6 mt-4 md:mt-0">
-        <Link to="/info/privacy" onClick={() => window.scrollTo(0, 0)} className="hover:text-white transition">Privacy Policy</Link>
-        <Link to="/info/terms" onClick={() => window.scrollTo(0, 0)} className="hover:text-white transition">Terms & Conditions</Link>
+        <Link to="/info/privacy" className="hover:text-white transition">Privacy Policy</Link>
+        <Link to="/info/terms" className="hover:text-white transition">Terms & Conditions</Link>
       </div>
     </div>
   </footer>

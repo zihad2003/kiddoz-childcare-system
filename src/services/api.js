@@ -80,6 +80,14 @@ apiClient.interceptors.response.use(
                 });
             }
 
+            if (url.includes('/incidents')) {
+                return Promise.resolve({
+                    data: [
+                        { id: 'mock-1', studentId: 'mock-s1', type: 'Injury', severity: 'Low', description: 'Minor scrape during playtime', location: 'Playground', actionTaken: 'Cleaned and bandaged', reportedBy: 'teacher@kiddoz.com', status: 'Resolved', student: { name: 'Aryan Rahman' }, createdAt: new Date().toISOString() },
+                    ]
+                });
+            }
+
             // Default empty array for list endpoints, empty object for others
             return Promise.resolve({ data: [] });
         }
@@ -100,7 +108,6 @@ const api = {
     login: (email, password) => apiClient.post('/auth/login', { email, password }),
     register: (data) => apiClient.post('/auth/register', data),
 
-    // Domain Methods
     // Domain Methods
     getStaff: () => apiClient.get('/staff').then(res => res.data),
     addStaff: (data) => apiClient.post('/staff', data).then(res => res.data),
@@ -123,6 +130,11 @@ const api = {
 
     getNotifications: () => apiClient.get('/notifications').then(res => res.data),
     addNotification: (data) => apiClient.post('/notifications', data).then(res => res.data),
+
+    // Incidents
+    getIncidents: () => apiClient.get('/incidents').then(res => res.data),
+    addIncident: (data) => apiClient.post('/incidents', data).then(res => res.data),
+    updateIncident: (id, data) => apiClient.patch(`/incidents/${id}`, data).then(res => res.data),
 
     getCareTasks: (filters) => {
         const queryParams = new URLSearchParams(filters).toString();

@@ -34,10 +34,10 @@ export const AuthProvider = ({ children }) => {
                     }
 
                     // Verify with backend
-                    const response = await api.get('/auth/me');
-                    if (response.data) {
-                        setUser(response.data);
-                        localStorage.setItem('user', JSON.stringify(response.data));
+                    const userData = await api.get('/auth/me');
+                    if (userData) {
+                        setUser(userData);
+                        localStorage.setItem('user', JSON.stringify(userData));
                     }
                 } catch (error) {
                     console.error('Auth check failed:', error);
@@ -57,14 +57,14 @@ export const AuthProvider = ({ children }) => {
     const login = async (email, password) => {
         try {
             const response = await api.post('/auth/login', { email, password });
-            const { token, user } = response.data;
+            const { token, user: userData } = response;
 
             localStorage.setItem('token', token);
-            localStorage.setItem('user', JSON.stringify(user));
-            setUser(user);
+            localStorage.setItem('user', JSON.stringify(userData));
+            setUser(userData);
 
             addToast('Successfully logged in!', 'success');
-            return user;
+            return userData;
         } catch (error) {
             console.error('Login error:', error);
 
@@ -96,11 +96,11 @@ export const AuthProvider = ({ children }) => {
     const register = async (userData) => {
         try {
             const response = await api.post('/auth/register', userData);
-            const { token, user } = response.data;
+            const { token, user: registeredUser } = response;
 
             localStorage.setItem('token', token);
-            localStorage.setItem('user', JSON.stringify(user));
-            setUser(user);
+            localStorage.setItem('user', JSON.stringify(registeredUser));
+            setUser(registeredUser);
 
             addToast('Registration successful!', 'success');
             return true;

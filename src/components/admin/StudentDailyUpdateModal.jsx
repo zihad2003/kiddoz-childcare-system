@@ -72,14 +72,15 @@ const StudentDailyUpdateModal = ({
             // Add notification for parent
             await api.addNotification({
                 studentId: student.id,
-                parentId: student.parentId || 'unknown',
+                recipientId: student.parentId, // Correct field
                 title: `${currentRole === 'nurse' ? 'Medical Update' : 'Daily Activity Update'}`,
                 message: `${student.name}'s status updated by ${currentRole}.`,
                 details: {
                     ...dataToSave,
                     updatedBy: `${currentRole} (${user?.email || 'Staff'})`
                 },
-                type: 'health'
+                type: 'health',
+                targetRole: 'parent' // Target parents specifically
             });
 
             addToast(`Updated stats for ${student.name}`, 'success');

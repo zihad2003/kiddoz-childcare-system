@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Users, Bell, LogOut, Search, Edit2, ShieldCheck, Clock, DollarSign, Settings, UserCheck, ScanFace, Database } from 'lucide-react';
+import { useNavigate, useLocation, Navigate } from 'react-router-dom';
+import { Users, Bell, LogOut, Search, Edit2, ShieldCheck, Clock, DollarSign, Settings, UserCheck, ScanFace, Database, Loader2, Send, AlertTriangle, Info, CheckCircle, FileText } from 'lucide-react';
 import { BANGLADESHI_STUDENTS } from '../../data/bangladeshiData';
 import DataQueryFilter from './DataQueryFilter';
 import TaskManager from './TaskManager';
@@ -17,6 +17,7 @@ import ChildCareTaskManager from './ChildCareTaskManager';
 import NannyDashboard from './NannyDashboard';
 import StudentDailyUpdateModal from './StudentDailyUpdateModal';
 import AppSettings from './AppSettings';
+import IncidentReportManager from './IncidentReportManager';
 import api from '../../services/api';
 
 const AdminDashboard = ({ user, handleLogout }) => {
@@ -24,6 +25,11 @@ const AdminDashboard = ({ user, handleLogout }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [currentRole, setCurrentRole] = useState('admin'); // admin | teacher | nurse | nanny
+
+  // Auth Guard: Redirect to login if no user
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
 
   // Map URL paths to tab keys
   const getTabFromPath = (path) => {
@@ -52,8 +58,8 @@ const AdminDashboard = ({ user, handleLogout }) => {
   // Role based access control
   const canAccess = (feature) => {
     if (currentRole === 'admin') return true;
-    if (currentRole === 'teacher' && ['roster', 'alerts', 'live', 'care'].includes(feature)) return true;
-    if (currentRole === 'nurse' && ['roster', 'alerts', 'care'].includes(feature)) return true;
+    if (currentRole === 'teacher' && ['roster', 'alerts', 'live', 'care', 'incidents'].includes(feature)) return true;
+    if (currentRole === 'nurse' && ['roster', 'alerts', 'care', 'incidents'].includes(feature)) return true;
     if (currentRole === 'nanny') return false; // Nanny has their own full dashboard, uses AdminDashboard as wrapper but hides standard tabs
     return false;
   };
@@ -216,6 +222,13 @@ const AdminDashboard = ({ user, handleLogout }) => {
             <Bell size={20} /> Alerts Center
           </button>
 
+          <button
+            onClick={() => setTab('incidents')}
+            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'incidents' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-purple-100 hover:text-white'}`}
+          >
+            <FileText size={20} /> Incidents
+          </button>
+
           {canAccess('financials') && (
             <div className="pt-6 pb-2">
               <p className="px-4 text-xs font-bold text-white/50 uppercase tracking-widest mb-2">Admin Tools</p>
@@ -245,7 +258,7 @@ const AdminDashboard = ({ user, handleLogout }) => {
           </div>
         </div>
 
-        <button onClick={() => handleLogout && handleLogout('/login')} className="mt-auto flex items-center gap-3 px-4 py-3 rounded-xl text-purple-200 hover:text-red-300 hover:bg-white/5 transition">
+        <button onClick={() => { if (handleLogout) handleLogout(); navigate('/login'); }} className="mt-auto flex items-center gap-3 px-4 py-3 rounded-xl text-purple-200 hover:text-red-300 hover:bg-white/5 transition">
           <LogOut size={20} /> Exit Portal
         </button>
       </div>
@@ -259,6 +272,7 @@ const AdminDashboard = ({ user, handleLogout }) => {
             {adminTab === 'live' && <><ScanFace className="text-purple-600" /> AI Surveillance</>}
             {adminTab === 'nannies' && <><UserCheck className="text-purple-600" /> Staff Directory</>}
             {adminTab === 'alerts' && <><Bell className="text-purple-600" /> Notifications</>}
+            {adminTab === 'incidents' && <><FileText className="text-purple-600" /> Incident Reports</>}
             {adminTab === 'financials' && <><DollarSign className="text-purple-600" /> Financial Overview</>}
             {adminTab === 'settings' && <><Settings className="text-purple-600" /> System Settings</>}
           </h2>
@@ -362,6 +376,10 @@ const AdminDashboard = ({ user, handleLogout }) => {
                 </div>
               )}
 
+              {adminTab === 'incidents' && (
+                <IncidentReportManager students={students} />
+              )}
+
               {adminTab === 'financials' && (
                 <PayrollManager />
               )}
@@ -388,32 +406,142 @@ const AdminDashboard = ({ user, handleLogout }) => {
 };
 
 const AlertsFeed = () => {
+  const { addToast } = useToast();
   const [alerts, setAlerts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [newAlert, setNewAlert] = useState({ title: '', message: '', type: 'info', targetRole: 'all' });
+  const [sending, setSending] = useState(false);
 
-  useEffect(() => {
+  const fetchAlerts = () => {
+    setLoading(true);
     api.getNotifications()
-      .then(setAlerts)
-      .catch(console.error);
-  }, []);
+      .then(data => { setAlerts(data); setLoading(false); })
+      .catch(err => { console.error(err); setLoading(false); });
+  };
 
-  if (alerts.length === 0) return <div className="text-slate-400 text-center py-10">No alerts yet.</div>;
+  useEffect(() => { fetchAlerts(); }, []);
+
+  const handleSend = async (e) => {
+    e.preventDefault();
+    if (!newAlert.title.trim() || !newAlert.message.trim()) {
+      addToast('Title and message are required', 'error');
+      return;
+    }
+    setSending(true);
+    try {
+      await api.addNotification(newAlert);
+      addToast('Notification sent successfully!', 'success');
+      setNewAlert({ title: '', message: '', type: 'info', targetRole: 'all' });
+      setShowForm(false);
+      fetchAlerts();
+    } catch (err) {
+      console.error(err);
+      addToast('Failed to send notification', 'error');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const getTypeStyle = (type) => {
+    switch (type) {
+      case 'warning': return { border: 'border-l-amber-500', bg: 'bg-amber-100 text-amber-600', icon: <AlertTriangle size={20} /> };
+      case 'admin': return { border: 'border-l-purple-500', bg: 'bg-purple-100 text-purple-600', icon: <ShieldCheck size={20} /> };
+      case 'health': return { border: 'border-l-teal-500', bg: 'bg-teal-100 text-teal-600', icon: <CheckCircle size={20} /> };
+      case 'system': return { border: 'border-l-red-500', bg: 'bg-red-100 text-red-600', icon: <AlertTriangle size={20} /> };
+      default: return { border: 'border-l-blue-500', bg: 'bg-blue-100 text-blue-600', icon: <Info size={20} /> };
+    }
+  };
+
+  if (loading) return (
+    <div className="flex items-center justify-center py-16">
+      <Loader2 className="animate-spin text-purple-600" size={32} />
+    </div>
+  );
 
   return (
-    <div className="space-y-3">
-      {alerts.map(alert => (
-        <Card key={alert.id} className={`p-4 border-l-4 bg-white shadow-sm flex gap-4 ${alert.type === 'admin' ? 'border-l-purple-500' : 'border-l-blue-500'}`}>
-          <div className={`p-3 rounded-full h-fit ${alert.type === 'admin' ? 'bg-purple-100 text-purple-600' : 'bg-blue-100 text-blue-600'}`}>
-            <Bell size={20} />
-          </div>
-          <div>
-            <h4 className="font-bold text-slate-800">{alert.title}</h4>
-            <p className="text-slate-600 text-sm">{alert.message}</p>
-            <span className="text-xs text-slate-400 mt-2 block">
-              {new Date(alert.createdAt).toLocaleString()}
-            </span>
-          </div>
+    <div className="space-y-4">
+      {/* Send Notification Button */}
+      <div className="flex justify-end">
+        <Button onClick={() => setShowForm(!showForm)} className="bg-purple-600 hover:bg-purple-700 text-white">
+          <Send size={16} className="mr-2" /> {showForm ? 'Cancel' : 'Send Notification'}
+        </Button>
+      </div>
+
+      {/* Send Form */}
+      {showForm && (
+        <Card className="p-6 border-t-4 border-t-purple-500 animate-in fade-in slide-in-from-top-2">
+          <h4 className="font-bold mb-4 text-slate-800">Create New Notification</h4>
+          <form onSubmit={handleSend} className="space-y-3">
+            <input
+              type="text"
+              placeholder="Notification title..."
+              value={newAlert.title}
+              onChange={e => setNewAlert({ ...newAlert, title: e.target.value })}
+              className="w-full p-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500/20"
+              required
+            />
+            <textarea
+              placeholder="Write your message..."
+              value={newAlert.message}
+              onChange={e => setNewAlert({ ...newAlert, message: e.target.value })}
+              className="w-full p-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500/20 h-24 resize-none"
+              required
+            />
+            <div className="grid grid-cols-2 gap-3">
+              <select value={newAlert.type} onChange={e => setNewAlert({ ...newAlert, type: e.target.value })} className="p-2 border border-slate-200 rounded-lg text-sm">
+                <option value="info">ℹ️ Info</option>
+                <option value="warning">⚠️ Warning</option>
+                <option value="admin">🔒 Admin</option>
+                <option value="system">🖥️ System</option>
+              </select>
+              <select value={newAlert.targetRole} onChange={e => setNewAlert({ ...newAlert, targetRole: e.target.value })} className="p-2 border border-slate-200 rounded-lg text-sm">
+                <option value="all">👥 All Users</option>
+                <option value="parent">👨‍👩‍👧 Parents Only</option>
+                <option value="staff">👷 Staff Only</option>
+                <option value="admin">🛡️ Admins Only</option>
+              </select>
+            </div>
+            <Button type="submit" disabled={sending} className="w-full bg-purple-600 hover:bg-purple-700 text-white">
+              {sending ? <><Loader2 size={16} className="animate-spin mr-2" /> Sending...</> : <><Send size={16} className="mr-2" /> Send Notification</>}
+            </Button>
+          </form>
         </Card>
-      ))}
+      )}
+
+      {/* Alerts List */}
+      {alerts.length === 0 ? (
+        <div className="text-center py-16">
+          <Bell className="mx-auto text-slate-300 mb-3" size={40} />
+          <p className="text-slate-400 font-medium">No notifications yet.</p>
+          <p className="text-slate-300 text-sm">Click "Send Notification" to create one.</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {alerts.map(alert => {
+            const style = getTypeStyle(alert.type);
+            return (
+              <Card key={alert.id} className={`p-4 border-l-4 bg-white shadow-sm flex gap-4 ${style.border} ${alert.read ? 'opacity-60' : ''}`}>
+                <div className={`p-3 rounded-full h-fit ${style.bg}`}>
+                  {style.icon}
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-start justify-between">
+                    <h4 className="font-bold text-slate-800">{alert.title}</h4>
+                    {alert.targetRole && alert.targetRole !== 'all' && (
+                      <Badge color="bg-slate-100 text-slate-500">{alert.targetRole}</Badge>
+                    )}
+                  </div>
+                  <p className="text-slate-600 text-sm">{alert.message}</p>
+                  <span className="text-xs text-slate-400 mt-2 block">
+                    {new Date(alert.createdAt).toLocaleString()}
+                  </span>
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };

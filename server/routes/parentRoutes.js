@@ -164,16 +164,28 @@ router.get('/nanny-booking', auth, async (req, res) => {
 // Get parent-specific notifications
 router.get('/notifications', auth, async (req, res) => {
     try {
-        // For now, return all notifications
-        // In production, you'd filter by parent/student relationship
+        const { Op } = require('sequelize');
+
+        // Find notifications for:
+        // 1. All users
+        // 2. All parents
+        // 3. Specific parent (recipientId)
+
         const notifications = await Notification.findAll({
+            where: {
+                [Op.or]: [
+                    { targetRole: 'all' },
+                    { targetRole: 'parent' },
+                    { recipientId: req.user.id }
+                ]
+            },
             order: [['createdAt', 'DESC']],
             limit: 20
         });
 
         res.json(notifications);
     } catch (error) {
-        console.error('Error fetching notifications:', error);
+        console.error('Error fetching parent notifications:', error);
         res.status(500).json({ error: 'Failed to fetch notifications' });
     }
 });

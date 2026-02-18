@@ -146,15 +146,34 @@ router.get('/proxy-stream', (req, res) => {
     const streamUrl = req.query.url;
 
     if (!streamUrl) {
-        return res.status(400).send('Missing "url" query parameter');
+        return res.status(400).json({ error: 'Missing "url" query parameter' });
+    }
+
+    // Validate URL format
+    try {
+        const parsed = new URL(streamUrl);
+        if (!['http:', 'https:'].includes(parsed.protocol)) {
+            return res.status(400).json({ error: 'Only HTTP/HTTPS URLs are supported' });
+        }
+    } catch (e) {
+        return res.status(400).json({ error: 'Invalid URL format' });
     }
 
     console.log(`[Proxy] Connecting to stream: ${streamUrl}`);
 
     // Fetch the stream from the IP camera
-    const request = http.get(streamUrl, (streamRes) => {
+    const request = http.get(streamUrl, { timeout: 10000 }, (streamRes) => {
+        // Check for non-success status
+        if (streamRes.statusCode < 200 || streamRes.statusCode >= 400) {
+            console.error(`[Proxy] Stream returned status ${streamRes.statusCode}`);
+            if (!res.headersSent) {
+                res.status(502).json({ error: `Camera returned status ${streamRes.statusCode}` });
+            }
+            return;
+        }
+
         // Prepare headers for the browser
-        // We MUST override CORS headers to allow the frontend canvas to read the pixels
+        // Override CORS headers to allow the frontend canvas to read the pixels
         const headers = {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'GET, OPTIONS',
@@ -172,11 +191,26 @@ router.get('/proxy-stream', (req, res) => {
             console.log('[Proxy] Stream ended');
             res.end();
         });
+
+        streamRes.on('error', (err) => {
+            console.error('[Proxy] Stream read error:', err.message);
+            res.end();
+        });
+    });
+
+    request.on('timeout', () => {
+        console.error('[Proxy] Connection timeout');
+        request.destroy();
+        if (!res.headersSent) {
+            res.status(504).json({ error: 'Connection to camera timed out. Check IP and port.' });
+        }
     });
 
     request.on('error', (err) => {
         console.error('[Proxy] Stream Error:', err.message);
-        res.status(500).end();
+        if (!res.headersSent) {
+            res.status(502).json({ error: `Cannot connect to camera: ${err.message}` });
+        }
     });
 
     // Cleanup when client disconnects

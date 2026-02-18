@@ -180,10 +180,11 @@ router.post('/:id/milestones', auth, async (req, res) => {
         // Notify parent
         await Notification.create({
             studentId: student.id,
-            parentId: student.parentId,
+            recipientId: student.parentId,
+            targetRole: 'parent',
             title: `🌟 New Milestone: ${title}`,
             message: `${student.name} achieved a new milestone in ${category}!`,
-            type: 'health' // categorized as health/growth
+            type: 'activity'
         });
 
         res.status(201).json(milestone);

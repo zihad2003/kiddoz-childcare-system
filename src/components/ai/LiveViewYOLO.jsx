@@ -25,6 +25,7 @@ const LiveViewYOLO = ({ student }) => {
   });
   const [myChildrenStatus, setMyChildrenStatus] = useState([]);
   const [errorMsg, setErrorMsg] = useState('');
+  const [connectionStatus, setConnectionStatus] = useState('idle'); // idle | connecting | connected | error
 
   // --- Enrollment Database Mock ---
   const enrolledDetails = useRef([
@@ -290,21 +291,29 @@ const LiveViewYOLO = ({ student }) => {
 
   const startIpStream = (url) => {
     if (videoRef.current && url) {
-      videoRef.current.srcObject = null;
-      videoRef.current.crossOrigin = "anonymous";
+      setConnectionStatus('connecting');
+      setErrorMsg('');
 
       let formattedUrl = url.trim();
       if (!formattedUrl.endsWith('/video') && !formattedUrl.endsWith('/video/')) {
         formattedUrl = formattedUrl.replace(/\/$/, '') + '/video';
       }
 
-      const proxyUrl = `http://localhost:5001/api/ai/proxy-stream?url=${encodeURIComponent(formattedUrl)}`;
-      videoRef.current.src = proxyUrl;
+      // Use backend proxy to avoid CORS/mixed-content issues
+      const backendBase = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+      const proxyUrl = `${backendBase}/ai/proxy-stream?url=${encodeURIComponent(formattedUrl)}`;
 
-      videoRef.current.play().catch(e => {
-        console.error("IP Cam play error", e);
-        setErrorMsg("Waiting for Admin Stream...");
-      });
+      // For MJPEG streams, use img element src directly
+      videoRef.current.src = proxyUrl;
+      videoRef.current.onload = () => {
+        setConnectionStatus('connected');
+        setErrorMsg('');
+      };
+      videoRef.current.onerror = (e) => {
+        console.error('IP Cam connection error', e);
+        setConnectionStatus('error');
+        setErrorMsg('Cannot connect to camera. Check IP and network.');
+      };
     }
   };
 
@@ -377,16 +386,12 @@ const LiveViewYOLO = ({ student }) => {
               {isModelLoading && <Badge color="bg-purple-600 text-white animate-bounce">LOADING AI...</Badge>}
             </div>
 
-            {/* Video Element (Hidden but used for processing) */}
-            <video
+            {/* Video/Image Element for stream processing */}
+            <img
               ref={videoRef}
               style={{ display: 'none' }}
-              autoPlay
-              playsInline
-              muted
-              width="640"
-              height="480"
               crossOrigin="anonymous"
+              alt="Camera Source"
             />
 
             {/* Canvas for Drawing */}
@@ -469,7 +474,32 @@ const LiveViewYOLO = ({ student }) => {
         </div>
       </div>
 
-      {errorMsg && (
+      {/* Connection Status Banner */}
+      {connectionStatus === 'error' && (
+        <div className="bg-red-900/80 text-white p-5 rounded-2xl border border-red-700">
+          <div className="flex items-center gap-3 mb-3">
+            <AlertTriangle size={24} />
+            <h4 className="font-bold text-lg">Cannot Connect to IP Webcam</h4>
+          </div>
+          <p className="text-red-200 text-sm mb-3">Please check the following:</p>
+          <ul className="text-red-200 text-sm space-y-1 list-disc pl-5">
+            <li>Your phone and computer are on the <strong>same WiFi network</strong></li>
+            <li>IP Webcam app is <strong>running</strong> on your phone</li>
+            <li>The IP address and port entered by admin are <strong>correct</strong></li>
+            <li>No <strong>firewall</strong> is blocking the connection</li>
+            <li>If on HTTPS (Cloudflare), the backend proxy must be running</li>
+          </ul>
+        </div>
+      )}
+
+      {connectionStatus === 'connecting' && (
+        <div className="bg-amber-900/50 text-amber-200 p-4 rounded-xl flex items-center gap-3 border border-amber-700">
+          <div className="w-5 h-5 border-2 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
+          <span>Connecting to camera stream...</span>
+        </div>
+      )}
+
+      {errorMsg && connectionStatus !== 'error' && (
         <div className="fixed bottom-10 right-10 bg-red-600 text-white p-4 rounded-xl shadow-2xl flex items-center gap-4 animate-in fade-in slide-in-from-bottom-5">
           <AlertTriangle />
           <div>

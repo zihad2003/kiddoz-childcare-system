@@ -8,7 +8,6 @@ import { Loader2 } from 'lucide-react';
 import ErrorBoundary from './components/ui/ErrorBoundary';
 
 // Modules - Layout & UI
-// Modules - Layout & UI
 import Navbar from './components/layout/Navbar';
 import Hero from './components/layout/Hero';
 import Footer from './components/layout/Footer';
@@ -29,6 +28,7 @@ const StudentProfile = React.lazy(() => import('./components/dashboard/StudentPr
 import Chatbot from './components/ai/Chatbot';
 import InfoPage from './components/layout/InfoPage';
 import TourBookingPage from './components/layout/TourBookingPage';
+import ScrollToTop from './components/utils/ScrollToTop';
 import TourCTA from './components/layout/TourCTA';
 
 import Preloader from './components/ui/Preloader';
@@ -107,7 +107,7 @@ function AppContent() {
   return (
     <div className="font-sans text-slate-800 bg-slate-50 min-h-screen flex flex-col">
       {!showApp && <InteractivePreloader onComplete={() => setShowApp(true)} />}
-      <div className="bg-purple-600 text-white p-1 text-center text-[10px] z-[200] fixed top-0 w-full opacity-50">KiddoZ System Active</div>
+      <ScrollToTop />
       {!location.pathname.startsWith('/superadmin') && (
         <Navbar
           user={user}
@@ -155,7 +155,7 @@ function AppContent() {
             } />
 
             <Route path="/dashboard/*" element={
-              <ParentDashboard user={user} db={db} appId={appId} />
+              user ? <ParentDashboard user={user} db={db} appId={appId} /> : <Navigate to="/login" replace />
             } />
 
             <Route path="/superadmin/*" element={
@@ -163,7 +163,7 @@ function AppContent() {
             } />
 
             <Route path="/dashboard" element={
-              <ParentDashboard user={user} db={db} appId={appId} />
+              user ? <ParentDashboard user={user} db={db} appId={appId} /> : <Navigate to="/login" replace />
             } />
 
             <Route path="/student/:id" element={<StudentProfile db={db} appId={appId} />} />

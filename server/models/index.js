@@ -52,6 +52,7 @@ db.PlatformAnalytics = require('./PlatformAnalytics')(sequelize, Sequelize);
 db.Center = require('./Center')(sequelize, Sequelize);
 db.Bulletin = require('./Bulletin')(sequelize, Sequelize);
 db.Milestone = require('./Milestone')(sequelize, Sequelize);
+db.Incident = require('./Incident')(sequelize, Sequelize);
 
 // Associations
 // User has many Students (as parent)
@@ -67,5 +68,9 @@ db.ApiKey.belongsTo(db.User, { foreignKey: 'createdBy', as: 'creator' });
 
 db.User.hasMany(db.Feedback, { foreignKey: 'userId', as: 'feedback' });
 db.Feedback.belongsTo(db.User, { foreignKey: 'userId', as: 'user' });
+
+// Student - Incident Association
+db.Student.hasMany(db.Incident, { foreignKey: 'studentId', as: 'incidents' });
+db.Incident.belongsTo(db.Student, { foreignKey: 'studentId', as: 'student' });
 
 module.exports = db;
