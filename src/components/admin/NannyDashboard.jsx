@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, where, onSnapshot, updateDoc, doc, addDoc, serverTimestamp } from 'firebase/firestore';
 import { MapPin, Clock, Baby, CheckCircle, Navigation, Phone, User, Play, StopCircle } from 'lucide-react';
+import api from '../../services/api';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
 import Badge from '../ui/Badge';
@@ -58,7 +58,7 @@ const NannyDashboard = ({ db, appId, user }) => {
         if (newStatus === 'InProgress') setActiveBooking(booking);
         if (newStatus === 'Completed') setActiveBooking(null);
 
-        // Notify Parent Logic (Simulated FireStore Write)
+        // Notify Parent Logic (Using REST API)
         try {
             const notifTitle =
                 newStatus === 'OnTheWay' ? 'Nanny is on the way!' :
@@ -70,18 +70,19 @@ const NannyDashboard = ({ db, appId, user }) => {
                     newStatus === 'InProgress' ? `Care for ${booking.childName} has begun.` :
                         newStatus === 'Completed' ? `Session ended. Total time: ${formatTime(timer)}` : '';
 
-            await addDoc(collection(db, `artifacts/${appId}/public/data/notifications`), {
+            await api.addNotification({
                 title: notifTitle,
                 message: notifMessage,
-                type: 'parent', // Targeted to parent
-                relatedChild: booking.childName,
-                timestamp: serverTimestamp(),
-                read: false
+                type: 'parent',
+                targetRole: 'parent',
+                recipientId: booking.parentId, // Assuming booking has parentId
+                studentId: booking.studentId,
+                details: { status: newStatus }
             });
             addToast(`Parent notified: ${newStatus}`, 'success');
         } catch (e) {
-            console.error("Failed to send notification", e);
-            // Don't block UI if offline/permission issue
+            console.error("Failed to send notification via API", e);
+            // Don't block UI if offline
             addToast(`Status updated to ${newStatus}`, 'success');
         }
     };

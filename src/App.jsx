@@ -34,24 +34,8 @@ import TourCTA from './components/layout/TourCTA';
 import Preloader from './components/ui/Preloader';
 import InteractivePreloader from './components/ui/InteractivePreloader';
 
-// Firebase Configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyBuqk1xwSehbTEuPsJ5rJdMOioRIc6LndI",
-  authDomain: "kiddoz-163cd.firebaseapp.com",
-  projectId: "kiddoz-163cd",
-  storageBucket: "kiddoz-163cd.firebasestorage.app",
-  messagingSenderId: "352290108946",
-  appId: "1:352290108946:web:4a89579bfa3c6fa18d8acb"
-};
+import { auth, db } from './config/firebase';
 
-// Initialize Firebase (Data only)
-let app, db;
-try {
-  app = initializeApp(firebaseConfig);
-  db = getFirestore(app);
-} catch (e) {
-  console.error("Firebase Error:", e);
-}
 const appId = 'kiddoz-163cd';
 
 // Pricing Plans Constant
@@ -86,21 +70,46 @@ const PLANS = [
   }
 ];
 
+const ProtectedRoute = ({ children, allowedRoles }) => {
+  const { user, loading } = useAuth();
+  const location = useLocation();
+
+  if (loading) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <Loader2 className="animate-spin text-purple-600 w-12 h-12" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
+    console.warn(`Access denied for role: ${user.role}. Allowed: ${allowedRoles}`);
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
+
 function AppContent() {
   const { user, loading, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [showApp, setShowApp] = React.useState(false);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate('/');
   };
 
-  // Loading State UI
-  if (loading) return (
-    <div className="h-screen flex items-center justify-center">
-      <Loader2 className="animate-spin text-purple-600" />
+  // Preloader and Global Loading
+  if (loading && !showApp) return (
+    <div className="h-screen flex items-center justify-center flex-col gap-4">
+      <Loader2 className="animate-spin text-purple-600 w-12 h-12" />
+      <p className="text-slate-400 font-bold text-xs uppercase tracking-widest animate-pulse">Synchronizing Identity...</p>
     </div>
   );
 
@@ -132,12 +141,12 @@ function AppContent() {
             } />
 
             <Route path="/programs" element={<Programs />} />
-            <Route path="/nanny-service" element={<NannyServiceDetails />} /> {/* Dedicated Nanny Route */}
-            <Route path="/book-nanny" element={<NannyBookingPage />} /> {/* Nanny Booking Route */}
-            <Route path="/programs/:programId" element={<ProgramDetails />} /> {/* Dynamic Route */}
+            <Route path="/nanny-service" element={<NannyServiceDetails />} />
+            <Route path="/book-nanny" element={<NannyBookingPage />} />
+            <Route path="/programs/:programId" element={<ProgramDetails />} />
 
-            <Route path="/login" element={<AuthPage db={db} />} />
-            <Route path="/signup" element={<AuthPage db={db} />} />
+            <Route path="/login" element={<AuthPage />} />
+            <Route path="/signup" element={<AuthPage />} />
 
             <Route path="/enroll/*" element={
               <EnrollmentPage
@@ -151,19 +160,27 @@ function AppContent() {
             <Route path="/tour" element={<TourBookingPage />} />
 
             <Route path="/admin/*" element={
-              <AdminDashboard user={user} handleLogout={handleLogout} />
-            } />
-
-            <Route path="/dashboard/*" element={
-              user ? <ParentDashboard user={user} db={db} appId={appId} /> : <Navigate to="/login" replace />
+              <ProtectedRoute allowedRoles={['admin', 'teacher', 'nurse', 'nanny']}>
+                <AdminDashboard user={user} handleLogout={handleLogout} />
+              </ProtectedRoute>
             } />
 
             <Route path="/superadmin/*" element={
-              <SuperAdminDashboard user={user} handleLogout={handleLogout} />
+              <ProtectedRoute allowedRoles={['superadmin']}>
+                <SuperAdminDashboard user={user} handleLogout={handleLogout} />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/dashboard/*" element={
+              <ProtectedRoute allowedRoles={['parent', 'admin']}>
+                <ParentDashboard user={user} db={db} appId={appId} />
+              </ProtectedRoute>
             } />
 
             <Route path="/dashboard" element={
-              user ? <ParentDashboard user={user} db={db} appId={appId} /> : <Navigate to="/login" replace />
+              <ProtectedRoute allowedRoles={['parent', 'admin']}>
+                <ParentDashboard user={user} db={db} appId={appId} />
+              </ProtectedRoute>
             } />
 
             <Route path="/student/:id" element={<StudentProfile db={db} appId={appId} />} />

@@ -1,57 +1,88 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { onAuthStateChanged, signInAnonymously, signOut } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db } from '../config/firebase';
 import api from '../services/api';
 import { useToast } from './ToastContext';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-    const MOCK_USER = {
-        id: 'demo-123',
-        name: "Demo User",
-        displayName: "Demo User",
-        email: "demo@kiddoz.com",
-        role: "admin"
-    };
-
-    // DEMO MODE: Default to MOCK_USER immediately to prevent auth blocks
-    const [user, setUser] = useState(MOCK_USER);
-    const [loading, setLoading] = useState(false);
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
     const { addToast } = useToast();
+
     useEffect(() => {
-        const checkAuth = async () => {
+        const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
+            console.log("Auth: State changed", fbUser?.uid);
+
             const token = localStorage.getItem('token');
             const storedUser = localStorage.getItem('user');
 
-            if (token && storedUser) {
+            // 1. Check if we have a valid JWT first (MySQL priority)
+            if (token) {
                 try {
-                    // Start with stored user for immediate UI
-                    try {
-                        const parsedUser = JSON.parse(storedUser);
-                        if (parsedUser) setUser(parsedUser);
-                    } catch (e) {
-                        console.error("Auth: Failed to parse user from storage", e);
-                        localStorage.removeItem('user');
-                    }
-
-                    // Verify with backend
                     const userData = await api.get('/auth/me');
                     if (userData) {
                         setUser(userData);
-                        localStorage.setItem('user', JSON.stringify(userData));
+                        setLoading(false);
+                        return;
                     }
                 } catch (error) {
-                    console.error('Auth check failed:', error);
-                    // For demo, don't logout on fail, just use mock if needed
-                    // logout();
+                    console.warn('Auth: Backend JWT verification failed', error.message);
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                }
+            }
+
+            // 2. Handle Firebase Identity
+            if (fbUser) {
+                if (fbUser.isAnonymous) {
+                    // Anonymous Demo/Guest Mode
+                    try {
+                        const userDoc = await getDoc(doc(db, 'users', fbUser.uid));
+                        if (userDoc.exists()) {
+                            setUser({ id: fbUser.uid, ...userDoc.data(), isAnonymous: true });
+                        } else {
+                            setUser({
+                                id: fbUser.uid,
+                                fullName: "Demo Guest",
+                                email: "guest@kiddoz.com",
+                                role: "parent", // Default to parent for exploration
+                                isAnonymous: true
+                            });
+                        }
+                    } catch (e) {
+                        setUser({
+                            id: fbUser.uid,
+                            fullName: "Demo Guest",
+                            role: "parent",
+                            isAnonymous: true
+                        });
+                    }
+                } else {
+                    // Regular Firebase User (if implemented)
+                    setUser({
+                        id: fbUser.uid,
+                        fullName: fbUser.displayName || fbUser.email?.split('@')[0] || 'Member',
+                        email: fbUser.email,
+                        role: 'parent' // Default
+                    });
                 }
             } else {
-                // FALLBACK MOCK USER FOR DEMO ACCESS
-                setUser(MOCK_USER);
+                // 3. Auto-trigger Anonymous Login for the "Demo Mode" requirement
+                // Only if no JWT exists
+                try {
+                    await signInAnonymously(auth);
+                } catch (err) {
+                    console.error("Auth: Failed auto-anon login", err);
+                    setUser(null);
+                }
             }
             setLoading(false);
-        };
+        });
 
-        checkAuth();
+        return () => unsubscribe();
     }, []);
 
     const login = async (email, password) => {
@@ -67,26 +98,6 @@ export const AuthProvider = ({ children }) => {
             return userData;
         } catch (error) {
             console.error('Login error:', error);
-
-            // FALLBACK FOR DEMO: If backend is unreachable, allow demo login
-            const isConnectionError = !error.response && error.code === 'ERR_NETWORK' || error.message.includes('Network Error');
-            const isDemoAttempt = email === 'admin@kiddoz.com' || email === 'demo@kiddoz.com' || email.includes('rahim');
-
-            if (isConnectionError && isDemoAttempt) {
-                console.log('Backend unreachable, logging in as mock user for demo');
-                const demoUser = {
-                    ...MOCK_USER,
-                    email: email,
-                    role: email.includes('admin') ? 'admin' : 'parent',
-                    displayName: email.includes('admin') ? 'Demo Admin' : 'Demo Parent'
-                };
-                setUser(demoUser);
-                localStorage.setItem('user', JSON.stringify(demoUser));
-                localStorage.setItem('token', 'demo-token');
-                addToast('Logged in as Demo User (Offline Mode)', 'info');
-                return true;
-            }
-
             const message = error.response?.data?.error || 'Login failed';
             addToast(message, 'error');
             throw error;
@@ -112,11 +123,17 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const logout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        setUser(null);
-        addToast('Logged out successfully', 'info');
+    const logout = async () => {
+        try {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            await signOut(auth);
+            setUser(null);
+            addToast('Logged out successfully', 'info');
+        } catch (e) {
+            console.error("Logout error", e);
+            setUser(null);
+        }
     };
 
     return (

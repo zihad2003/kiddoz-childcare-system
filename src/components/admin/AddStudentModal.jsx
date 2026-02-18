@@ -1,0 +1,142 @@
+import React, { useState } from 'react';
+import { User, Calendar, Shield, CreditCard, XCircle } from 'lucide-react';
+import Modal from '../ui/Modal';
+import Button from '../ui/Button';
+import Input from '../ui/Input';
+import Select from '../ui/Select';
+import api from '../../services/api';
+import { useToast } from '../../context/ToastContext';
+
+const AddStudentModal = ({ isOpen, onClose, onStudentAdded }) => {
+    const { addToast } = useToast();
+    const [loading, setLoading] = useState(false);
+    const [formData, setFormData] = useState({
+        name: '',
+        dob: '',
+        gender: 'Male',
+        plan: 'Growth Scholar',
+        parentId: '',
+        homeAddress: '',
+        emergencyContact: ''
+    });
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!formData.name || !formData.dob) {
+            return addToast("Please fill in basic details", "error");
+        }
+
+        setLoading(true);
+        try {
+            await api.addStudent({
+                ...formData,
+                childData: {
+                    address: formData.homeAddress,
+                    emergency: formData.emergencyContact
+                }
+            });
+            addToast(`Successfully enrolled ${formData.name}!`, "success");
+            if (onStudentAdded) onStudentAdded();
+            onClose();
+            // Reset form
+            setFormData({
+                name: '',
+                dob: '',
+                gender: 'Male',
+                plan: 'Growth Scholar',
+                parentId: '',
+                homeAddress: '',
+                emergencyContact: ''
+            });
+        } catch (err) {
+            console.error(err);
+            addToast(err.response?.data?.message || "Failed to enroll student", "error");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <Modal isOpen={isOpen} onClose={onClose} title="New Student Enrollment" maxWidth="max-w-xl">
+            <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="bg-purple-50 p-4 rounded-xl border border-purple-100 mb-4">
+                    <p className="text-sm text-purple-700 font-medium">
+                        Fill in the details below to add a new student to the relational database.
+                        This will automatically set up their profile and initial billing.
+                    </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Input
+                        label="Student Full Name"
+                        placeholder="John Doe"
+                        value={formData.name}
+                        onChange={e => setFormData({ ...formData, name: e.target.value })}
+                        icon={User}
+                        required
+                    />
+                    <Input
+                        label="Date of Birth"
+                        type="date"
+                        value={formData.dob}
+                        onChange={e => setFormData({ ...formData, dob: e.target.value })}
+                        icon={Calendar}
+                        required
+                    />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                    <Select
+                        label="Gender"
+                        value={formData.gender}
+                        onChange={e => setFormData({ ...formData, gender: e.target.value })}
+                        options={[
+                            { label: 'Male', value: 'Male' },
+                            { label: 'Female', value: 'Female' },
+                            { label: 'Other', value: 'Other' }
+                        ]}
+                    />
+                    <Select
+                        label="Growth Plan"
+                        value={formData.plan}
+                        onChange={e => setFormData({ ...formData, plan: e.target.value })}
+                        options={[
+                            { label: 'Little Explorer', value: 'Little Explorer' },
+                            { label: 'Growth Scholar', value: 'Growth Scholar' },
+                            { label: 'VIP Guardian', value: 'VIP Guardian' }
+                        ]}
+                    />
+                </div>
+
+                <div className="space-y-4">
+                    <Input
+                        label="Parent/Guardian ID (Optional)"
+                        placeholder="e.g. U-12345"
+                        value={formData.parentId}
+                        onChange={e => setFormData({ ...formData, parentId: e.target.value })}
+                        icon={Shield}
+                    />
+                    <Input
+                        label="Home Address"
+                        placeholder="123 Care Lane, Dhaka"
+                        value={formData.homeAddress}
+                        onChange={e => setFormData({ ...formData, homeAddress: e.target.value })}
+                    />
+                    <Input
+                        label="Emergency Contact"
+                        placeholder="Name - Phone Number"
+                        value={formData.emergencyContact}
+                        onChange={e => setFormData({ ...formData, emergencyContact: e.target.value })}
+                    />
+                </div>
+
+                <div className="flex gap-3 pt-4 border-t border-slate-100">
+                    <Button type="button" variant="ghost" className="flex-1" onClick={onClose}>Cancel</Button>
+                    <Button type="submit" isLoading={loading} className="flex-1 bg-purple-600 hover:bg-purple-700">Complete Enrollment</Button>
+                </div>
+            </form>
+        </Modal>
+    );
+};
+
+export default AddStudentModal;

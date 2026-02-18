@@ -194,4 +194,60 @@ router.post('/:id/milestones', auth, async (req, res) => {
     }
 });
 
+// Health records management
+router.get('/:id/health', auth, async (req, res) => {
+    try {
+        const { HealthRecord } = require('../models');
+        const records = await HealthRecord.findAll({
+            where: { studentId: req.params.id },
+            order: [['uploadedAt', 'DESC']]
+        });
+        res.json(records);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server Error' });
+    }
+});
+
+router.post('/:id/health', auth, async (req, res) => {
+    try {
+        const { HealthRecord } = require('../models');
+        const { fileName, fileSize, type, details } = req.body;
+
+        const record = await HealthRecord.create({
+            studentId: req.params.id,
+            fileName,
+            fileSize,
+            type,
+            details,
+            uploadedBy: req.user.email,
+            uploadedAt: new Date()
+        });
+
+        res.status(201).json(record);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server Error' });
+    }
+});
+
+// Delete student (Admin only)
+router.delete('/:id', auth, async (req, res) => {
+    try {
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Admin access required' });
+        }
+
+        const student = await Student.findByPk(req.params.id);
+        if (!student) return res.status(404).json({ message: 'Student not found' });
+
+        // Note: Associations should handle deletion of related records if configured with CASCADE
+        await student.destroy();
+        res.json({ message: 'Student deleted successfully' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server Error' });
+    }
+});
+
 module.exports = router;

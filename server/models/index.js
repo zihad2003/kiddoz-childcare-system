@@ -1,27 +1,23 @@
+require('dotenv').config();
 const { Sequelize } = require('sequelize');
 const path = require('path');
 
-const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: path.join(__dirname, '../database.sqlite'),
-    logging: false,
-    pool: {
-        max: 10,
-        min: 0,
-        acquire: 30000,
-        idle: 10000
-    },
-    retry: {
-        match: [
-            /SQLITE_BUSY/,
-        ],
-        name: 'query',
-        backoffBase: 100,
-        backoffExponent: 1.1,
-        timeout: 60000,
-        max: 5
+const sequelize = new Sequelize(
+    process.env.DB_NAME || 'kiddoz_db',
+    process.env.DB_USER || 'root',
+    process.env.DB_PASS || '',
+    {
+        host: process.env.DB_HOST || 'localhost',
+        dialect: 'mysql',
+        logging: false,
+        pool: {
+            max: 5,
+            min: 0,
+            acquire: 30000,
+            idle: 10000
+        }
     }
-});
+);
 
 const db = {};
 db.Sequelize = Sequelize;

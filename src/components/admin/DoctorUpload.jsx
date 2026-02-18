@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Upload, FileText, X, Check, AlertCircle } from 'lucide-react';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import api from '../../services/api';
 import { useToast } from '../../context/ToastContext';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
@@ -42,13 +42,11 @@ const DoctorUpload = ({ studentId, uploader, appId, db }) => {
         setUploading(true);
 
         try {
-            await addDoc(collection(db, `artifacts/${appId}/public/data/medical_records`), {
-                studentId,
+            await api.addHealthRecord(studentId, {
                 fileName: file.name,
                 fileSize: file.size,
                 type: file.type,
-                uploadedBy: uploader?.email || 'Staff',
-                timestamp: serverTimestamp(),
+                details: `Medical record uploaded by ${uploader?.email || 'Staff'}`
             });
 
             setUploading(false);

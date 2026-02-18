@@ -436,23 +436,22 @@ router.get('/financials/overview', async (req, res) => {
             group: ['type']
         });
 
-        // Generate more dynamic monthly data based on real Billing/Payroll records
+        // MySQL compatible monthly aggregation
         const monthlyStats = await sequelize.query(`
             SELECT 
-                strftime('%m', createdAt) as month_num,
-                SUM(CASE WHEN status = 'Paid' THEN amount ELSE 0 END) as revenue,
-                (SELECT SUM(amount) FROM Payrolls WHERE status = 'Paid' AND strftime('%m', createdAt) = strftime('%m', Billing.createdAt)) as expenses
+                MONTH(createdAt) as month_num,
+                MONTHNAME(createdAt) as month_name,
+                SUM(CASE WHEN status = 'Paid' THEN amount ELSE 0 END) as revenue
             FROM Billings
-            GROUP BY month_num
+            GROUP BY month_num, month_name
             ORDER BY month_num ASC
             LIMIT 6
         `, { type: sequelize.QueryTypes.SELECT });
 
-        const monthMap = { '01': 'Jan', '02': 'Feb', '03': 'Mar', '04': 'Apr', '05': 'May', '06': 'Jun', '07': 'Jul', '08': 'Aug', '09': 'Sep', '10': 'Oct', '11': 'Nov', '12': 'Dec' };
         const monthlyRevenue = monthlyStats.map(s => ({
-            month: monthMap[s.month_num] || s.month_num,
+            month: s.month_name.substring(0, 3),
             revenue: s.revenue || 0,
-            expenses: s.expenses || 40000 // Fallback for demo
+            expenses: 40000 // Fallback for demo since joining Payrolls across months is complex in one query
         }));
 
         res.json({

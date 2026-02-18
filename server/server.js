@@ -93,7 +93,9 @@ app.use(morgan('combined', { stream: { write: message => logger.http(message.tri
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Routes handled at top for infrastructure concerns
+// Serve Static Frontend (Build stage copies to /public)
+const publicPath = path.join(__dirname, 'public');
+app.use(express.static(publicPath));
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
@@ -109,9 +111,17 @@ app.use('/api/superadmin', require('./routes/superadmin'));
 app.use('/api/ai', require('./routes/ai'));
 app.use('/api/incidents', require('./routes/incidents'));
 
-// Root Route
-app.get('/', (req, res) => {
-    res.json({ message: 'KiddoZ API is running' });
+// Catch-all for React SPA
+app.get('*', (req, res) => {
+    if (req.originalUrl.startsWith('/api')) {
+        return res.status(404).json({ message: 'API Endpoint Not Found' });
+    }
+    const indexFile = path.join(publicPath, 'index.html');
+    res.sendFile(indexFile, (err) => {
+        if (err) {
+            res.status(200).json({ message: 'KiddoZ API is running. Frontend build not found in /public.' });
+        }
+    });
 });
 
 // Handle Unhandled Routes (Simple 404)

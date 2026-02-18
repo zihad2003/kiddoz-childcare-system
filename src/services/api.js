@@ -117,7 +117,9 @@ const api = {
     getStudents: (parentId) => apiClient.get(`/students${parentId ? '?parentId=' + parentId : ''}`).then(res => res.data),
     addStudent: (data) => apiClient.post('/students', data).then(res => res.data),
     updateStudent: (id, data) => apiClient.put(`/students/${id}`, data).then(res => res.data),
+    deleteStudent: (id) => apiClient.delete(`/students/${id}`).then(res => res.data),
     addMilestone: (id, data) => apiClient.post(`/students/${id}/milestones`, data).then(res => res.data),
+    addHealthRecord: (studentId, data) => apiClient.post(`/students/${studentId}/health`, data).then(res => res.data),
 
     getTasks: () => apiClient.get('/tasks').then(res => res.data),
     addTask: (data) => apiClient.post('/tasks', data).then(res => res.data),
@@ -127,6 +129,7 @@ const api = {
     getPayroll: () => apiClient.get('/financials/payroll').then(res => res.data),
     addPayroll: (data) => apiClient.post('/financials/payroll', data).then(res => res.data),
     markPaid: (id) => apiClient.patch(`/financials/payroll/${id}`).then(res => res.data),
+    getRevenue: () => apiClient.get('/financials/revenue').then(res => res.data),
 
     getNotifications: () => apiClient.get('/notifications').then(res => res.data),
     addNotification: (data) => apiClient.post('/notifications', data).then(res => res.data),

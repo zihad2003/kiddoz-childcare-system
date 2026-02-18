@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Navigate } from 'react-router-dom';
-import { Users, Bell, LogOut, Search, Edit2, ShieldCheck, Clock, DollarSign, Settings, UserCheck, ScanFace, Database, Loader2, Send, AlertTriangle, Info, CheckCircle, FileText } from 'lucide-react';
+import { Users, Bell, LogOut, Search, Edit2, ShieldCheck, Clock, DollarSign, Settings, UserCheck, ScanFace, Database, Loader2, Send, AlertTriangle, Info, CheckCircle, FileText, Trash2, PlusCircle } from 'lucide-react';
 import { BANGLADESHI_STUDENTS } from '../../data/bangladeshiData';
 import DataQueryFilter from './DataQueryFilter';
 import TaskManager from './TaskManager';
@@ -16,20 +16,21 @@ import TeacherDashboard from './TeacherDashboard';
 import ChildCareTaskManager from './ChildCareTaskManager';
 import NannyDashboard from './NannyDashboard';
 import StudentDailyUpdateModal from './StudentDailyUpdateModal';
-import AppSettings from './AppSettings';
 import IncidentReportManager from './IncidentReportManager';
+import AddStudentModal from './AddStudentModal';
 import api from '../../services/api';
 
 const AdminDashboard = ({ user, handleLogout }) => {
   const { addToast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
-  const [currentRole, setCurrentRole] = useState('admin'); // admin | teacher | nurse | nanny
+  const [currentRole, setCurrentRole] = useState(user?.role || 'admin');
 
-  // Auth Guard: Redirect to login if no user
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
+  useEffect(() => {
+    if (user?.role) {
+      setCurrentRole(user.role);
+    }
+  }, [user]);
 
   // Map URL paths to tab keys
   const getTabFromPath = (path) => {
@@ -54,6 +55,7 @@ const AdminDashboard = ({ user, handleLogout }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isAddingStudent, setIsAddingStudent] = useState(false);
 
   // Role based access control
   const canAccess = (feature) => {
@@ -158,6 +160,19 @@ const AdminDashboard = ({ user, handleLogout }) => {
   };
 
   const filteredStudents = processStudents();
+
+  const handleDeleteStudent = async (id, name) => {
+    if (window.confirm(`Are you sure you want to remove ${name} from the system? This action cannot be undone.`)) {
+      try {
+        await api.deleteStudent(id);
+        addToast(`${name} removed from roster.`, 'success');
+        fetchStudents();
+      } catch (err) {
+        console.error(err);
+        addToast("Failed to delete student", "error");
+      }
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row font-sans">
@@ -301,6 +316,13 @@ const AdminDashboard = ({ user, handleLogout }) => {
                     </div>
                     <div className="flex gap-2">
                       <Button
+                        onClick={() => setIsAddingStudent(true)}
+                        className="bg-purple-600 hover:bg-purple-700 text-white"
+                        size="sm"
+                      >
+                        <PlusCircle size={16} className="mr-2" /> New Enrollment
+                      </Button>
+                      <Button
                         onClick={enrollBangladeshiData}
                         variant="outline"
                         size="sm"
@@ -320,11 +342,18 @@ const AdminDashboard = ({ user, handleLogout }) => {
                     onSortChange={setSortConfig}
                   />
 
+                  <AddStudentModal
+                    isOpen={isAddingStudent}
+                    onClose={() => setIsAddingStudent(false)}
+                    onStudentAdded={fetchStudents}
+                  />
+
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {filteredStudents.map(student => (
                       <Card key={student.id} className="group hover:border-purple-300 relative overflow-hidden">
-                        <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button onClick={() => openEditModal(student)} className="p-2 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-lg transition"><Edit2 size={16} /></button>
+                        <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                          <button onClick={() => openEditModal(student)} className="p-2 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-lg transition" title="Edit/Update"><Edit2 size={16} /></button>
+                          <button onClick={() => handleDeleteStudent(student.id, student.name)} className="p-2 bg-red-100 hover:bg-red-200 text-red-600 rounded-lg transition" title="Remove"><Trash2 size={16} /></button>
                         </div>
                         <div className="mb-4">
                           <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg mb-3">

@@ -53,6 +53,12 @@ export const generateDailyTasksForStudent = async (db, appId, student) => {
         tasks.push(addDoc(collection(db, `artifacts/${appId}/public/data/care_tasks`), taskData));
     }
 
-    await Promise.all(tasks);
-    return tasks.length;
+    try {
+        await Promise.all(tasks);
+        return tasks.length;
+    } catch (e) {
+        console.error("Firestore Task Generation Error:", e);
+        // Throw or return 0? Let's throw so the caller knows it failed
+        throw e;
+    }
 };

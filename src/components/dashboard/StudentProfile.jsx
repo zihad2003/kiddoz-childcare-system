@@ -1,32 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { doc, getDoc } from 'firebase/firestore';
 import { ArrowLeft, User, Phone, Mail, MapPin, Calendar, Activity, FileText, Loader2 } from 'lucide-react';
 import Card from '../ui/Card';
 import Badge from '../ui/Badge';
+import { useToast } from '../../context/ToastContext';
+import api from '../../services/api'; // Assuming you have an API utility
 
-const StudentProfile = ({ db, appId }) => {
+const StudentProfile = () => {
     const { id } = useParams();
     const [student, setStudent] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { addToast } = useToast();
 
     useEffect(() => {
         const fetchStudent = async () => {
-            if (!id || !db) return;
+            if (!id) return;
             try {
-                const docRef = doc(db, `artifacts/${appId}/public/data/students`, id);
-                const docSnap = await getDoc(docRef);
-                if (docSnap.exists()) {
-                    setStudent({ docId: docSnap.id, ...docSnap.data() });
-                }
+                setLoading(true);
+                const data = await api.get(`/ students / ${id} `);
+                setStudent(data);
             } catch (e) {
-                console.error("Error fetching student:", e);
+                console.error("Student Loading Error:", e);
+                addToast("Failed to load student data from the relational database.", "error");
             } finally {
                 setLoading(false);
             }
         };
         fetchStudent();
-    }, [id, db, appId]);
+    }, [id, addToast]);
 
     if (loading) return (
         <div className="h-screen flex items-center justify-center bg-slate-50">
@@ -101,8 +102,8 @@ const StudentProfile = ({ db, appId }) => {
                                     </div>
                                 </div>
                                 <div className="grid gap-2 mt-2">
-                                    <a href={`tel:${student.phone}`} className="flex items-center gap-2 text-slate-600 hover:text-purple-600 transition"><Phone size={14} /> {student.phone}</a>
-                                    <a href={`mailto:${student.email}`} className="flex items-center gap-2 text-slate-600 hover:text-purple-600 transition"><Mail size={14} /> {student.email || 'Email not set'}</a>
+                                    <a href={`tel:${student.phone} `} className="flex items-center gap-2 text-slate-600 hover:text-purple-600 transition"><Phone size={14} /> {student.phone}</a>
+                                    <a href={`mailto:${student.email} `} className="flex items-center gap-2 text-slate-600 hover:text-purple-600 transition"><Mail size={14} /> {student.email || 'Email not set'}</a>
                                 </div>
                             </div>
                         </Card>

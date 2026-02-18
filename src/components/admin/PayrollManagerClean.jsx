@@ -160,14 +160,16 @@ const PayrollManager = () => {
     const [activePayment, setActivePayment] = useState(null); // For modal
     const [newPayment, setNewPayment] = useState({ name: '', role: 'Nanny', amount: '', type: 'Salary' });
 
+    const [revenue, setRevenue] = useState({ total: 0, count: 0, byPlan: {} });
+
     useEffect(() => {
         api.getPayroll().then(data => {
-            console.log("Payroll data loaded:", data);
             setPayments(data || []);
         }).catch(err => {
             console.error("Failed to load payroll", err);
-            addToast("Failed to load payroll records", "error");
         });
+
+        api.getRevenue().then(setRevenue).catch(console.error);
     }, []);
 
     const handleConfirmPayment = async (id) => {
@@ -206,13 +208,43 @@ const PayrollManager = () => {
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card className="bg-gradient-to-br from-purple-900 to-indigo-950 text-white border-0 shadow-xl overflow-hidden relative">
+                    <div className="absolute top-0 right-0 p-8 opacity-10">
+                        <DollarSign size={120} />
+                    </div>
+                    <div className="flex justify-between items-start relative z-10">
+                        <div>
+                            <p className="text-purple-200 font-medium mb-1 border-b border-purple-800/50 pb-1">Enrollment Revenue</p>
+                            <h3 className="text-4xl font-bold tracking-tight">${revenue.total.toLocaleString()}</h3>
+                            <p className="text-xs text-purple-300 mt-2">Monthly income from {revenue.count} active students</p>
+                        </div>
+                        <div className="bg-white/10 p-3 rounded-xl border border-white/10 backdrop-blur-sm">
+                            <Plus size={24} className="text-white" />
+                        </div>
+                    </div>
+                    <div className="mt-8 grid grid-cols-3 gap-2 relative z-10 text-[10px] font-bold uppercase tracking-wider">
+                        <div className="bg-white/5 p-2 rounded-lg text-center">
+                            <p className="text-purple-300">Little</p>
+                            <p>${(revenue.byPlan['Little Explorer'] || 0).toLocaleString()}</p>
+                        </div>
+                        <div className="bg-white/5 p-2 rounded-lg text-center">
+                            <p className="text-purple-300">Growth</p>
+                            <p>${(revenue.byPlan['Growth Scholar'] || 0).toLocaleString()}</p>
+                        </div>
+                        <div className="bg-white/5 p-2 rounded-lg text-center">
+                            <p className="text-purple-300">VIP</p>
+                            <p>${(revenue.byPlan['VIP Guardian'] || 0).toLocaleString()}</p>
+                        </div>
+                    </div>
+                </Card>
+
                 <Card className="bg-gradient-to-br from-slate-900 to-slate-800 text-white border-0 shadow-xl overflow-hidden relative">
                     <div className="absolute top-0 right-0 p-8 opacity-10">
                         <Wallet size={120} />
                     </div>
                     <div className="flex justify-between items-start relative z-10">
                         <div>
-                            <p className="text-slate-300 font-medium mb-1 flex items-center gap-2"><Clock size={14} /> Total Outstanding</p>
+                            <p className="text-slate-300 font-medium mb-1 border-b border-slate-700 pb-1 flex items-center gap-2"><Clock size={14} /> Total Outstanding</p>
                             <h3 className="text-4xl font-bold tracking-tight">${totalPending.toLocaleString()}</h3>
                             <p className="text-xs text-slate-400 mt-2">Scheduled for next disbursement cycle</p>
                         </div>
@@ -224,7 +256,7 @@ const PayrollManager = () => {
                         <Button onClick={() => setShowCreateModal(true)} className="bg-purple-500 hover:bg-purple-600 text-white border-0 flex-1 shadow-lg shadow-purple-900/20">
                             <Plus size={18} className="mr-2" /> New Request
                         </Button>
-                        <Button variant="outline" className="text-white border-white/20 hover:bg-white/10 flex-1">
+                        <Button variant="outline" className="text-white border-white/20 hover:bg-white/10 flex-1 text-xs">
                             Generate Report
                         </Button>
                     </div>
