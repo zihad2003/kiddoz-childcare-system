@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 const http = require('http');
+const https = require('https');
 
 // OpenAI/Gemini Chat Proxy
 const { Student, DailyActivity, HealthRecord, Milestone } = require('../models');
@@ -140,83 +141,98 @@ router.post('/chat', async (req, res) => {
     }
 });
 
-// MJPEG Proxy for IP Webcam
-// Usage: /api/ai/proxy-stream?url=http://192.168.0.102:8080/video
+// ─── Helper: pick http or https module based on URL ─────────────────────────
+const getTransport = (url) => url.startsWith('https') ? https : http;
+
+// ─── MJPEG Proxy Stream ───────────────────────────────────────────────────────
+// Proxies an MJPEG stream from an IP camera through the backend so the browser
+// never makes a direct HTTP request (avoids Mixed Content blocking on HTTPS).
+// Usage: GET /api/ai/proxy-stream?url=http://192.168.0.102:8080/video
 router.get('/proxy-stream', (req, res) => {
-    const streamUrl = req.query.url;
+    let streamUrl = req.query.url;
+    if (!streamUrl) return res.status(400).json({ error: 'Missing "url" query parameter' });
 
-    if (!streamUrl) {
-        return res.status(400).json({ error: 'Missing "url" query parameter' });
-    }
-
-    // Validate URL format
+    // Normalise: append /video if not already a stream path
     try {
         const parsed = new URL(streamUrl);
         if (!['http:', 'https:'].includes(parsed.protocol)) {
             return res.status(400).json({ error: 'Only HTTP/HTTPS URLs are supported' });
         }
+        if (!parsed.pathname.includes('/video') && !parsed.pathname.includes('/stream')) {
+            parsed.pathname = parsed.pathname.replace(/\/$/, '') + '/video';
+            streamUrl = parsed.toString();
+        }
     } catch (e) {
         return res.status(400).json({ error: 'Invalid URL format' });
     }
 
-    console.log(`[Proxy] Connecting to stream: ${streamUrl}`);
+    console.log(`[Proxy] Connecting to MJPEG stream: ${streamUrl}`);
+    const transport = getTransport(streamUrl);
 
-    // Fetch the stream from the IP camera
-    const request = http.get(streamUrl, { timeout: 10000 }, (streamRes) => {
-        // Check for non-success status
+    const request = transport.get(streamUrl, { timeout: 15000 }, (streamRes) => {
         if (streamRes.statusCode < 200 || streamRes.statusCode >= 400) {
-            console.error(`[Proxy] Stream returned status ${streamRes.statusCode}`);
-            if (!res.headersSent) {
-                res.status(502).json({ error: `Camera returned status ${streamRes.statusCode}` });
-            }
+            if (!res.headersSent) res.status(502).json({ error: `Camera returned HTTP ${streamRes.statusCode}` });
             return;
         }
 
-        // Prepare headers for the browser
-        // Override CORS headers to allow the frontend canvas to read the pixels
-        const headers = {
+        res.writeHead(streamRes.statusCode, {
             'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET, OPTIONS',
-            'Cache-Control': 'no-cache',
-            'Connection': 'close',
-            'Content-Type': streamRes.headers['content-type'] || 'multipart/x-mixed-replace; boundary=--boundary'
-        };
+            'Cache-Control': 'no-cache, no-store',
+            'Connection': 'keep-alive',
+            'Content-Type': streamRes.headers['content-type'] || 'multipart/x-mixed-replace; boundary=--BoundaryString',
+        });
 
-        res.writeHead(streamRes.statusCode, headers);
-
-        // Pipe the data
         streamRes.pipe(res);
-
-        streamRes.on('end', () => {
-            console.log('[Proxy] Stream ended');
-            res.end();
-        });
-
-        streamRes.on('error', (err) => {
-            console.error('[Proxy] Stream read error:', err.message);
-            res.end();
-        });
+        streamRes.on('error', () => res.end());
     });
 
     request.on('timeout', () => {
-        console.error('[Proxy] Connection timeout');
         request.destroy();
-        if (!res.headersSent) {
-            res.status(504).json({ error: 'Connection to camera timed out. Check IP and port.' });
-        }
+        if (!res.headersSent) res.status(504).json({ error: 'Camera connection timed out. Verify IP, port and network.' });
     });
-
     request.on('error', (err) => {
-        console.error('[Proxy] Stream Error:', err.message);
-        if (!res.headersSent) {
-            res.status(502).json({ error: `Cannot connect to camera: ${err.message}` });
-        }
+        console.error('[Proxy] Error:', err.message);
+        if (!res.headersSent) res.status(502).json({ error: `Cannot reach camera: ${err.message}` });
     });
+    res.on('close', () => request.destroy());
+});
 
-    // Cleanup when client disconnects
-    res.on('close', () => {
-        request.destroy();
+// ─── Single-Frame Snapshot ────────────────────────────────────────────────────
+// Grabs one JPEG frame from an MJPEG stream and returns it as image/jpeg.
+// The frontend uses this to feed frames into the YOLO canvas without needing
+// a persistent <img> src that triggers CORS taint.
+// Usage: GET /api/ai/proxy-snapshot?url=http://192.168.0.102:8080/shot.jpg
+router.get('/proxy-snapshot', (req, res) => {
+    let snapUrl = req.query.url;
+    if (!snapUrl) return res.status(400).json({ error: 'Missing "url" query parameter' });
+
+    // IP Webcam snapshot endpoint is /shot.jpg
+    try {
+        const parsed = new URL(snapUrl);
+        if (!parsed.pathname.includes('/shot') && !parsed.pathname.includes('/jpeg') && !parsed.pathname.includes('/snapshot')) {
+            parsed.pathname = '/shot.jpg';
+            snapUrl = parsed.toString();
+        }
+    } catch (e) {
+        return res.status(400).json({ error: 'Invalid URL' });
+    }
+
+    const transport = getTransport(snapUrl);
+    const request = transport.get(snapUrl, { timeout: 5000 }, (snapRes) => {
+        if (snapRes.statusCode !== 200) {
+            if (!res.headersSent) res.status(502).json({ error: `Snapshot returned HTTP ${snapRes.statusCode}` });
+            return;
+        }
+        res.writeHead(200, {
+            'Access-Control-Allow-Origin': '*',
+            'Cache-Control': 'no-cache',
+            'Content-Type': snapRes.headers['content-type'] || 'image/jpeg',
+        });
+        snapRes.pipe(res);
     });
+    request.on('timeout', () => { request.destroy(); if (!res.headersSent) res.status(504).end(); });
+    request.on('error', (err) => { if (!res.headersSent) res.status(502).json({ error: err.message }); });
+    res.on('close', () => request.destroy());
 });
 
 module.exports = router;
