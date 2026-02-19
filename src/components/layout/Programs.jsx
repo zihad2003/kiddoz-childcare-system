@@ -9,7 +9,7 @@ const Programs = () => {
   const ProgramCard = ({ id, title, age, desc, img, features, reverse }) => (
     <div className={`flex flex-col md:flex-row ${reverse ? 'md:flex-row-reverse' : ''} gap-12 items-center mb-24`}>
       <div className="md:w-1/2 relative group">
-        <div className={`absolute inset-0 bg-purple-600 rounded-3xl transform ${reverse ? '-rotate-3' : 'rotate-3'} group-hover:rotate-0 transition duration-500 opacity-20`}></div>
+        <div className={`absolute inset-0 bg-primary-600 rounded-3xl transform ${reverse ? '-rotate-3' : 'rotate-3'} group-hover:rotate-0 transition duration-500 opacity-20`}></div>
         <Link to={`/programs/${id}`}>
           <img
             src={img}
@@ -19,8 +19,8 @@ const Programs = () => {
         </Link>
       </div>
       <div className="md:w-1/2">
-        <Badge color="bg-purple-100 text-purple-800 border border-purple-200 mb-4 inline-block">{age}</Badge>
-        <Link to={`/programs/${id}`} className="hover:text-purple-700 transition">
+        <Badge color="bg-primary-100 text-primary-800 border border-primary-200 mb-4 inline-block">{age}</Badge>
+        <Link to={`/programs/${id}`} className="hover:text-primary-700 transition">
           <h2 className="text-4xl font-bold text-slate-900 mb-6">{title}</h2>
         </Link>
         <p className="text-lg text-slate-600 mb-8 leading-relaxed">{desc}</p>
@@ -31,7 +31,7 @@ const Programs = () => {
             </div>
           ))}
         </div>
-        <Link to={`/programs/${id}`} className="text-purple-600 font-bold hover:text-purple-800 flex items-center gap-2 group">
+        <Link to={`/programs/${id}`} className="text-primary-600 font-bold hover:text-primary-800 flex items-center gap-2 group">
           Learn More <ArrowRight size={20} className="group-hover:translate-x-1 transition" />
         </Link>
       </div>

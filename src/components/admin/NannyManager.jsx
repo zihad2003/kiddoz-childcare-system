@@ -74,7 +74,7 @@ const NannyManager = () => {
                     <h2 className="text-2xl font-bold text-slate-800">Nanny Management</h2>
                     <p className="text-slate-500">Add, edit, or remove nanny profiles</p>
                 </div>
-                <Button onClick={openAddModal} className="bg-purple-600 hover:bg-purple-700">
+                <Button onClick={openAddModal} className="bg-primary-600 hover:bg-primary-700">
                     <Plus size={20} className="mr-2" /> Add New Nanny
                 </Button>
             </div>

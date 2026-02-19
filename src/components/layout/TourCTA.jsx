@@ -10,25 +10,25 @@ const TourCTA = () => {
     return (
         <Section className="bg-slate-50 py-24 relative overflow-hidden">
             {/* Decorative Background Elements */}
-            <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-purple-100/50 to-transparent"></div>
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-amber-100 rounded-full blur-3xl opacity-50 translate-y-1/2 -translate-x-1/2"></div>
+            <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-primary-100/50 to-transparent"></div>
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-secondary-100 rounded-full blur-3xl opacity-50 translate-y-1/2 -translate-x-1/2"></div>
 
             <div className="max-w-7xl mx-auto px-4 relative z-10">
                 <div className="flex flex-col lg:flex-row items-center gap-16">
 
                     <div className="lg:w-1/2">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 rounded-full font-bold text-sm mb-6">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-100 text-primary-700 rounded-full font-bold text-sm mb-6">
                             <Calendar size={16} /> Open for Visits
                         </div>
                         <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6 leading-tight">
-                            Experience the KiddoZ Difference <span className="text-purple-600">In Person</span>
+                            Experience the KiddoZ Difference <span className="text-primary-600">In Person</span>
                         </h2>
                         <p className="text-lg text-slate-600 mb-8 leading-relaxed">
                             Reading about our safety features is one thing—seeing our YOLOv8 active monitoring and meeting our passionate educators is another. Schedule a 30-minute private tour today.
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-4">
-                            <Button onClick={() => navigate('/tour')} size="lg" className="shadow-xl shadow-purple-200" icon={ArrowRight}>
+                            <Button onClick={() => navigate('/tour')} size="lg" className="shadow-xl shadow-primary-200" icon={ArrowRight}>
                                 Schedule a Tour
                             </Button>
                             <Button onClick={() => navigate('/programs')} variant="outline" size="lg">
@@ -79,13 +79,13 @@ const TourCTA = () => {
                                 />
                                 <div className="flex justify-between items-center">
                                     <span className="font-bold text-slate-700">Educators</span>
-                                    <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">Certified</span>
+                                    <span className="text-xs bg-primary-100 text-primary-700 px-2 py-1 rounded-full">Certified</span>
                                 </div>
                             </Card>
                         </div>
 
                         {/* Decorative blob behind images */}
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-tr from-purple-200 to-indigo-200 rounded-full blur-3xl -z-0 opacity-50"></div>
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-tr from-primary-200 to-indigo-200 rounded-full blur-3xl -z-0 opacity-50"></div>
                     </div>
 
                 </div>

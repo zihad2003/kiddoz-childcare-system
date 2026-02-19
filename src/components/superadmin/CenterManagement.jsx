@@ -100,7 +100,7 @@ const CenterManagement = () => {
         }
     };
 
-    const COLORS = ['#8b5cf6', '#e2e8f0'];
+    const COLORS = ['#6968A6', '#e2e8f0'];
 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -110,8 +110,8 @@ const CenterManagement = () => {
                     <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight leading-none italic uppercase">Facility Matrix</h2>
                     <p className="text-slate-500 font-bold text-[10px] uppercase tracking-[0.2em] mt-2">Global oversight & tactical management of childcare nodes</p>
                 </div>
-                <Button variant="primary" onClick={() => { setEditingCenter(null); setFormData({ name: '', location: '', contactEmail: '', contactPhone: '', capacity: '', status: 'active' }); setIsModalOpen(true); }} className="shadow-2xl shadow-purple-200 px-8 py-6 rounded-2xl group overflow-hidden relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-indigo-600 group-hover:scale-105 transition-transform duration-500"></div>
+                <Button variant="primary" onClick={() => { setEditingCenter(null); setFormData({ name: '', location: '', contactEmail: '', contactPhone: '', capacity: '', status: 'active' }); setIsModalOpen(true); }} className="shadow-2xl shadow-primary-200 px-8 py-6 rounded-2xl group overflow-hidden relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary-600 to-primary-600 group-hover:scale-105 transition-transform duration-500"></div>
                     <div className="relative flex items-center gap-3">
                         <Plus size={22} className="group-hover:rotate-90 transition-transform duration-500" />
                         <span className="font-black tracking-widest uppercase text-xs">Initialize Node</span>
@@ -121,7 +121,7 @@ const CenterManagement = () => {
 
             {loading ? (
                 <div className="flex flex-col items-center justify-center py-40 bg-white rounded-[3rem] border-2 border-dashed border-slate-100 shadow-inner">
-                    <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mb-6"></div>
+                    <div className="w-16 h-16 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mb-6"></div>
                     <p className="text-slate-400 font-black uppercase tracking-[0.3em] text-xs">Synchronizing facility matrix...</p>
                 </div>
             ) : (
@@ -141,7 +141,7 @@ const CenterManagement = () => {
                                             <Building size={120} />
                                         </div>
                                         <div className="flex justify-between items-start mb-8">
-                                            <div className="p-5 rounded-3xl bg-slate-900 text-white shadow-xl shadow-slate-200 group-hover:bg-purple-600 group-hover:scale-110 transition-all duration-500">
+                                            <div className="p-5 rounded-3xl bg-slate-900 text-white shadow-xl shadow-slate-200 group-hover:bg-primary-600 group-hover:scale-110 transition-all duration-500">
                                                 <Building size={28} />
                                             </div>
                                             <Badge color={center.status === 'active' ? 'bg-emerald-500 text-white' : 'bg-slate-200 text-slate-600'} className="px-4 py-1.5 font-black rounded-full uppercase text-[9px] tracking-[0.15em] shadow-sm">
@@ -149,15 +149,15 @@ const CenterManagement = () => {
                                             </Badge>
                                         </div>
 
-                                        <h3 className="font-black text-3xl text-slate-900 mb-2 truncate italic group-hover:text-purple-600 transition-colors tracking-tight">{center.name}</h3>
+                                        <h3 className="font-black text-3xl text-slate-900 mb-2 truncate italic group-hover:text-primary-600 transition-colors tracking-tight">{center.name}</h3>
                                         <div className="flex items-center gap-2 text-slate-400 mb-8 text-[11px] font-black uppercase tracking-widest">
-                                            <MapPin size={14} className="text-purple-500" />
+                                            <MapPin size={14} className="text-primary-500" />
                                             {center.location}
                                         </div>
 
                                         <div className="grid grid-cols-2 gap-4 mb-10">
-                                            <div className="bg-slate-50 rounded-[2rem] p-6 flex flex-col items-start gap-1 border-2 border-transparent hover:border-purple-100 transition-all cursor-default">
-                                                <div className="p-2.5 bg-white text-purple-600 rounded-2xl shadow-sm mb-2"><Users size={18} /></div>
+                                            <div className="bg-slate-50 rounded-[2rem] p-6 flex flex-col items-start gap-1 border-2 border-transparent hover:border-primary-100 transition-all cursor-default">
+                                                <div className="p-2.5 bg-white text-primary-600 rounded-2xl shadow-sm mb-2"><Users size={18} /></div>
                                                 <p className="text-[9px] uppercase font-black text-slate-400 tracking-widest leading-none mb-1">Students</p>
                                                 <p className="text-2xl font-black text-slate-900 leading-none">{center.studentCount}</p>
                                             </div>
@@ -172,7 +172,7 @@ const CenterManagement = () => {
                                             onClick={() => openDetailView(center)}
                                             className="w-full py-5 bg-slate-900 text-white rounded-2xl font-black text-xs hover:bg-black transition-all tracking-[0.2em] uppercase shadow-2xl shadow-slate-200 flex items-center justify-center gap-3 active:scale-95 group/btn"
                                         >
-                                            <Activity size={16} className="text-purple-400 group-hover/btn:animate-pulse" /> Intelligence Scan
+                                            <Activity size={16} className="text-primary-400 group-hover/btn:animate-pulse" /> Intelligence Scan
                                         </button>
                                     </div>
 
@@ -213,7 +213,7 @@ const CenterManagement = () => {
                                             </div>
                                             <div className="w-full h-3 bg-slate-200 rounded-full overflow-hidden p-0.5">
                                                 <div
-                                                    className="h-full bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full shadow-[0_0_15px_rgba(139,92,246,0.5)] transition-all duration-1000"
+                                                    className="h-full bg-gradient-to-r from-primary-500 to-primary-500 rounded-full shadow-[0_0_15px_rgba(139,92,246,0.5)] transition-all duration-1000"
                                                     style={{ width: `${center.occupancy}%` }}
                                                 ></div>
                                             </div>
@@ -222,7 +222,7 @@ const CenterManagement = () => {
                                         <div className="mt-10 flex gap-3 w-full">
                                             <button
                                                 onClick={() => openEditModal(center)}
-                                                className="flex-1 py-3.5 bg-white border border-slate-200 rounded-2xl text-slate-600 hover:border-purple-300 hover:text-purple-600 transition-all font-black text-[10px] uppercase tracking-widest shadow-sm flex items-center justify-center gap-2 hover:-translate-y-1"
+                                                className="flex-1 py-3.5 bg-white border border-slate-200 rounded-2xl text-slate-600 hover:border-primary-300 hover:text-primary-600 transition-all font-black text-[10px] uppercase tracking-widest shadow-sm flex items-center justify-center gap-2 hover:-translate-y-1"
                                             >
                                                 <Edit2 size={12} /> Mod
                                             </button>
@@ -261,7 +261,7 @@ const CenterManagement = () => {
                             <select
                                 value={formData.status}
                                 onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                                className="w-full p-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-purple-500 focus:bg-white outline-none transition-all font-black text-slate-700 uppercase italic text-xs"
+                                className="w-full p-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-primary-500 focus:bg-white outline-none transition-all font-black text-slate-700 uppercase italic text-xs"
                             >
                                 <option value="active">Active Service</option>
                                 <option value="inactive">Node Offline</option>
@@ -271,7 +271,7 @@ const CenterManagement = () => {
                     </div>
                     <div className="pt-6 flex gap-4">
                         <Button type="button" variant="secondary" className="flex-1 h-14 font-black uppercase tracking-widest text-xs" onClick={() => setIsModalOpen(false)}>Abort</Button>
-                        <Button type="submit" variant="primary" className="flex-1 h-14 font-black uppercase tracking-widest text-xs shadow-2xl shadow-purple-100">
+                        <Button type="submit" variant="primary" className="flex-1 h-14 font-black uppercase tracking-widest text-xs shadow-2xl shadow-primary-100">
                             {editingCenter ? "Confirm Modification" : "Initialize Node"}
                         </Button>
                     </div>
@@ -290,10 +290,10 @@ const CenterManagement = () => {
                         {/* Summary Header */}
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                             {[
-                                { label: 'Enrollment', val: viewingCenter.studentCount, icon: Users, color: 'text-purple-500', bg: 'bg-purple-50' },
+                                { label: 'Enrollment', val: viewingCenter.studentCount, icon: Users, color: 'text-primary-500', bg: 'bg-primary-50' },
                                 { label: 'Personnel', val: viewingCenter.staffCount, icon: Briefcase, color: 'text-emerald-500', bg: 'bg-emerald-50' },
                                 { label: 'Capacity', val: viewingCenter.capacity, icon: ShieldCheck, color: 'text-blue-500', bg: 'bg-blue-50' },
-                                { label: 'Profitability', val: `৳${viewingCenter.revenue?.toLocaleString()}`, icon: DollarSign, color: 'text-indigo-500', bg: 'bg-indigo-50' }
+                                { label: 'Profitability', val: `৳${viewingCenter.revenue?.toLocaleString()}`, icon: DollarSign, color: 'text-primary-500', bg: 'bg-primary-50' }
                             ].map((stat, i) => (
                                 <Card key={i} className="p-8 border-none bg-white shadow-xl flex flex-col items-center text-center group hover:scale-105 transition-transform">
                                     <div className={`p-4 ${stat.bg} ${stat.color} rounded-3xl mb-4 shadow-sm group-hover:rotate-12 transition-transform`}>
@@ -311,9 +311,9 @@ const CenterManagement = () => {
                                 <Card className="p-10 border-none shadow-2xl bg-white rounded-[3rem]">
                                     <div className="flex justify-between items-center mb-10">
                                         <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs flex items-center gap-3 italic">
-                                            <TrendingUp size={16} className="text-purple-600" /> Facility Load Velocity
+                                            <TrendingUp size={16} className="text-primary-600" /> Facility Load Velocity
                                         </h4>
-                                        <Badge color="bg-purple-100 text-purple-700 font-black">+12.4% vs Last Month</Badge>
+                                        <Badge color="bg-primary-100 text-primary-700 font-black">+12.4% vs Last Month</Badge>
                                     </div>
                                     <div className="w-full h-80">
                                         <ResponsiveContainer width="100%" height="100%">
@@ -322,7 +322,7 @@ const CenterManagement = () => {
                                                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 'bold', fill: '#94a3b8' }} />
                                                 <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 'bold', fill: '#94a3b8' }} />
                                                 <Tooltip cursor={{ fill: '#f8fafc' }} contentStyle={{ borderRadius: '1rem', border: 'none', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)' }} />
-                                                <Bar dataKey="value" fill="#8b5cf6" radius={[10, 10, 0, 0]} barSize={40} />
+                                                <Bar dataKey="value" fill="#6968A6" radius={[10, 10, 0, 0]} barSize={40} />
                                             </BarChart>
                                         </ResponsiveContainer>
                                     </div>
@@ -331,12 +331,12 @@ const CenterManagement = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                                     <Card className="p-8 border-none shadow-xl bg-slate-900 text-white rounded-[2.5rem] relative overflow-hidden">
                                         <div className="absolute top-0 right-0 p-8 opacity-10"><ShieldCheck size={100} /></div>
-                                        <h5 className="font-black uppercase tracking-widest text-[10px] text-purple-400 mb-6 italic">Personnel Deployment</h5>
+                                        <h5 className="font-black uppercase tracking-widest text-[10px] text-primary-400 mb-6 italic">Personnel Deployment</h5>
                                         <div className="space-y-4">
                                             {(viewingCenter.staff || []).slice(0, 3).map((s, i) => (
                                                 <div key={i} className="flex justify-between items-center bg-white/5 p-4 rounded-2xl backdrop-blur-sm border border-white/5">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-10 h-10 rounded-full border-2 border-purple-500 overflow-hidden">
+                                                        <div className="w-10 h-10 rounded-full border-2 border-primary-500 overflow-hidden">
                                                             <img src={s.img_url || `https://ui-avatars.com/api/?name=${s.name}&background=random`} alt={s.name} />
                                                         </div>
                                                         <div>
@@ -357,7 +357,7 @@ const CenterManagement = () => {
                                             {(viewingCenter.students || []).slice(0, 3).map((s, i) => (
                                                 <div key={i} className="flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center font-black text-purple-600 text-xs shadow-inner">ID</div>
+                                                        <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center font-black text-primary-600 text-xs shadow-inner">ID</div>
                                                         <div>
                                                             <p className="font-black text-sm italic text-slate-900">{s.name}</p>
                                                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{s.plan}</p>
@@ -374,14 +374,14 @@ const CenterManagement = () => {
 
                             {/* Sidebar Actions */}
                             <div className="space-y-8">
-                                <Card className="p-8 border-none shadow-2xl bg-indigo-600 text-white rounded-[2.5rem] relative overflow-hidden group/card shadow-indigo-100">
-                                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-600 group-hover/card:scale-110 transition-transform duration-1000"></div>
+                                <Card className="p-8 border-none shadow-2xl bg-primary-600 text-white rounded-[2.5rem] relative overflow-hidden group/card shadow-primary-100">
+                                    <div className="absolute inset-0 bg-gradient-to-br from-primary-500 to-primary-600 group-hover/card:scale-110 transition-transform duration-1000"></div>
                                     <div className="relative z-10">
                                         <h4 className="font-black italic text-xl mb-2">Strategic Forecast</h4>
                                         <p className="text-white/70 text-sm font-medium leading-relaxed mb-10">Analyze node performance and economic health across global operation theaters.</p>
 
                                         <div className="space-y-6">
-                                            <button className="w-full py-4 bg-white text-indigo-600 rounded-[1.5rem] font-black uppercase tracking-widest text-[10px] shadow-2xl flex items-center justify-center gap-3 hover:-translate-y-1 transition-all active:scale-95">
+                                            <button className="w-full py-4 bg-white text-primary-600 rounded-[1.5rem] font-black uppercase tracking-widest text-[10px] shadow-2xl flex items-center justify-center gap-3 hover:-translate-y-1 transition-all active:scale-95">
                                                 <Mail size={16} /> Contact Admin
                                             </button>
                                             <button className="w-full py-4 bg-white/20 hover:bg-white/30 backdrop-blur-md rounded-[1.5rem] font-black uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-3 border border-white/10 shadow-lg">
@@ -393,11 +393,11 @@ const CenterManagement = () => {
 
                                 <Card className="p-8 border-none shadow-xl bg-slate-900 text-white rounded-[2.5rem]">
                                     <h5 className="font-black uppercase tracking-widest text-[9px] text-slate-500 mb-6 flex items-center gap-2 italic">
-                                        <AlertTriangle size={14} className="text-amber-500" /> Operational Alerts
+                                        <AlertTriangle size={14} className="text-secondary-500" /> Operational Alerts
                                     </h5>
                                     <div className="space-y-3">
                                         <div className="flex gap-4 items-start p-4 bg-white/5 rounded-2xl border border-white/5">
-                                            <div className="w-2 h-2 mt-1.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)] animate-pulse"></div>
+                                            <div className="w-2 h-2 mt-1.5 rounded-full bg-secondary-500 shadow-[0_0_8px_rgba(245,158,11,0.5)] animate-pulse"></div>
                                             <div>
                                                 <p className="text-[11px] font-black italic">Capacity Warning</p>
                                                 <p className="text-[9px] font-medium text-slate-500 mt-1">Nearing PAX threshold. Deployment optimization suggested.</p>

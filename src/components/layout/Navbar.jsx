@@ -33,7 +33,7 @@ const Navbar = ({ user, handleLogout }) => {
     <Link
       to={to}
       onClick={() => setMobileMenuOpen(false)}
-      className={`flex items-center gap-2 px-4 py-2 rounded-xl transition font-medium ${isActive(to) ? 'bg-purple-100 text-purple-800' : 'text-slate-600 hover:text-purple-600 hover:bg-purple-50'
+      className={`flex items-center gap-2 px-4 py-2 rounded-xl transition font-medium ${isActive(to) ? 'bg-primary-100 text-primary-800' : 'text-slate-600 hover:text-primary-600 hover:bg-primary-50'
         }`}
     >
       {Icon && <Icon size={18} />}
@@ -43,13 +43,13 @@ const Navbar = ({ user, handleLogout }) => {
 
   // Admin View Navbar
   if (location.pathname.startsWith('/admin') && user) return (
-    <nav className="glass sticky top-0 z-40 border-b border-purple-100 shadow-sm bg-purple-50/80">
+    <nav className="glass sticky top-0 z-40 border-b border-primary-100 shadow-sm bg-primary-50/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20 items-center">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-tr from-slate-700 to-slate-900 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg">K</div>
             <div className="flex flex-col">
-              <span className="text-xl font-extrabold tracking-tight text-slate-800 leading-none">Kiddo<span className="text-purple-600">Z</span></span>
+              <span className="text-xl font-extrabold tracking-tight text-slate-800 leading-none">Kiddo<span className="text-primary-600">Z</span></span>
               <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Admin Portal</span>
             </div>
           </div>
@@ -74,8 +74,8 @@ const Navbar = ({ user, handleLogout }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20 items-center">
           <Link to="/" className="flex items-center cursor-pointer gap-3">
-            <div className="w-10 h-10 bg-gradient-to-tr from-purple-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg transform rotate-3">K</div>
-            <span className="text-2xl font-extrabold tracking-tight text-slate-800">Kiddo<span className="text-purple-600">Z</span></span>
+            <div className="w-10 h-10 bg-gradient-to-tr from-primary-600 to-primary-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg transform rotate-3">K</div>
+            <span className="text-2xl font-extrabold tracking-tight text-slate-800">Kiddo<span className="text-primary-600">Z</span></span>
           </Link>
 
           {/* Desktop Nav */}
@@ -87,8 +87,8 @@ const Navbar = ({ user, handleLogout }) => {
               <button
                 onClick={() => setProgramsOpen(!programsOpen)}
                 className={`flex items-center gap-1.5 px-4 py-2 rounded-xl transition font-medium ${isProgramActive
-                    ? 'bg-purple-100 text-purple-800'
-                    : 'text-slate-600 hover:text-purple-600 hover:bg-purple-50'
+                    ? 'bg-primary-100 text-primary-800'
+                    : 'text-slate-600 hover:text-primary-600 hover:bg-primary-50'
                   }`}
               >
                 Programs
@@ -104,9 +104,9 @@ const Navbar = ({ user, handleLogout }) => {
                   {/* View All */}
                   <Link
                     to="/programs"
-                    className="flex items-center gap-3 px-5 py-3.5 text-sm font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 transition border-b border-purple-100"
+                    className="flex items-center gap-3 px-5 py-3.5 text-sm font-bold text-primary-700 bg-primary-50 hover:bg-primary-100 transition border-b border-primary-100"
                   >
-                    <span className="w-8 h-8 bg-purple-600 text-white rounded-lg flex items-center justify-center text-xs font-black shadow">✦</span>
+                    <span className="w-8 h-8 bg-primary-600 text-white rounded-lg flex items-center justify-center text-xs font-black shadow">✦</span>
                     View All Programs
                   </Link>
 
@@ -124,7 +124,7 @@ const Navbar = ({ user, handleLogout }) => {
                         className="w-10 h-10 rounded-xl object-cover shadow-sm group-hover:scale-105 transition"
                       />
                       <div>
-                        <p className="text-sm font-bold text-slate-800 group-hover:text-purple-700 transition">{program.title}</p>
+                        <p className="text-sm font-bold text-slate-800 group-hover:text-primary-700 transition">{program.title}</p>
                         <p className="text-xs text-slate-400">{program.age}</p>
                       </div>
                     </Link>
@@ -143,12 +143,12 @@ const Navbar = ({ user, handleLogout }) => {
                 {user.role === 'admin' ? (
                   <Link to="/admin" className="flex items-center gap-2 bg-slate-800 text-white px-6 py-2.5 rounded-full hover:bg-slate-900 transition shadow-lg font-semibold"><User size={18} /> Admin Panel</Link>
                 ) : (
-                  <Link to="/dashboard" className="flex items-center gap-2 bg-purple-600 text-white px-6 py-2.5 rounded-full hover:bg-purple-700 transition shadow-lg font-semibold"><User size={18} /> Parent Portal</Link>
+                  <Link to="/dashboard" className="flex items-center gap-2 bg-primary-600 text-white px-6 py-2.5 rounded-full hover:bg-primary-700 transition shadow-lg font-semibold"><User size={18} /> Parent Portal</Link>
                 )}
                 <button onClick={handleLogout} className="text-slate-400 hover:text-red-500 transition bg-slate-50 p-2 rounded-full hover:bg-red-50"><LogOut size={20} /></button>
               </>
             ) : (
-              <Link to="/login" className="text-purple-600 font-bold hover:text-purple-800 px-6 py-2">Log In</Link>
+              <Link to="/login" className="text-primary-600 font-bold hover:text-primary-800 px-6 py-2">Log In</Link>
             )}
           </div>
 
@@ -169,7 +169,7 @@ const Navbar = ({ user, handleLogout }) => {
             <Link
               to="/programs"
               onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center justify-between w-full px-4 py-2 rounded-xl transition font-medium ${isProgramActive ? 'bg-purple-100 text-purple-800' : 'text-slate-600 hover:text-purple-600 hover:bg-purple-50'
+              className={`flex items-center justify-between w-full px-4 py-2 rounded-xl transition font-medium ${isProgramActive ? 'bg-primary-100 text-primary-800' : 'text-slate-600 hover:text-primary-600 hover:bg-primary-50'
                 }`}
             >
               Programs
@@ -181,8 +181,8 @@ const Navbar = ({ user, handleLogout }) => {
                   to={`/programs/${program.id}`}
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition ${location.pathname === `/programs/${program.id}`
-                      ? 'bg-purple-50 text-purple-700 font-bold'
-                      : 'text-slate-500 hover:text-purple-600 hover:bg-slate-50'
+                      ? 'bg-primary-50 text-primary-700 font-bold'
+                      : 'text-slate-500 hover:text-primary-600 hover:bg-slate-50'
                     }`}
                 >
                   <img src={program.img} alt={program.title} className="w-8 h-8 rounded-lg object-cover" />
@@ -194,7 +194,7 @@ const Navbar = ({ user, handleLogout }) => {
 
           <NavItem to="/enroll" label="Enroll" />
           {user ? (
-            <Link to={user.role === 'admin' ? '/admin' : '/dashboard'} onClick={() => setMobileMenuOpen(false)} className="w-full text-left px-4 py-3 bg-purple-600 text-white rounded-xl font-bold flex items-center gap-2"><User size={18} /> {user.role === 'admin' ? 'Admin Panel' : 'Parent Portal'}</Link>
+            <Link to={user.role === 'admin' ? '/admin' : '/dashboard'} onClick={() => setMobileMenuOpen(false)} className="w-full text-left px-4 py-3 bg-primary-600 text-white rounded-xl font-bold flex items-center gap-2"><User size={18} /> {user.role === 'admin' ? 'Admin Panel' : 'Parent Portal'}</Link>
           ) : (<NavItem to="/login" label="Login" />)}
         </div>
       )}

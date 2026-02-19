@@ -67,18 +67,18 @@ export default function YoloView() {
         <div className="bg-gray-900 rounded-2xl p-6 shadow-2xl border border-gray-800">
             <div className="flex justify-between items-center mb-6">
                 <h2 className="text-white text-xl font-bold flex items-center gap-2">
-                    <span className="p-2 bg-purple-600 rounded-lg text-white">📷</span> Live Camera Feed (YOLO AI)
+                    <span className="p-2 bg-primary-600 rounded-lg text-white">📷</span> Live Camera Feed (YOLO AI)
                 </h2>
                 <div className="flex items-center gap-2 bg-gray-800 p-1 rounded-lg">
                     <button
                         onClick={() => setUseWS(false)}
-                        className={`px-3 py-1 rounded-md text-xs font-bold transition ${!useWS ? 'bg-purple-600 text-white' : 'text-gray-400'}`}
+                        className={`px-3 py-1 rounded-md text-xs font-bold transition ${!useWS ? 'bg-primary-600 text-white' : 'text-gray-400'}`}
                     >
                         MJPEG
                     </button>
                     <button
                         onClick={() => setUseWS(true)}
-                        className={`px-3 py-1 rounded-md text-xs font-bold transition ${useWS ? 'bg-purple-600 text-white' : 'text-gray-400'}`}
+                        className={`px-3 py-1 rounded-md text-xs font-bold transition ${useWS ? 'bg-primary-600 text-white' : 'text-gray-400'}`}
                     >
                         YOLO WS
                     </button>
@@ -104,7 +104,7 @@ export default function YoloView() {
                         value={ipAddress}
                         onChange={(e) => setIpAddress(e.target.value)}
                         placeholder="192.168.1.100"
-                        className="w-full bg-gray-900 text-white border border-gray-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none transition"
+                        className="w-full bg-gray-900 text-white border border-gray-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500 outline-none transition"
                     />
                 </div>
                 <div className="w-24">
@@ -114,7 +114,7 @@ export default function YoloView() {
                         value={port}
                         onChange={(e) => setPort(e.target.value)}
                         placeholder="8080"
-                        className="w-full bg-gray-900 text-white border border-gray-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none transition"
+                        className="w-full bg-gray-900 text-white border border-gray-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500 outline-none transition"
                     />
                 </div>
                 <div className="flex items-end gap-2">
@@ -122,7 +122,7 @@ export default function YoloView() {
                         <button
                             onClick={handleConnect}
                             disabled={status === 'connecting'}
-                            className="bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white px-6 py-2 rounded-lg text-sm font-bold shadow-lg shadow-purple-900/20 transition-all hover:scale-105"
+                            className="bg-primary-600 hover:bg-primary-500 disabled:opacity-50 text-white px-6 py-2 rounded-lg text-sm font-bold shadow-lg shadow-primary-900/20 transition-all hover:scale-105"
                         >
                             {status === 'connecting' ? 'Connecting...' : '▶ Connect'}
                         </button>
@@ -209,11 +209,11 @@ export default function YoloView() {
             <details className="mt-6 bg-gray-800/30 rounded-xl p-4 border border-gray-800 hover:bg-gray-800/50 transition cursor-pointer">
                 <summary className="text-gray-300 text-sm font-bold uppercase tracking-widest flex justify-between select-none">
                     📱 Setup Guide
-                    <span className="text-purple-500 opacity-50">View Steps</span>
+                    <span className="text-primary-500 opacity-50">View Steps</span>
                 </summary>
                 <div className="mt-4 grid md:grid-cols-2 gap-4">
                     <div className="space-y-3">
-                        <p className="text-purple-400 text-xs font-bold uppercase tracking-tighter">1. Phone Setup</p>
+                        <p className="text-primary-400 text-xs font-bold uppercase tracking-tighter">1. Phone Setup</p>
                         <ol className="text-gray-400 text-xs space-y-1.5 list-decimal list-inside leading-relaxed">
                             <li>Install <strong className="text-white">IP Webcam</strong> app</li>
                             <li>Connect phone & PC to <strong className="text-white text-xs">SAME WiFi</strong></li>
@@ -221,7 +221,7 @@ export default function YoloView() {
                         </ol>
                     </div>
                     <div className="space-y-3">
-                        <p className="text-purple-400 text-xs font-bold uppercase tracking-tighter">2. YOLO AI Mode</p>
+                        <p className="text-primary-400 text-xs font-bold uppercase tracking-tighter">2. YOLO AI Mode</p>
                         <ol className="text-gray-400 text-xs space-y-1.5 list-decimal list-inside leading-relaxed">
                             <li>Switch to <strong className="text-white">YOLO WS</strong> above</li>
                             <li>Run <code>python yolo_server.py</code> locally</li>

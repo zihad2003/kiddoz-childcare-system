@@ -20,7 +20,7 @@ const Modal = ({ isOpen, onClose, title, children, maxWidth = "max-w-md" }) => {
                 className={`bg-white text-slate-900 rounded-3xl shadow-2xl w-full ${maxWidth} max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-8 duration-300 relative`}
             >
                 <div className="sticky top-0 bg-white/80 backdrop-blur-md z-10 p-6 border-b border-slate-100 flex justify-between items-center">
-                    <h3 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-700 to-indigo-600">
+                    <h3 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-700 to-primary-600">
                         {title}
                     </h3>
                     <button

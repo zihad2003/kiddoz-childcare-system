@@ -62,9 +62,9 @@ const ReportsGenerator = () => {
             description: 'Occupancy rates, revenue contribution, and staff efficiency metrics per center.',
             type: 'PDF',
             icon: Building,
-            color: 'text-purple-600',
-            bg: 'bg-purple-50',
-            accent: 'border-l-purple-500',
+            color: 'text-primary-600',
+            bg: 'bg-primary-50',
+            accent: 'border-l-primary-500',
             size: '~1.8 MB',
         },
         {
@@ -73,9 +73,9 @@ const ReportsGenerator = () => {
             description: 'Student enrollment trends, churn rates, and plan distribution analytics.',
             type: 'PDF',
             icon: FileText,
-            color: 'text-orange-600',
+            color: 'text-secondary-600',
             bg: 'bg-orange-50',
-            accent: 'border-l-orange-500',
+            accent: 'border-l-secondary-500',
             size: '~900 KB',
         },
         {
@@ -84,9 +84,9 @@ const ReportsGenerator = () => {
             description: 'Payroll disbursements, staff costs by role, and month-over-month comparison.',
             type: 'Excel',
             icon: FileBarChart,
-            color: 'text-indigo-600',
-            bg: 'bg-indigo-50',
-            accent: 'border-l-indigo-500',
+            color: 'text-primary-600',
+            bg: 'bg-primary-50',
+            accent: 'border-l-primary-500',
             size: '~1.5 MB',
         },
     ];
@@ -115,7 +115,7 @@ const ReportsGenerator = () => {
                         <button
                             key={r.id}
                             onClick={() => setDateRange(r.id)}
-                            className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${dateRange === r.id ? 'bg-purple-600 text-white shadow' : 'text-slate-500 hover:text-slate-700'}`}
+                            className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${dateRange === r.id ? 'bg-primary-600 text-white shadow' : 'text-slate-500 hover:text-slate-700'}`}
                         >
                             {r.label}
                         </button>
@@ -146,7 +146,7 @@ const ReportsGenerator = () => {
                                 <button
                                     onClick={() => handleDownload(report)}
                                     disabled={generating === report.id}
-                                    className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-xl text-[10px] font-black hover:bg-purple-600 transition-all uppercase tracking-widest disabled:opacity-50 shadow-sm"
+                                    className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-xl text-[10px] font-black hover:bg-primary-600 transition-all uppercase tracking-widest disabled:opacity-50 shadow-sm"
                                 >
                                     {generating === report.id ? (
                                         <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -163,20 +163,20 @@ const ReportsGenerator = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
                 {/* Scheduled Reports */}
-                <Card className="lg:col-span-3 border-none shadow-xl bg-gradient-to-br from-[#1a0533] to-purple-900 text-white relative overflow-hidden">
+                <Card className="lg:col-span-3 border-none shadow-xl bg-gradient-to-br from-[#085078] to-primary-900 text-white relative overflow-hidden">
                     <div className="absolute inset-0 opacity-10">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-purple-400 rounded-full -mr-20 -mt-20 blur-3xl" />
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-primary-400 rounded-full -mr-20 -mt-20 blur-3xl" />
                     </div>
                     <div className="relative z-10 p-8">
                         <div className="flex items-center gap-2 mb-4">
                             <Sparkles size={16} className="text-yellow-400" />
                             <h3 className="text-xl font-black">Automated Monthly Reports</h3>
                         </div>
-                        <p className="text-purple-200 text-sm font-medium leading-relaxed mb-8 max-w-md">
+                        <p className="text-primary-200 text-sm font-medium leading-relaxed mb-8 max-w-md">
                             Schedule comprehensive platform insights to be auto-generated and emailed to stakeholders on the 1st of every month.
                         </p>
                         <div className="flex flex-wrap gap-3">
-                            <button className="flex items-center gap-2 px-6 py-3 bg-white text-purple-900 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl hover:-translate-y-1 transition-all active:scale-95">
+                            <button className="flex items-center gap-2 px-6 py-3 bg-white text-primary-900 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl hover:-translate-y-1 transition-all active:scale-95">
                                 <Calendar size={14} /> Configure Schedule
                             </button>
                             <button className="flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-2xl font-black text-xs uppercase tracking-widest transition-all border border-white/10">
@@ -191,14 +191,14 @@ const ReportsGenerator = () => {
                     <h4 className="font-black text-slate-900 text-sm uppercase tracking-widest mb-5">Recent Reports</h4>
                     <div className="space-y-4">
                         {recentReports.map((r, i) => (
-                            <div key={i} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:border-purple-200 transition-colors group">
+                            <div key={i} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:border-primary-200 transition-colors group">
                                 <div>
-                                    <p className="text-xs font-black text-slate-700 group-hover:text-purple-700 transition-colors">{r.title}</p>
+                                    <p className="text-xs font-black text-slate-700 group-hover:text-primary-700 transition-colors">{r.title}</p>
                                     <p className="text-[10px] text-slate-400 font-medium mt-0.5">{r.date} · {r.type}</p>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <CheckCircle size={14} className="text-emerald-500" />
-                                    <button className="text-slate-300 hover:text-purple-600 transition">
+                                    <button className="text-slate-300 hover:text-primary-600 transition">
                                         <Download size={14} />
                                     </button>
                                 </div>

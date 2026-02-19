@@ -50,7 +50,7 @@ const PaymentModal = ({ isOpen, onClose, amount, onComplete }) => {
             </div>
             <div className="relative z-10 flex flex-col justify-between h-full">
                 <div className="flex justify-between items-start">
-                    <div className="w-12 h-8 bg-amber-400 rounded-md opacity-80"></div>
+                    <div className="w-12 h-8 bg-secondary-400 rounded-md opacity-80"></div>
                     <span className="font-mono text-xs opacity-60">DEBIT</span>
                 </div>
 
@@ -89,7 +89,7 @@ const PaymentModal = ({ isOpen, onClose, amount, onComplete }) => {
                         </div>
                         <div className="border-t border-slate-200 pt-4 flex justify-between items-center">
                             <span className="font-black text-xl text-slate-800">Total</span>
-                            <span className="font-black text-2xl text-purple-700">৳{amount.toLocaleString()}</span>
+                            <span className="font-black text-2xl text-primary-700">৳{amount.toLocaleString()}</span>
                         </div>
                     </div>
 
@@ -107,9 +107,9 @@ const PaymentModal = ({ isOpen, onClose, amount, onComplete }) => {
 
                             <button
                                 onClick={() => setStep('card')}
-                                className="w-full p-4 border-2 border-slate-100 hover:border-purple-500 hover:bg-purple-50 rounded-xl flex items-center gap-4 transition-all group"
+                                className="w-full p-4 border-2 border-slate-100 hover:border-primary-500 hover:bg-primary-50 rounded-xl flex items-center gap-4 transition-all group"
                             >
-                                <div className="w-10 h-10 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <div className="w-10 h-10 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
                                     <CreditCard size={20} />
                                 </div>
                                 <div className="text-left">
@@ -118,13 +118,13 @@ const PaymentModal = ({ isOpen, onClose, amount, onComplete }) => {
                                 </div>
                             </button>
 
-                            <button onClick={() => setStep('mfs')} className="w-full p-4 border-2 border-slate-100 hover:border-pink-500 hover:bg-pink-50 rounded-xl flex items-center gap-4 transition-all group">
-                                <div className="w-10 h-10 bg-pink-100 text-pink-600 rounded-full flex items-center justify-center">
+                            <button onClick={() => setStep('mfs')} className="w-full p-4 border-2 border-slate-100 hover:border-secondary-500 hover:bg-secondary-50 rounded-xl flex items-center gap-4 transition-all group">
+                                <div className="w-10 h-10 bg-secondary-100 text-secondary-600 rounded-full flex items-center justify-center">
                                     <Smartphone size={20} />
                                 </div>
                                 <div className="text-left">
                                     <p className="font-bold text-slate-700">Mobile Banking</p>
-                                    <p className="text-[10px] text-slate-400 text-pink-500 font-bold">bKash, Nagad, Rocket</p>
+                                    <p className="text-[10px] text-slate-400 text-secondary-500 font-bold">bKash, Nagad, Rocket</p>
                                 </div>
                             </button>
 
@@ -178,7 +178,7 @@ const PaymentModal = ({ isOpen, onClose, amount, onComplete }) => {
                                 <Button type="submit" size="lg" className="w-full mt-2" icon={Lock}>
                                     Pay ৳{amount.toLocaleString()}
                                 </Button>
-                                <button type="button" onClick={() => setStep('method')} className="w-full text-center text-xs text-slate-400 hover:text-purple-600 mt-2">Change Method</button>
+                                <button type="button" onClick={() => setStep('method')} className="w-full text-center text-xs text-slate-400 hover:text-primary-600 mt-2">Change Method</button>
                             </form>
                         </div>
                     )}
@@ -186,10 +186,10 @@ const PaymentModal = ({ isOpen, onClose, amount, onComplete }) => {
                     {step === 'mfs' && (
                         <div className="animate-in slide-in-from-right-8 duration-300 text-center">
                             <div className="flex justify-center gap-4 mb-6">
-                                <button className="p-3 border-2 border-slate-100 rounded-xl hover:border-pink-500 transition-all">
+                                <button className="p-3 border-2 border-slate-100 rounded-xl hover:border-secondary-500 transition-all">
                                     <img src="https://logowik.com/content/uploads/images/bkash-payment-method5359.logowik.com.webp" className="h-10" alt="bKash" />
                                 </button>
-                                <button className="p-3 border-2 border-slate-100 rounded-xl hover:border-orange-500 transition-all">
+                                <button className="p-3 border-2 border-slate-100 rounded-xl hover:border-secondary-500 transition-all">
                                     <img src="https://logowik.com/content/uploads/images/nagad-mobile-banking7291.logowik.com.webp" className="h-10" alt="Nagad" />
                                 </button>
                             </div>
@@ -200,16 +200,16 @@ const PaymentModal = ({ isOpen, onClose, amount, onComplete }) => {
                                 className="text-center font-bold text-lg mb-4"
                                 maxLength={11}
                             />
-                            <Button onClick={handleProcessPayment} className="w-full bg-pink-600 hover:bg-pink-700">
+                            <Button onClick={handleProcessPayment} className="w-full bg-secondary-600 hover:bg-secondary-700">
                                 Confirm Payment
                             </Button>
-                            <button type="button" onClick={() => setStep('method')} className="w-full text-center text-xs text-slate-400 hover:text-purple-600 mt-4">Go Back</button>
+                            <button type="button" onClick={() => setStep('method')} className="w-full text-center text-xs text-slate-400 hover:text-primary-600 mt-4">Go Back</button>
                         </div>
                     )}
 
                     {step === 'processing' && (
                         <div className="text-center py-10 animate-in fade-in duration-500">
-                            <Loader2 size={64} className="text-purple-600 animate-spin mx-auto mb-6" />
+                            <Loader2 size={64} className="text-primary-600 animate-spin mx-auto mb-6" />
                             <h3 className="text-xl font-bold text-slate-800">Processing Payment...</h3>
                             <p className="text-slate-500 text-sm mt-2">Please do not close this window.</p>
                         </div>

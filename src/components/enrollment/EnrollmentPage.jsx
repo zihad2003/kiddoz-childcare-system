@@ -128,8 +128,8 @@ const EnrollmentPage = ({ user, db, appId, PLANS }) => {
                 <button
                   key={step}
                   onClick={() => handleStepperClick(step)}
-                  className={`relative z-10 w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-300 outline-none focus:ring-4 focus:ring-purple-200 
-                    ${currentStep >= step ? 'bg-purple-600 text-white shadow-lg scale-110' : 'bg-slate-200 text-slate-500 hover:bg-slate-300'}
+                  className={`relative z-10 w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-300 outline-none focus:ring-4 focus:ring-primary-200 
+                    ${currentStep >= step ? 'bg-primary-600 text-white shadow-lg scale-110' : 'bg-slate-200 text-slate-500 hover:bg-slate-300'}
                   `}
                 >
                   {step === 3 && currentStep < 3 ? <Zap size={20} /> : step}
@@ -137,9 +137,9 @@ const EnrollmentPage = ({ user, db, appId, PLANS }) => {
               ))}
             </div>
             <div className="flex justify-between mt-4 text-sm font-bold text-slate-500 uppercase tracking-wider">
-              <span className={`cursor-pointer ${currentStep === 1 ? 'text-purple-700' : ''}`} onClick={() => handleStepperClick(1)}>Select Plan</span>
-              <span className={`pl-8 cursor-pointer ${currentStep === 2 ? 'text-purple-700' : ''}`} onClick={() => handleStepperClick(2)}>Student Info</span>
-              <span className={`cursor-pointer ${currentStep === 3 ? 'text-purple-700' : ''}`} onClick={() => handleStepperClick(3)}>AI Setup</span>
+              <span className={`cursor-pointer ${currentStep === 1 ? 'text-primary-700' : ''}`} onClick={() => handleStepperClick(1)}>Select Plan</span>
+              <span className={`pl-8 cursor-pointer ${currentStep === 2 ? 'text-primary-700' : ''}`} onClick={() => handleStepperClick(2)}>Student Info</span>
+              <span className={`cursor-pointer ${currentStep === 3 ? 'text-primary-700' : ''}`} onClick={() => handleStepperClick(3)}>AI Setup</span>
             </div>
 
             {/* Show error hint if validation failed somewhere but we moved on */}

@@ -14,17 +14,17 @@ const NannyServiceDetails = () => {
     return (
         <div className="bg-slate-50 min-h-screen">
             {/* Hero Section */}
-            <div className="bg-purple-900 text-white relative overflow-hidden pt-32 pb-20 px-4">
+            <div className="bg-primary-900 text-white relative overflow-hidden pt-32 pb-20 px-4">
                 <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&q=80')] bg-cover bg-center"></div>
                 <div className="relative z-10 max-w-7xl mx-auto text-center">
-                    <Link to="/" className="inline-flex items-center text-purple-200 hover:text-white mb-8 transition font-medium">
+                    <Link to="/" className="inline-flex items-center text-primary-200 hover:text-white mb-8 transition font-medium">
                         <ArrowLeft size={20} className="mr-2" /> Back to Home
                     </Link>
-                    <Badge color="bg-amber-400 text-purple-900 mb-6 border-none font-bold">New Service</Badge>
+                    <Badge color="bg-secondary-400 text-primary-900 mb-6 border-none font-bold">New Service</Badge>
                     <h1 className="text-5xl md:text-7xl font-black mb-6 tracking-tight">
                         Premium Nanny Service
                     </h1>
-                    <p className="text-xl md:text-2xl text-purple-100 max-w-3xl mx-auto leading-relaxed">
+                    <p className="text-xl md:text-2xl text-primary-100 max-w-3xl mx-auto leading-relaxed">
                         Expert childcare in the comfort of your own home. Vetted, certified, and loved by families.
                     </p>
                 </div>
@@ -37,7 +37,7 @@ const NannyServiceDetails = () => {
                     {/* Left: Image & Key Benefits */}
                     <div>
                         <div className="relative mb-12 group">
-                            <div className="absolute inset-0 bg-purple-600 rounded-3xl transform rotate-3 group-hover:rotate-0 transition duration-500 opacity-20"></div>
+                            <div className="absolute inset-0 bg-primary-600 rounded-3xl transform rotate-3 group-hover:rotate-0 transition duration-500 opacity-20"></div>
                             <img
                                 src={nannyImg}
                                 alt="Nanny with child"
@@ -59,7 +59,7 @@ const NannyServiceDetails = () => {
                         {/* Ratings */}
                         <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 mb-8">
                             <div className="flex items-center gap-4 mb-4">
-                                <div className="flex text-amber-400">
+                                <div className="flex text-secondary-400">
                                     {[1, 2, 3, 4, 5].map(i => <Star key={i} size={24} fill="currentColor" />)}
                                 </div>
                                 <span className="text-xl font-bold text-slate-800">4.9/5 Rating</span>
@@ -74,7 +74,7 @@ const NannyServiceDetails = () => {
                         <h2 className="text-3xl font-bold text-slate-900 mb-6">Why Choose Our Nannies?</h2>
                         <div className="space-y-6 mb-12">
                             <div className="flex gap-4">
-                                <div className="p-3 bg-purple-100 text-purple-600 rounded-xl h-fit">
+                                <div className="p-3 bg-primary-100 text-primary-600 rounded-xl h-fit">
                                     <Shield size={24} />
                                 </div>
                                 <div>
@@ -83,7 +83,7 @@ const NannyServiceDetails = () => {
                                 </div>
                             </div>
                             <div className="flex gap-4">
-                                <div className="p-3 bg-pink-100 text-pink-600 rounded-xl h-fit">
+                                <div className="p-3 bg-secondary-100 text-secondary-600 rounded-xl h-fit">
                                     <Heart size={24} />
                                 </div>
                                 <div>
@@ -105,7 +105,7 @@ const NannyServiceDetails = () => {
                         <div className="bg-slate-100 rounded-3xl p-8 mb-10">
                             <h3 className="text-2xl font-bold text-slate-900 mb-4">Simple Pricing</h3>
                             <div className="flex items-baseline gap-2 mb-6">
-                                <span className="text-5xl font-black text-purple-600">$35</span>
+                                <span className="text-5xl font-black text-primary-600">$35</span>
                                 <span className="text-slate-500 font-medium">/ hour</span>
                             </div>
                             <ul className="space-y-3 mb-8">
@@ -118,7 +118,7 @@ const NannyServiceDetails = () => {
                             </ul>
                             <Link
                                 to="/book-nanny"
-                                className="block w-full text-center bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 rounded-xl shadow-lg transition transform hover:-translate-y-1"
+                                className="block w-full text-center bg-primary-600 hover:bg-primary-700 text-white font-bold py-4 rounded-xl shadow-lg transition transform hover:-translate-y-1"
                             >
                                 Book a Nanny Now
                             </Link>
@@ -141,7 +141,7 @@ const NannyServiceDetails = () => {
                             { title: '3. Relax', desc: 'We handle the rest. Your nanny arrives ready to help!', icon: Heart }
                         ].map((step, i) => (
                             <div key={i} className="text-center p-6 relative">
-                                <div className="w-16 h-16 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold border-2 border-purple-100">
+                                <div className="w-16 h-16 bg-primary-50 text-primary-600 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold border-2 border-primary-100">
                                     <step.icon size={32} />
                                 </div>
                                 <h4 className="text-xl font-bold text-slate-900 mb-3">{step.title}</h4>

@@ -53,7 +53,7 @@ const AppManagement = () => {
                 {/* Release New Version */}
                 <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
                     <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-                        <Upload size={20} className="text-purple-600" />
+                        <Upload size={20} className="text-primary-600" />
                         Release New Version
                     </h3>
                     <form onSubmit={handleRelease} className="space-y-4">
@@ -67,7 +67,7 @@ const AppManagement = () => {
                         <div>
                             <label className="block text-sm font-bold text-slate-700 mb-1.5 ml-1">Changelog / Release Notes</label>
                             <textarea
-                                className="w-full bg-white border border-slate-200 text-slate-800 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                                className="w-full bg-white border border-slate-200 text-slate-800 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary-500/50"
                                 rows="4"
                                 value={versionData.changes}
                                 onChange={(e) => setVersionData({ ...versionData, changes: e.target.value })}
@@ -78,7 +78,7 @@ const AppManagement = () => {
                             <input
                                 type="checkbox"
                                 id="forceUpdate"
-                                className="w-4 h-4 text-purple-600 rounded focus:ring-purple-500"
+                                className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
                                 checked={versionData.forceUpdate}
                                 onChange={(e) => setVersionData({ ...versionData, forceUpdate: e.target.checked })}
                             />
@@ -91,13 +91,13 @@ const AppManagement = () => {
                 {/* Engagement / Push */}
                 <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
                     <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-                        <Bell size={20} className="text-orange-600" />
+                        <Bell size={20} className="text-secondary-600" />
                         Broadcast Notification
                     </h3>
                     <div className="space-y-4">
                         <Input label="Title" placeholder="Notification Title" />
                         <Input label="Message" placeholder="Message body..." />
-                        <Button onClick={handlePushNotification} className="w-full bg-orange-600 hover:bg-orange-700 text-white">
+                        <Button onClick={handlePushNotification} className="w-full bg-secondary-600 hover:bg-orange-700 text-white">
                             Send Broadcast
                         </Button>
                     </div>
@@ -127,7 +127,7 @@ const AppManagement = () => {
                             </div>
                             <div className="flex flex-col items-end gap-1">
                                 <span className="text-xs font-bold text-slate-500 uppercase">Downloads</span>
-                                <span className="text-lg font-bold text-purple-600">{(Math.random() * 1000).toFixed(0)}</span>
+                                <span className="text-lg font-bold text-primary-600">{(Math.random() * 1000).toFixed(0)}</span>
                             </div>
                         </div>
                     ))}

@@ -15,7 +15,7 @@ const Input = forwardRef(({ label, error, icon: Icon, className = "", ...props }
                     className={`
             w-full bg-white border border-slate-200 text-slate-800 rounded-xl py-3 
             ${Icon ? 'pl-10' : 'pl-4'} pr-4 
-            focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500
+            focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500
             placeholder:text-slate-400 transition-all duration-200
             disabled:bg-slate-50 disabled:text-slate-500
             ${error ? 'border-red-500 ring-red-200' : ''}

@@ -48,55 +48,30 @@ export const AuthProvider = ({ children }) => {
                 }
             }
 
-            // 2. Handle Firebase Identity (anonymous / demo mode)
+            // 2. Handle Firebase Identity (optional fallback)
             if (fbUser) {
-                if (fbUser.isAnonymous) {
-                    try {
+                try {
+                    if (fbUser.isAnonymous) {
                         const userDoc = await getDoc(doc(db, 'users', fbUser.uid));
-                        if (userDoc.exists()) {
-                            const data = userDoc.data();
-                            setUser({
-                                id: fbUser.uid,
-                                fullName: "Demo Guest",
-                                email: "guest@kiddoz.com",
-                                isAnonymous: true,
-                                ...data,
-                                // Always guarantee a valid role
-                                role: data?.role || "parent",
-                            });
-                        } else {
-                            setUser({
-                                id: fbUser.uid,
-                                fullName: "Demo Guest",
-                                email: "guest@kiddoz.com",
-                                role: "parent",
-                                isAnonymous: true
-                            });
-                        }
-                    } catch (e) {
-                        // Firestore unreachable — safe default
+                        const data = userDoc.exists() ? userDoc.data() : {};
                         setUser({
                             id: fbUser.uid,
-                            fullName: "Demo Guest",
-                            role: "parent",
-                            isAnonymous: true
+                            fullName: data?.fullName || "Demo Guest",
+                            email: data?.email || "guest@kiddoz.com",
+                            isAnonymous: true,
+                            role: data?.role || "parent",
+                            ...data
+                        });
+                    } else {
+                        setUser({
+                            id: fbUser.uid,
+                            fullName: fbUser.displayName || fbUser.email?.split('@')[0] || 'Member',
+                            email: fbUser.email,
+                            role: 'parent'
                         });
                     }
-                } else {
-                    setUser({
-                        id: fbUser.uid,
-                        fullName: fbUser.displayName || fbUser.email?.split('@')[0] || 'Member',
-                        email: fbUser.email,
-                        role: 'parent'
-                    });
-                }
-            } else {
-                // 3. No user at all — trigger anonymous login for demo mode
-                try {
-                    await signInAnonymously(auth);
-                } catch (err) {
-                    console.error("Auth: Failed auto-anon login", err);
-                    setUser(null);
+                } catch (e) {
+                    console.warn("Auth: Firebase supplemental data fetch failed", e.message);
                 }
             }
             setLoading(false);
@@ -159,21 +134,25 @@ export const AuthProvider = ({ children }) => {
     const loginAsDemo = async (role = 'parent') => {
         try {
             setLoading(true);
-            const { user: firebaseUser } = await signInAnonymously(auth);
-            const profile = {
-                role: role,
-                fullName: role === 'admin' ? 'Demo Administrator' : role === 'superadmin' ? 'Super Admin Demo' : 'Demo Parent Account',
-                email: `demo-${role}@kiddoz.com`,
-                createdAt: serverTimestamp(),
-                isDemo: true
-            };
-            await setDoc(doc(db, 'users', firebaseUser.uid), profile);
-            setUser({ id: firebaseUser.uid, ...profile });
+            let demoEmail, demoPassword;
+
+            if (role === 'superadmin') {
+                demoEmail = 'superadmin@kiddoz.com';
+                demoPassword = 'admin123';
+            } else if (role === 'admin') {
+                demoEmail = 'admin@kiddoz.com';
+                demoPassword = 'admin123';
+            } else {
+                demoEmail = 'rahim@gmail.com'; // Use a seeded parent account
+                demoPassword = 'password123';
+            }
+
+            const userData = await login(demoEmail, demoPassword);
             addToast(`Logged in as Demo ${role}!`, 'success');
-            return { success: true, role };
+            return { success: true, role: userData.role };
         } catch (error) {
             console.error('Demo Login Error:', error);
-            addToast('Demo login failed. Please try again.', 'error');
+            addToast('Demo login failed. Backend may be offline.', 'error');
             return { success: false, error: error.message };
         } finally {
             setLoading(false);

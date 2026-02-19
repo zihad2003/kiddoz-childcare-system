@@ -98,23 +98,23 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
   return (
     <div className="min-h-screen bg-slate-50 pb-20 font-sans">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-purple-800 to-indigo-900 text-white pt-10 pb-32 px-4 rounded-b-[3rem] shadow-2xl relative overflow-hidden">
+      <div className="bg-gradient-to-r from-primary-800 to-primary-900 text-white pt-10 pb-32 px-4 rounded-b-[3rem] shadow-2xl relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-end gap-6 relative z-10">
           <div>
-            <Badge color="bg-purple-500/30 text-purple-100 border-0 mb-4 backdrop-blur-md">Welcome Back, {user?.displayName}</Badge>
+            <Badge color="bg-primary-500/30 text-primary-100 border-0 mb-4 backdrop-blur-md">Welcome Back, {user?.displayName}</Badge>
             <div className="flex items-center gap-4">
               <h1 className="text-4xl font-bold mb-2">KiddoZ Parent Portal</h1>
               <div className="relative">
                 <button onClick={() => setShowNotifications(!showNotifications)} className="relative p-2 hover:bg-white/10 rounded-full transition">
                   <Bell size={24} />
-                  {notifications.length > 0 && <span className="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full border-2 border-purple-900"></span>}
+                  {notifications.length > 0 && <span className="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full border-2 border-primary-900"></span>}
                 </button>
                 {showNotifications && (
                   <div className="absolute top-full left-0 mt-2 w-80 bg-white rounded-xl shadow-2xl overflow-hidden text-slate-800 z-50 animate-in fade-in slide-in-from-top-2">
-                    <div className="bg-purple-50 p-3 font-bold border-b border-purple-100 flex justify-between items-center">
+                    <div className="bg-primary-50 p-3 font-bold border-b border-primary-100 flex justify-between items-center">
                       <span>Notifications</span>
-                      <span className="text-xs bg-purple-200 text-purple-800 px-2 py-0.5 rounded-full">{notifications.length} New</span>
+                      <span className="text-xs bg-primary-200 text-primary-800 px-2 py-0.5 rounded-full">{notifications.length} New</span>
                     </div>
                     <div className="max-h-64 overflow-y-auto">
                       {notifications.length === 0 ? (
@@ -123,14 +123,14 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
                         notifications.map(n => (
                           <div key={n.docId || n.id} className="p-3 border-b border-slate-50 hover:bg-slate-50">
                             <div className="flex justify-between items-start mb-1">
-                              <p className="font-bold text-sm text-purple-700">{n.title}</p>
+                              <p className="font-bold text-sm text-primary-700">{n.title}</p>
                               <span className="text-[10px] text-slate-400">
                                 {n.timestamp?.toDate ? n.timestamp.toDate().toLocaleTimeString() : new Date().toLocaleTimeString()}
                               </span>
                             </div>
                             <p className="text-xs text-slate-600 line-clamp-2">{n.message}</p>
                             {n.details?.observations && (
-                              <div className="mt-2 p-2 bg-purple-50 rounded-lg text-xs text-purple-700 italic border-l-2 border-purple-300">
+                              <div className="mt-2 p-2 bg-primary-50 rounded-lg text-xs text-primary-700 italic border-l-2 border-primary-300">
                                 "{n.details.observations}"
                               </div>
                             )}
@@ -142,7 +142,7 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
                 )}
               </div>
             </div>
-            <div className="flex items-center gap-3 text-purple-200">
+            <div className="flex items-center gap-3 text-primary-200">
               <span>Viewing updates for:</span>
               {students.length > 0 && (
                 <div className="relative group">
@@ -184,8 +184,8 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
               className={`
                 flex items-center gap-2 px-6 py-4 rounded-2xl font-bold transition-all duration-300
                 ${activeTab === tab.id
-                  ? 'bg-white text-purple-700 shadow-xl scale-105'
-                  : 'bg-purple-900/40 text-purple-100 hover:bg-white/10 backdrop-blur-lg'}
+                  ? 'bg-white text-primary-700 shadow-xl scale-105'
+                  : 'bg-primary-900/40 text-primary-100 hover:bg-white/10 backdrop-blur-lg'}
               `}
             >
               <tab.icon size={18} /> {tab.label}
@@ -237,7 +237,7 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <StatCard
                       icon={Clock}
-                      color={{ bg: 'bg-indigo-100', text: 'text-indigo-600' }}
+                      color={{ bg: 'bg-primary-100', text: 'text-primary-600' }}
                       label="Today's Attendance"
                       value={currentChild.attendance}
                       subtext="Status updated live"
@@ -251,7 +251,7 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
                     />
                     <StatCard
                       icon={Smile}
-                      color={{ bg: 'bg-amber-100', text: 'text-amber-600' }}
+                      color={{ bg: 'bg-secondary-100', text: 'text-secondary-600' }}
                       label="Daily Mood"
                       value={currentChild.mood}
                       subtext="Assessed by staff"
@@ -268,7 +268,7 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
                   <div className="grid md:grid-cols-3 gap-8">
                     <div className="md:col-span-2 space-y-6">
                       <div className="flex justify-between items-center">
-                        <h3 className="font-bold text-slate-800 text-xl flex items-center gap-2"><ScanFace className="text-purple-600" /> Live Surveillance Preview</h3>
+                        <h3 className="font-bold text-slate-800 text-xl flex items-center gap-2"><ScanFace className="text-primary-600" /> Live Surveillance Preview</h3>
                         <Badge color="bg-red-100 text-red-600 animate-pulse">LIVE</Badge>
                       </div>
                       <div className="bg-black rounded-3xl overflow-hidden shadow-2xl ring-4 ring-slate-200">
@@ -277,31 +277,31 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
                     </div>
 
                     <div className="space-y-6">
-                      <Card className="bg-gradient-to-br from-purple-700 to-indigo-800 text-white border-0 h-full">
+                      <Card className="bg-gradient-to-br from-primary-700 to-primary-800 text-white border-0 h-full">
                         <div className="flex items-center gap-4 mb-8">
                           <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center font-bold text-2xl backdrop-blur-md shadow-inner">
                             {currentChild.name.charAt(0)}
                           </div>
                           <div>
                             <h3 className="font-bold text-xl">{currentChild.name}</h3>
-                            <p className="text-purple-200 text-sm">Student ID: {currentChild.id}</p>
+                            <p className="text-primary-200 text-sm">Student ID: {currentChild.id}</p>
                           </div>
                         </div>
 
                         <div className="space-y-6">
                           <div className="p-4 bg-white/10 rounded-2xl backdrop-blur-sm border border-white/10">
-                            <span className="text-purple-200 text-sm block mb-1">Current Plan</span>
+                            <span className="text-primary-200 text-sm block mb-1">Current Plan</span>
                             <span className="font-bold text-lg">{currentChild.plan}</span>
                           </div>
 
                           <div className="p-4 bg-white/10 rounded-2xl backdrop-blur-sm border border-white/10">
-                            <span className="text-purple-200 text-sm block mb-1">Primary Guardian</span>
+                            <span className="text-primary-200 text-sm block mb-1">Primary Guardian</span>
                             <span className="font-bold text-lg">{currentChild.parentName}</span>
                           </div>
 
 
                           <Link to={`/student/${currentChild.id}`} className="block w-full">
-                            <Button className="w-full bg-white text-purple-900 hover:bg-purple-50 border-0 shadow-lg" variant="secondary">
+                            <Button className="w-full bg-white text-primary-900 hover:bg-primary-50 border-0 shadow-lg" variant="secondary">
                               View Full Profile
                             </Button>
                           </Link>
@@ -350,9 +350,9 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
                     <Card className="p-0 overflow-hidden">
                       <div className="p-6 border-b border-slate-100 flex justify-between items-center">
                         <h3 className="font-bold text-xl text-slate-800 flex items-center gap-2">
-                          <Activity className="text-purple-600" /> Recent Activity
+                          <Activity className="text-primary-600" /> Recent Activity
                         </h3>
-                        <Badge color="bg-purple-100 text-purple-700">This Week</Badge>
+                        <Badge color="bg-primary-100 text-primary-700">This Week</Badge>
                       </div>
                       <div className="divide-y divide-slate-100">
                         {activities.length === 0 ? (
@@ -375,10 +375,10 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
                             const getActivityColor = (type) => {
                               switch (type) {
                                 case 'temperature': return 'text-rose-500 bg-rose-50';
-                                case 'mood': return 'text-amber-500 bg-amber-50';
+                                case 'mood': return 'text-secondary-500 bg-secondary-50';
                                 case 'meal': return 'text-emerald-500 bg-emerald-50';
                                 case 'nap': return 'text-blue-500 bg-blue-50';
-                                default: return 'text-purple-500 bg-purple-50';
+                                default: return 'text-primary-500 bg-primary-50';
                               }
                             };
 
@@ -414,11 +414,11 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
                   </div>
 
                   <div className="space-y-6">
-                    <Card className="bg-gradient-to-br from-rose-500 to-pink-600 text-white border-0 relative overflow-hidden">
+                    <Card className="bg-gradient-to-br from-rose-500 to-secondary-600 text-white border-0 relative overflow-hidden">
                       <div className="relative z-10 p-2">
                         <Heart size={48} className="mb-4 text-white/50" />
                         <h3 className="text-4xl font-bold mb-1">98.6°F</h3>
-                        <p className="text-purple-100 font-medium mb-6">Average Body Temp</p>
+                        <p className="text-primary-100 font-medium mb-6">Average Body Temp</p>
                         <div className="h-1 w-full bg-black/20 rounded-full overflow-hidden">
                           <div className="h-full w-[80%] bg-white/80"></div>
                         </div>
@@ -435,7 +435,7 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
                           medicalRecords.filter(r => r.studentId === currentChild.id).map(record => (
                             <Button key={record.docId} variant="outline" className="w-full justify-between text-slate-600 group" size="sm">
                               <div className="flex items-center">
-                                <FileText size={16} className="mr-2 text-purple-500" />
+                                <FileText size={16} className="mr-2 text-primary-500" />
                                 <span className="truncate max-w-[150px]">{record.fileName}</span>
                               </div>
                               <span className="text-[10px] text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">View</span>

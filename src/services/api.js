@@ -35,6 +35,15 @@ apiClient.interceptors.response.use(
             const url = error.config.url;
 
             // Mock Responses based on URL
+            if (url.includes('/auth/login')) {
+                const role = url.includes('admin') ? 'admin' : url.includes('superadmin') ? 'superadmin' : 'parent';
+                return Promise.resolve({
+                    data: {
+                        token: 'mock-token',
+                        user: { id: 'mock-id', email: 'mock@example.com', role: role, fullName: 'Mock User' }
+                    }
+                });
+            }
             if (url.includes('/parent/students')) {
                 return Promise.resolve({ data: BANGLADESHI_STUDENTS.slice(0, 2) });
             }

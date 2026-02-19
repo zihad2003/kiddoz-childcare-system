@@ -140,7 +140,7 @@ const Sidebar = ({ user, handleLogout }) => {
                     <div className="mx-6 mb-10 p-5 rounded-[2.5rem] bg-white/5 border border-white/5 backdrop-blur-3xl relative overflow-hidden group">
                         <div className="absolute inset-0 bg-gradient-to-br from-primary-purple/5 to-primary-magenta/5" />
                         <div className="flex items-center gap-4 relative z-10">
-                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary-purple to-primary-magenta flex items-center justify-center text-white font-black shadow-lg shadow-indigo-900/40 relative">
+                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary-purple to-primary-magenta flex items-center justify-center text-white font-black shadow-lg shadow-primary-900/40 relative">
                                 {user.name ? user.name[0] : 'U'}
                                 <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-accent-mint border-4 border-bg-dark shadow-glow" />
                             </div>

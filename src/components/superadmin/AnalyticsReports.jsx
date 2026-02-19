@@ -35,7 +35,7 @@ const AnalyticsReports = () => {
         fetchData();
     }, []);
 
-    const COLORS = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ef4444'];
+    const COLORS = ['#6968A6', '#3b82f6', '#10b981', '#f59e0b', '#ef4444'];
 
     if (loading) return (
         <div className="flex flex-col items-center justify-center py-32 bg-white rounded-3xl border-2 border-dashed border-slate-100 animate-pulse">
@@ -57,14 +57,14 @@ const AnalyticsReports = () => {
                     <button className="flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 rounded-2xl text-slate-700 font-bold hover:bg-slate-50 transition shadow-sm">
                         <Filter size={18} /> Filters
                     </button>
-                    <button className="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-100">
+                    <button className="flex items-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-2xl font-bold hover:bg-primary-700 transition shadow-lg shadow-primary-100">
                         <Share2 size={18} /> Share Insight
                     </button>
                 </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="p-6 border-none shadow-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
+                <Card className="p-6 border-none shadow-xl bg-gradient-to-br from-blue-500 to-primary-600 text-white">
                     <div className="flex justify-between items-start mb-4">
                         <div className="p-2 bg-white/20 rounded-lg"><MousePointer2 size={16} /></div>
                         <span className="text-[10px] font-bold bg-emerald-400 text-emerald-950 px-2 py-0.5 rounded-full">LIVE</span>
@@ -76,20 +76,20 @@ const AnalyticsReports = () => {
 
                 <Card className="p-6 border-none shadow-xl bg-white">
                     <div className="flex justify-between items-start mb-4">
-                        <div className="p-2 bg-purple-50 text-purple-600 rounded-lg"><Zap size={16} /></div>
-                        <span className="text-[10px] font-bold text-purple-600 uppercase tracking-widest">+22% INC</span>
+                        <div className="p-2 bg-primary-50 text-primary-600 rounded-lg"><Zap size={16} /></div>
+                        <span className="text-[10px] font-bold text-primary-600 uppercase tracking-widest">+22% INC</span>
                     </div>
                     <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mb-1">System Load</p>
                     <h3 className="text-4xl font-black text-slate-900 mb-2">14%</h3>
                     <div className="w-full h-1.5 bg-slate-100 rounded-full mt-2 overflow-hidden">
-                        <div className="w-1/6 h-full bg-purple-500 rounded-full"></div>
+                        <div className="w-1/6 h-full bg-primary-500 rounded-full"></div>
                     </div>
                 </Card>
 
                 <Card className="p-6 border-none shadow-xl bg-white">
                     <div className="flex justify-between items-start mb-4">
-                        <div className="p-2 bg-orange-50 text-orange-600 rounded-lg"><Target size={16} /></div>
-                        <span className="text-[10px] font-bold text-orange-600 uppercase tracking-widest">ON TARGET</span>
+                        <div className="p-2 bg-orange-50 text-secondary-600 rounded-lg"><Target size={16} /></div>
+                        <span className="text-[10px] font-bold text-secondary-600 uppercase tracking-widest">ON TARGET</span>
                     </div>
                     <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mb-1">Retention Rate</p>
                     <h3 className="text-4xl font-black text-slate-900 mb-2">94.8%</h3>
@@ -111,8 +111,8 @@ const AnalyticsReports = () => {
                             <AreaChart data={revenueData}>
                                 <defs>
                                     <linearGradient id="colorRev2" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.15} />
-                                        <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                                        <stop offset="5%" stopColor="#6968A6" stopOpacity={0.15} />
+                                        <stop offset="95%" stopColor="#6968A6" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
@@ -121,7 +121,7 @@ const AnalyticsReports = () => {
                                 <Tooltip
                                     contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)', padding: '12px' }}
                                 />
-                                <Area type="monotone" dataKey="revenue" stroke="#8b5cf6" strokeWidth={4} fillOpacity={1} fill="url(#colorRev2)" />
+                                <Area type="monotone" dataKey="revenue" stroke="#6968A6" strokeWidth={4} fillOpacity={1} fill="url(#colorRev2)" />
                                 <Area type="monotone" dataKey="activeUsers" stroke="#3b82f6" strokeWidth={2} fill="transparent" strokeDasharray="5 5" />
                             </AreaChart>
                         </ResponsiveContainer>
@@ -193,7 +193,7 @@ const AnalyticsReports = () => {
                                     cursor={{ fill: '#f8fafc' }}
                                     contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)', padding: '12px' }}
                                 />
-                                <Bar dataKey="newSignups" fill="#8b5cf6" radius={[6, 6, 0, 0]} barSize={40} />
+                                <Bar dataKey="newSignups" fill="#6968A6" radius={[6, 6, 0, 0]} barSize={40} />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>

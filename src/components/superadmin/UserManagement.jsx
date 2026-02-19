@@ -107,12 +107,12 @@ const UserManagement = () => {
     };
 
     const roleColors = {
-        superadmin: 'bg-purple-100 text-purple-700',
+        superadmin: 'bg-primary-100 text-primary-700',
         admin: 'bg-blue-100 text-blue-700',
         parent: 'bg-emerald-100 text-emerald-700',
-        teacher: 'bg-orange-100 text-orange-700',
-        nurse: 'bg-pink-100 text-pink-700',
-        nanny: 'bg-indigo-100 text-indigo-700',
+        teacher: 'bg-secondary-100 text-orange-700',
+        nurse: 'bg-secondary-100 text-secondary-700',
+        nanny: 'bg-primary-100 text-primary-700',
     };
 
     const statusBadge = (status) => {
@@ -122,7 +122,7 @@ const UserManagement = () => {
             case 'suspended':
                 return <Badge color="bg-red-50 text-red-700 border-red-100"><div className="flex items-center gap-1.5"><XCircle size={12} /> SUSPENDED</div></Badge>;
             default:
-                return <Badge color="bg-amber-50 text-amber-700 border-amber-100"><div className="flex items-center gap-1.5"><AlertTriangle size={12} /> PENDING</div></Badge>;
+                return <Badge color="bg-secondary-50 text-secondary-700 border-secondary-100"><div className="flex items-center gap-1.5"><AlertTriangle size={12} /> PENDING</div></Badge>;
         }
     };
 
@@ -134,7 +134,7 @@ const UserManagement = () => {
                     <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mt-2">Platform Access & Governance</p>
                 </div>
                 <div className="flex gap-2 w-full md:w-auto">
-                    <Button variant="primary" onClick={() => { setEditingUser(null); setFormData({ fullName: '', email: '', role: 'parent', phone: '', status: 'active', password: '' }); setIsModalOpen(true); }} className="whitespace-nowrap shadow-xl shadow-purple-100 group">
+                    <Button variant="primary" onClick={() => { setEditingUser(null); setFormData({ fullName: '', email: '', role: 'parent', phone: '', status: 'active', password: '' }); setIsModalOpen(true); }} className="whitespace-nowrap shadow-xl shadow-primary-100 group">
                         <UserPlus size={18} className="mr-2 group-hover:scale-110 transition-transform" /> Register New Identity
                     </Button>
                 </div>
@@ -197,7 +197,7 @@ const UserManagement = () => {
                                 </tr>
                             ) : (
                                 users.map((user) => (
-                                    <tr key={user.id} className="hover:bg-slate-50/50 transition border-l-4 border-transparent hover:border-purple-500">
+                                    <tr key={user.id} className="hover:bg-slate-50/50 transition border-l-4 border-transparent hover:border-primary-500">
                                         <td className="px-8 py-5 whitespace-nowrap">
                                             <div className="flex items-center gap-4">
                                                 <div className="w-12 h-12 rounded-full bg-slate-200 border-2 border-white shadow-md overflow-hidden group">
@@ -235,7 +235,7 @@ const UserManagement = () => {
                                             <div className="flex items-center justify-end gap-3">
                                                 <button
                                                     onClick={() => openEditModal(user)}
-                                                    className="p-2.5 bg-slate-50 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-xl transition shadow-sm"
+                                                    className="p-2.5 bg-slate-50 text-slate-400 hover:text-primary-600 hover:bg-primary-50 rounded-xl transition shadow-sm"
                                                     title="Modify Record"
                                                 >
                                                     <Edit2 size={16} />
@@ -265,8 +265,8 @@ const UserManagement = () => {
                 <div className="p-6 bg-slate-900/5 text-[10px] font-black text-slate-400 uppercase tracking-widest flex justify-between items-center border-t border-slate-100">
                     <span className="italic">Matrix Capacity: {users.length} Active Signatures</span>
                     <div className="flex gap-3">
-                        <button className="px-5 py-2 bg-white border border-slate-200 rounded-xl hover:border-purple-300 transition shadow-sm disabled:opacity-30" disabled>Rel previous</button>
-                        <button className="px-5 py-2 bg-white border border-slate-200 rounded-xl hover:border-purple-300 transition shadow-sm">Rel next</button>
+                        <button className="px-5 py-2 bg-white border border-slate-200 rounded-xl hover:border-primary-300 transition shadow-sm disabled:opacity-30" disabled>Rel previous</button>
+                        <button className="px-5 py-2 bg-white border border-slate-200 rounded-xl hover:border-primary-300 transition shadow-sm">Rel next</button>
                     </div>
                 </div>
             </div>
@@ -300,12 +300,12 @@ const UserManagement = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
                             <label className="text-xs font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
-                                Role Classification <Info size={12} className="text-purple-400" />
+                                Role Classification <Info size={12} className="text-primary-400" />
                             </label>
                             <select
                                 value={formData.role}
                                 onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                                className="w-full p-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-purple-500 focus:bg-white outline-none transition-all font-black text-slate-700 uppercase text-xs tracking-widest"
+                                className="w-full p-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-primary-500 focus:bg-white outline-none transition-all font-black text-slate-700 uppercase text-xs tracking-widest"
                             >
                                 <option value="superadmin">Super Admin</option>
                                 <option value="admin">Center Admin</option>
@@ -338,7 +338,7 @@ const UserManagement = () => {
                             <select
                                 value={formData.status}
                                 onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                                className="w-full p-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-purple-500 focus:bg-white outline-none transition-all font-black text-slate-700 uppercase text-xs tracking-widest"
+                                className="w-full p-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-primary-500 focus:bg-white outline-none transition-all font-black text-slate-700 uppercase text-xs tracking-widest"
                             >
                                 <option value="active">Active Access</option>
                                 <option value="suspended">Access Revoked</option>
@@ -349,7 +349,7 @@ const UserManagement = () => {
 
                     <div className="pt-8 flex gap-4">
                         <Button type="button" variant="secondary" className="flex-1 h-14 font-black uppercase tracking-widest text-xs" onClick={() => setIsModalOpen(false)}>Abort Protocol</Button>
-                        <Button type="submit" variant="primary" className="flex-1 h-14 font-black uppercase tracking-widest text-xs shadow-2xl shadow-purple-100">
+                        <Button type="submit" variant="primary" className="flex-1 h-14 font-black uppercase tracking-widest text-xs shadow-2xl shadow-primary-100">
                             {editingUser ? "Overwrite Signature" : "Upload Identity"}
                         </Button>
                     </div>

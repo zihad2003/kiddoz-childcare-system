@@ -90,10 +90,10 @@ const NannyDashboard = ({ db, appId, user }) => {
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
             {/* Header */}
-            <header className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border-b border-pink-100">
+            <header className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border-b border-secondary-100">
                 <div>
                     <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-                        <Baby className="text-pink-500" /> Nanny Portal
+                        <Baby className="text-secondary-500" /> Nanny Portal
                     </h2>
                     <p className="text-slate-500">Manage your bookings and navigate to families.</p>
                 </div>
@@ -102,7 +102,7 @@ const NannyDashboard = ({ db, appId, user }) => {
                         <p className="font-bold text-slate-800">Sarah Karim</p>
                         <p className="text-xs text-green-600 font-bold">● Available</p>
                     </div>
-                    <div className="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold">
+                    <div className="w-10 h-10 rounded-full bg-secondary-100 flex items-center justify-center text-secondary-600 font-bold">
                         S
                     </div>
                 </div>
@@ -110,7 +110,7 @@ const NannyDashboard = ({ db, appId, user }) => {
 
             {/* Active Job Card */}
             {activeBooking && (
-                <Card className="bg-gradient-to-r from-pink-500 to-purple-600 text-white border-none shadow-xl transform scale-[1.01]">
+                <Card className="bg-gradient-to-r from-secondary-500 to-primary-600 text-white border-none shadow-xl transform scale-[1.01]">
                     <div className="flex justify-between items-start mb-6">
                         <div>
                             <p className="text-white/80 uppercase text-xs font-bold tracking-wider mb-1">Current Session</p>
@@ -128,15 +128,15 @@ const NannyDashboard = ({ db, appId, user }) => {
                     <div className="bg-white/10 p-4 rounded-xl backdrop-blur-md mb-6">
                         <h4 className="font-bold text-sm mb-2 flex items-center gap-2"><CheckCircle size={16} /> Task Checklist</h4>
                         <ul className="text-sm space-y-2">
-                            <li className="flex gap-2"><input type="checkbox" className="accent-pink-300" /> Lunch at 12:00 PM</li>
-                            <li className="flex gap-2"><input type="checkbox" className="accent-pink-300" /> Reading time (30 mins)</li>
-                            <li className="flex gap-2"><input type="checkbox" className="accent-pink-300" /> Put down for nap</li>
+                            <li className="flex gap-2"><input type="checkbox" className="accent-secondary-300" /> Lunch at 12:00 PM</li>
+                            <li className="flex gap-2"><input type="checkbox" className="accent-secondary-300" /> Reading time (30 mins)</li>
+                            <li className="flex gap-2"><input type="checkbox" className="accent-secondary-300" /> Put down for nap</li>
                         </ul>
                     </div>
 
                     <Button
                         onClick={() => handleStatusUpdate(activeBooking.id, 'Completed')}
-                        className="w-full bg-white text-pink-600 hover:bg-pink-50 font-bold border-none"
+                        className="w-full bg-white text-secondary-600 hover:bg-secondary-50 font-bold border-none"
                     >
                         <StopCircle className="mr-2" size={20} /> End Service & Notify Parent
                     </Button>
@@ -150,7 +150,7 @@ const NannyDashboard = ({ db, appId, user }) => {
                 </h3>
                 <div className="grid gap-4">
                     {bookings.filter(b => b.status !== 'Completed' && b.id !== activeBooking?.id).map(booking => (
-                        <Card key={booking.id} className="group hover:border-pink-300 transition-colors">
+                        <Card key={booking.id} className="group hover:border-secondary-300 transition-colors">
                             <div className="flex flex-col md:flex-row gap-6">
                                 <div className="flex-1">
                                     <div className="flex justify-between mb-2">
@@ -164,12 +164,12 @@ const NannyDashboard = ({ db, appId, user }) => {
                                         <MapPin className="text-slate-400 shrink-0 mt-1" size={16} />
                                         <div>
                                             <p className="font-semibold text-sm text-slate-700">{booking.address}</p>
-                                            <a href={`https://maps.google.com/?q=${booking.address}`} target="_blank" rel="noreferrer" className="text-xs text-pink-600 hover:underline font-bold mt-1 inline-block">
+                                            <a href={`https://maps.google.com/?q=${booking.address}`} target="_blank" rel="noreferrer" className="text-xs text-secondary-600 hover:underline font-bold mt-1 inline-block">
                                                 Open in Maps
                                             </a>
                                         </div>
                                     </div>
-                                    <div className="text-xs text-slate-500 bg-amber-50 text-amber-800 p-2 rounded border border-amber-100">
+                                    <div className="text-xs text-slate-500 bg-secondary-50 text-secondary-800 p-2 rounded border border-secondary-100">
                                         <span className="font-bold">Note:</span> {booking.instructions}
                                     </div>
                                 </div>

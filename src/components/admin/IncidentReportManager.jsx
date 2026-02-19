@@ -83,8 +83,8 @@ const IncidentReportManager = ({ students = [] }) => {
     const getSeverityStyles = (severity) => {
         switch (severity) {
             case 'Critical': return "bg-red-500/10 text-red-500 border-red-500/20";
-            case 'High': return "bg-orange-500/10 text-orange-500 border-orange-500/20";
-            case 'Medium': return "bg-amber-500/10 text-amber-500 border-amber-500/20";
+            case 'High': return "bg-secondary-500/10 text-secondary-500 border-secondary-500/20";
+            case 'Medium': return "bg-secondary-500/10 text-secondary-500 border-secondary-500/20";
             default: return "bg-emerald-500/10 text-emerald-500 border-emerald-500/20";
         }
     };
@@ -237,7 +237,7 @@ const IncidentReportManager = ({ students = [] }) => {
                                                 <div className="flex items-center gap-3">
                                                     <span className={cn(
                                                         "w-3 h-3 rounded-full animate-pulse",
-                                                        inc.status === 'Resolved' ? 'bg-emerald-500' : 'bg-amber-500'
+                                                        inc.status === 'Resolved' ? 'bg-emerald-500' : 'bg-secondary-500'
                                                     )} />
                                                     <span className="text-[9px] font-black uppercase tracking-[0.2em] text-bg-dark">LINK_STATUS_STABLE</span>
                                                 </div>

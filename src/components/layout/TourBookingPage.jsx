@@ -41,17 +41,17 @@ const TourBookingPage = () => {
                 </p>
                 <div className="bg-slate-50 rounded-2xl p-6 mb-8 text-left border border-slate-100">
                     <div className="flex items-center gap-3 mb-2">
-                        <Calendar size={18} className="text-purple-600" />
+                        <Calendar size={18} className="text-primary-600" />
                         <span className="font-bold text-slate-700">Date:</span>
                         <span className="text-slate-600">October {dates.find(d => d.full === date)?.date}, 2023</span>
                     </div>
                     <div className="flex items-center gap-3 mb-2">
-                        <Clock size={18} className="text-purple-600" />
+                        <Clock size={18} className="text-primary-600" />
                         <span className="font-bold text-slate-700">Time:</span>
                         <span className="text-slate-600">{time}</span>
                     </div>
                     <div className="flex items-center gap-3">
-                        {type === 'in-person' ? <MapPin size={18} className="text-purple-600" /> : <Video size={18} className="text-purple-600" />}
+                        {type === 'in-person' ? <MapPin size={18} className="text-primary-600" /> : <Video size={18} className="text-primary-600" />}
                         <span className="font-bold text-slate-700">Type:</span>
                         <span className="text-slate-600 capitalize">{type} Tour</span>
                     </div>
@@ -66,7 +66,7 @@ const TourBookingPage = () => {
     return (
         <div className="bg-slate-50 min-h-screen pt-28 pb-20 font-sans">
             <div className="max-w-4xl mx-auto px-4">
-                <button onClick={() => navigate('/')} className="mb-8 text-slate-500 hover:text-purple-600 font-bold flex items-center gap-2 transition">
+                <button onClick={() => navigate('/')} className="mb-8 text-slate-500 hover:text-primary-600 font-bold flex items-center gap-2 transition">
                     <ArrowLeft size={20} /> Back
                 </button>
 
@@ -80,20 +80,20 @@ const TourBookingPage = () => {
                             </p>
                         </div>
 
-                        <Card className="bg-purple-900 text-white border-0 p-6">
+                        <Card className="bg-primary-900 text-white border-0 p-6">
                             <h3 className="font-bold text-xl mb-4">Why Visit?</h3>
                             <ul className="space-y-4">
                                 <li className="flex gap-3">
                                     <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">1</div>
-                                    <p className="text-sm text-purple-100">See our YOLOv8 safety monitoring in real-time.</p>
+                                    <p className="text-sm text-primary-100">See our YOLOv8 safety monitoring in real-time.</p>
                                 </li>
                                 <li className="flex gap-3">
                                     <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">2</div>
-                                    <p className="text-sm text-purple-100">Taste our organic meal samples.</p>
+                                    <p className="text-sm text-primary-100">Taste our organic meal samples.</p>
                                 </li>
                                 <li className="flex gap-3">
                                     <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">3</div>
-                                    <p className="text-sm text-purple-100">Get a personalized curriculum walkthrough.</p>
+                                    <p className="text-sm text-primary-100">Get a personalized curriculum walkthrough.</p>
                                 </li>
                             </ul>
                         </Card>
@@ -110,14 +110,14 @@ const TourBookingPage = () => {
                                     <div className="grid grid-cols-2 gap-4 mb-8">
                                         <button
                                             onClick={() => setType('in-person')}
-                                            className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${type === 'in-person' ? 'border-purple-600 bg-purple-50 text-purple-800' : 'border-slate-100 hover:border-slate-300 text-slate-500'}`}
+                                            className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${type === 'in-person' ? 'border-primary-600 bg-primary-50 text-primary-800' : 'border-slate-100 hover:border-slate-300 text-slate-500'}`}
                                         >
                                             <MapPin size={24} />
                                             <span className="font-bold">In-Person Visit</span>
                                         </button>
                                         <button
                                             onClick={() => setType('virtual')}
-                                            className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${type === 'virtual' ? 'border-purple-600 bg-purple-50 text-purple-800' : 'border-slate-100 hover:border-slate-300 text-slate-500'}`}
+                                            className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${type === 'virtual' ? 'border-primary-600 bg-primary-50 text-primary-800' : 'border-slate-100 hover:border-slate-300 text-slate-500'}`}
                                         >
                                             <Video size={24} />
                                             <span className="font-bold">Virtual Call</span>
@@ -130,7 +130,7 @@ const TourBookingPage = () => {
                                             <button
                                                 key={d.full}
                                                 onClick={() => setDate(d.full)}
-                                                className={`flex-shrink-0 w-16 h-20 rounded-xl border flex flex-col items-center justify-center transition-all ${date === d.full ? 'bg-purple-600 border-purple-600 text-white shadow-lg scale-105' : 'bg-white border-slate-200 text-slate-600 hover:border-purple-300'}`}
+                                                className={`flex-shrink-0 w-16 h-20 rounded-xl border flex flex-col items-center justify-center transition-all ${date === d.full ? 'bg-primary-600 border-primary-600 text-white shadow-lg scale-105' : 'bg-white border-slate-200 text-slate-600 hover:border-primary-300'}`}
                                             >
                                                 <span className="text-xs font-medium opacity-80">{d.day}</span>
                                                 <span className="text-xl font-bold">{d.date}</span>
@@ -144,7 +144,7 @@ const TourBookingPage = () => {
                                             <button
                                                 key={t}
                                                 onClick={() => setTime(t)}
-                                                className={`py-2 rounded-lg text-sm font-bold transition-all ${time === t ? 'bg-amber-400 text-purple-900 shadow-md' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'}`}
+                                                className={`py-2 rounded-lg text-sm font-bold transition-all ${time === t ? 'bg-secondary-400 text-primary-900 shadow-md' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'}`}
                                             >
                                                 {t}
                                             </button>
@@ -166,7 +166,7 @@ const TourBookingPage = () => {
                         {step === 2 && (
                             <div className="space-y-6 animate-in slide-in-from-right-8 duration-500">
                                 <div>
-                                    <button onClick={() => setStep(1)} className="text-slate-400 text-sm font-bold mb-6 hover:text-purple-600 flex items-center gap-1"><ArrowLeft size={16} /> Change Time</button>
+                                    <button onClick={() => setStep(1)} className="text-slate-400 text-sm font-bold mb-6 hover:text-primary-600 flex items-center gap-1"><ArrowLeft size={16} /> Change Time</button>
                                     <h2 className="text-2xl font-bold text-slate-800 mb-6">2. Your Information</h2>
                                 </div>
 

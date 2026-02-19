@@ -89,10 +89,10 @@ const ParentManager = () => {
                         placeholder="Search parents by name or email..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-purple-200"
+                        className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-primary-200"
                     />
                 </div>
-                <Button onClick={openAddModal} className="bg-purple-600 hover:bg-purple-700">
+                <Button onClick={openAddModal} className="bg-primary-600 hover:bg-primary-700">
                     <Plus size={18} className="mr-2" /> Add Parent
                 </Button>
             </div>
@@ -120,7 +120,7 @@ const ParentManager = () => {
                     {filteredParents.map(parent => (
                         <Card key={parent.id} className="relative group hover:shadow-lg transition-all">
                             <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onClick={() => openEditModal(parent)} className="p-2 text-slate-400 hover:text-purple-600 transition"><Edit2 size={16} /></button>
+                                <button onClick={() => openEditModal(parent)} className="p-2 text-slate-400 hover:text-primary-600 transition"><Edit2 size={16} /></button>
                                 <button onClick={() => handleDelete(parent.id)} className="p-2 text-slate-400 hover:text-red-600 transition"><Trash2 size={16} /></button>
                             </div>
                             <h3 className="font-bold text-lg text-slate-800 mb-4">{parent.fullName}</h3>
@@ -164,10 +164,10 @@ const ParentManager = () => {
                                 <textarea
                                     value={formData.address || ''}
                                     onChange={e => setFormData({ ...formData, address: e.target.value })}
-                                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-200 transition h-20"
+                                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary-200 transition h-20"
                                 />
                             </div>
-                            <Button type="submit" isLoading={isSubmitting} className="w-full bg-purple-600 hover:bg-purple-700">
+                            <Button type="submit" isLoading={isSubmitting} className="w-full bg-primary-600 hover:bg-primary-700">
                                 {currentParent ? 'Update Profile' : 'Save Parent'}
                             </Button>
                         </form>

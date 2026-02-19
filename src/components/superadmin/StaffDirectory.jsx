@@ -33,14 +33,16 @@ const StaffDirectory = () => {
     const fetchInitialData = async () => {
         try {
             const [staffData, centerData] = await Promise.all([
-                api.get('/superadmin/staff/all').then(res => res.data),
+                api.get('/superadmin/staff/all'),
                 api.getCenters()
             ]);
-            setStaff(staffData);
-            setCenters(centerData);
+            setStaff(Array.isArray(staffData) ? staffData : []);
+            setCenters(Array.isArray(centerData) ? centerData : []);
             setLoading(false);
         } catch (error) {
             addToast('Failed to load staff data', 'error');
+            setStaff([]);
+            setCenters([]);
             setLoading(false);
         }
     };
@@ -87,7 +89,7 @@ const StaffDirectory = () => {
                     <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Staff Governance</h2>
                     <p className="text-slate-500 mt-1">Manage global human resources across all centers</p>
                 </div>
-                <Button variant="primary" onClick={() => { setEditingStaff(null); setFormData({ name: '', role: 'Teacher', centerId: '', phone: '', availability: 'Available Now' }); setIsModalOpen(true); }} className="shadow-lg shadow-purple-100">
+                <Button variant="primary" onClick={() => { setEditingStaff(null); setFormData({ name: '', role: 'Teacher', centerId: '', phone: '', availability: 'Available Now' }); setIsModalOpen(true); }} className="shadow-lg shadow-primary-100">
                     <Plus size={20} className="mr-2" /> <span className="font-bold">Register New Staff</span>
                 </Button>
             </div>
@@ -98,13 +100,13 @@ const StaffDirectory = () => {
                     icon={Search}
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="border-none bg-slate-50 focus:ring-purple-500"
+                    className="border-none bg-slate-50 focus:ring-primary-500"
                 />
             </Card>
 
             {loading ? (
                 <div className="flex flex-col items-center justify-center py-32 bg-white rounded-3xl border-2 border-dashed border-slate-100">
-                    <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                    <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mb-4"></div>
                     <p className="text-slate-400 font-medium">Synchronizing staff registry...</p>
                 </div>
             ) : (
@@ -122,10 +124,10 @@ const StaffDirectory = () => {
                                         </div>
                                     </div>
                                     <div className="flex flex-col gap-2">
-                                        <Badge color="bg-purple-100 text-purple-700" className="font-bold uppercase tracking-widest text-[9px] px-3 py-1">
+                                        <Badge color="bg-primary-100 text-primary-700" className="font-bold uppercase tracking-widest text-[9px] px-3 py-1">
                                             {member.role}
                                         </Badge>
-                                        <div className="flex items-center gap-1 text-orange-400">
+                                        <div className="flex items-center gap-1 text-secondary-400">
                                             <Star size={12} fill="currentColor" />
                                             <span className="text-xs font-black">{member.rating ? member.rating.toFixed(1) : '5.0'}</span>
                                         </div>
@@ -152,7 +154,7 @@ const StaffDirectory = () => {
                                 <div className="mt-8 flex gap-3">
                                     <button
                                         onClick={() => { setEditingStaff(member); setFormData({ ...member }); setIsModalOpen(true); }}
-                                        className="flex-1 py-3 bg-slate-50 text-slate-600 rounded-xl font-black text-xs hover:bg-purple-50 hover:text-purple-600 transition tracking-widest uppercase border border-slate-100"
+                                        className="flex-1 py-3 bg-slate-50 text-slate-600 rounded-xl font-black text-xs hover:bg-primary-50 hover:text-primary-600 transition tracking-widest uppercase border border-slate-100"
                                     >
                                         Modify Profile
                                     </button>
@@ -211,7 +213,7 @@ const StaffDirectory = () => {
 
                     <div className="pt-6 flex gap-4">
                         <Button type="button" variant="secondary" className="flex-1 h-12 font-bold" onClick={() => setIsModalOpen(false)}>Cancel</Button>
-                        <Button type="submit" variant="primary" className="flex-1 h-12 font-bold shadow-lg shadow-purple-100">
+                        <Button type="submit" variant="primary" className="flex-1 h-12 font-bold shadow-lg shadow-primary-100">
                             {editingStaff ? "Update Record" : "Finalize Registration"}
                         </Button>
                     </div>

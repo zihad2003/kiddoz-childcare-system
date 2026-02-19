@@ -14,14 +14,14 @@ const Toast = ({ message, type = 'success', onClose, duration = 3000 }) => {
     const icons = {
         success: <CheckCircle className="text-green-500" size={24} />,
         error: <XCircle className="text-red-500" size={24} />,
-        warning: <AlertCircle className="text-amber-500" size={24} />,
+        warning: <AlertCircle className="text-secondary-500" size={24} />,
         info: <Info className="text-blue-500" size={24} />
     };
 
     const borders = {
         success: 'border-l-green-500',
         error: 'border-l-red-500',
-        warning: 'border-l-amber-500',
+        warning: 'border-l-secondary-500',
         info: 'border-l-blue-500'
     };
 

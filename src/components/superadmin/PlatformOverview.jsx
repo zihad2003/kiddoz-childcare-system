@@ -67,8 +67,8 @@ const PlatformOverview = ({ setActiveTab }) => {
 
     if (loading) return (
         <div className="flex flex-col items-center justify-center py-40 bg-white rounded-3xl border-2 border-dashed border-slate-100 animate-pulse">
-            <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-6">
-                <Shield className="w-8 h-8 text-purple-600 animate-bounce" />
+            <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mb-6">
+                <Shield className="w-8 h-8 text-primary-600 animate-bounce" />
             </div>
             <p className="text-slate-400 font-black tracking-widest uppercase text-xs">Initializing Admin Command Center...</p>
         </div>
@@ -81,7 +81,7 @@ const PlatformOverview = ({ setActiveTab }) => {
                     <div className="space-y-6">
                         <div className="flex justify-between items-center mb-4">
                             <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs">Recently Registered Identities</h4>
-                            <button onClick={() => setActiveTab('users')} className="text-purple-600 font-black text-[10px] uppercase tracking-widest flex items-center gap-1 hover:underline">
+                            <button onClick={() => setActiveTab('users')} className="text-primary-600 font-black text-[10px] uppercase tracking-widest flex items-center gap-1 hover:underline">
                                 Full Directory <ArrowRight size={12} />
                             </button>
                         </div>
@@ -93,9 +93,9 @@ const PlatformOverview = ({ setActiveTab }) => {
                                 { name: 'David Miller', email: 'dmiller@tech.com', role: 'Staff', time: '3 hours ago' },
                                 { name: 'Sophia Grace', email: 's.grace@edu.com', role: 'Parent', time: '5 hours ago' }
                             ].map((user, i) => (
-                                <div key={i} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-transparent hover:border-purple-100 transition shadow-sm">
+                                <div key={i} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-transparent hover:border-primary-100 transition shadow-sm">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-full bg-purple-100 overflow-hidden border-2 border-white">
+                                        <div className="w-10 h-10 rounded-full bg-primary-100 overflow-hidden border-2 border-white">
                                             <img src={`https://ui-avatars.com/api/?name=${user.name}&background=random`} alt={user.name} />
                                         </div>
                                         <div>
@@ -122,7 +122,7 @@ const PlatformOverview = ({ setActiveTab }) => {
                             {[
                                 { name: 'KiddoZ Gulshan Branch', capacity: 120, current: 104, health: 'Peak', color: 'bg-emerald-500' },
                                 { name: 'KiddoZ Uttara Node', capacity: 80, current: 72, health: 'Optimal', color: 'bg-blue-500' },
-                                { name: 'KiddoZ Dhanmondi Hub', capacity: 100, current: 85, health: 'Optimal', color: 'bg-purple-500' }
+                                { name: 'KiddoZ Dhanmondi Hub', capacity: 100, current: 85, health: 'Optimal', color: 'bg-primary-500' }
                             ].map((center, i) => (
                                 <div key={i} className="p-6 bg-slate-50 border border-slate-100 rounded-3xl relative overflow-hidden group">
                                     <div className="flex justify-between items-start mb-4">
@@ -157,10 +157,10 @@ const PlatformOverview = ({ setActiveTab }) => {
                             <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs mb-6">Enrollment Strategy Breakdown</h4>
                             <div className="grid grid-cols-2 gap-4">
                                 {[
-                                    { label: 'Growth Scholars', count: 18, color: 'bg-indigo-500', note: 'Standard Plan' },
-                                    { label: 'Little Explorers', count: 14, color: 'bg-purple-500', note: 'Advanced Hub' },
+                                    { label: 'Growth Scholars', count: 18, color: 'bg-primary-500', note: 'Standard Plan' },
+                                    { label: 'Little Explorers', count: 14, color: 'bg-primary-500', note: 'Advanced Hub' },
                                     { label: 'Tiny Creators', count: 12, color: 'bg-emerald-500', note: 'Creative Studio' },
-                                    { label: 'Future Leaders', count: 6, color: 'bg-orange-500', note: 'Premium Track' }
+                                    { label: 'Future Leaders', count: 6, color: 'bg-secondary-500', note: 'Premium Track' }
                                 ].map((plan, i) => (
                                     <div key={i} className="p-5 bg-slate-50 rounded-2xl border-2 border-transparent hover:border-slate-100 transition shadow-sm flex items-center gap-4">
                                         <div className={`w-3 h-10 rounded-full ${plan.color} shadow-lg shadow-${plan.color.split('-')[1]}-200`}></div>
@@ -174,11 +174,11 @@ const PlatformOverview = ({ setActiveTab }) => {
                             </div>
                         </div>
                         <div className="p-6 bg-slate-900 rounded-3xl text-white">
-                            <h5 className="text-[10px] font-black uppercase tracking-widest text-indigo-300 mb-4">Engagement Pulse</h5>
+                            <h5 className="text-[10px] font-black uppercase tracking-widest text-primary-300 mb-4">Engagement Pulse</h5>
                             <div className="flex items-end gap-3 h-24">
                                 {[40, 70, 45, 90, 65, 80, 55].map((h, i) => (
                                     <div key={i} className="flex-1 bg-white/10 rounded-t-lg relative group">
-                                        <div className="absolute inset-x-0 bottom-0 bg-indigo-500 rounded-t-lg transition-all duration-700" style={{ height: `${h}%` }}></div>
+                                        <div className="absolute inset-x-0 bottom-0 bg-primary-500 rounded-t-lg transition-all duration-700" style={{ height: `${h}%` }}></div>
                                         <div className="absolute -top-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition text-[9px] font-bold">{h}%</div>
                                     </div>
                                 ))}
@@ -261,7 +261,7 @@ const PlatformOverview = ({ setActiveTab }) => {
                     <p className="text-slate-500 font-medium mt-3">Platform stability: <span className="text-emerald-600 font-black">OPTIMAL (99.9%)</span> • Welcome back, Command Room</p>
                 </div>
                 <div className="flex gap-4">
-                    <button onClick={() => setActiveTab('analytics')} className="px-8 py-3 bg-white border-2 border-slate-100 rounded-2xl text-sm font-black text-slate-700 hover:border-purple-200 hover:text-purple-600 transition shadow-sm">
+                    <button onClick={() => setActiveTab('analytics')} className="px-8 py-3 bg-white border-2 border-slate-100 rounded-2xl text-sm font-black text-slate-700 hover:border-primary-200 hover:text-primary-600 transition shadow-sm">
                         View Analytics
                     </button>
                     <button onClick={() => setActiveTab('settings')} className="px-8 py-3 bg-slate-900 text-white rounded-2xl text-sm font-black hover:bg-black transition shadow-2xl shadow-slate-200">
@@ -276,7 +276,7 @@ const PlatformOverview = ({ setActiveTab }) => {
                     title="Platform Users"
                     value={stats?.totalUsers || 0}
                     icon={Users}
-                    color="bg-purple-600 shadow-purple-200"
+                    color="bg-primary-600 shadow-primary-200"
                     trend={12}
                     subtitle="Registered identities"
                     onClick={() => setActiveDeepDive('users')}
@@ -293,7 +293,7 @@ const PlatformOverview = ({ setActiveTab }) => {
                     title="Student Body"
                     value={stats?.totalStudents || 0}
                     icon={Activity}
-                    color="bg-orange-600 shadow-orange-200"
+                    color="bg-secondary-600 shadow-secondary-200"
                     trend={5.4}
                     subtitle="Total active enrollments"
                     onClick={() => setActiveDeepDive('students')}
@@ -322,7 +322,7 @@ const PlatformOverview = ({ setActiveTab }) => {
                         </div>
                         <div className="flex items-center gap-6">
                             <div className="flex items-center gap-2">
-                                <div className="w-3 h-3 rounded-full bg-purple-600 shadow-[0_0_8px_rgba(139,92,246,0.6)]"></div>
+                                <div className="w-3 h-3 rounded-full bg-primary-600 shadow-[0_0_8px_rgba(139,92,246,0.6)]"></div>
                                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Revenue</span>
                             </div>
                             <div className="flex items-center gap-2">
@@ -336,8 +336,8 @@ const PlatformOverview = ({ setActiveTab }) => {
                             <AreaChart data={revenueData}>
                                 <defs>
                                     <linearGradient id="colorRevenueStats" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.15} />
-                                        <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                                        <stop offset="5%" stopColor="#6968A6" stopOpacity={0.15} />
+                                        <stop offset="95%" stopColor="#6968A6" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
@@ -347,7 +347,7 @@ const PlatformOverview = ({ setActiveTab }) => {
                                     contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.15)', padding: '16px' }}
                                     formatter={(value) => [`৳${value.toLocaleString()}`, 'Metric']}
                                 />
-                                <Area type="monotone" dataKey="amount" stroke="#8b5cf6" strokeWidth={5} fillOpacity={1} fill="url(#colorRevenueStats)" />
+                                <Area type="monotone" dataKey="amount" stroke="#6968A6" strokeWidth={5} fillOpacity={1} fill="url(#colorRevenueStats)" />
                                 <Area type="monotone" dataKey="users" stroke="#60a5fa" strokeWidth={2} fill="transparent" strokeDasharray="8 4" opacity={0.3} />
                             </AreaChart>
                         </ResponsiveContainer>
@@ -356,11 +356,11 @@ const PlatformOverview = ({ setActiveTab }) => {
 
                 <div className="space-y-8">
                     <Card className="p-8 border-none shadow-2xl bg-slate-900 text-white relative overflow-hidden group">
-                        <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-purple-500/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
-                        <h3 className="font-black text-xl mb-6 relative z-10 text-purple-400">Strategic Commands</h3>
+                        <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-primary-500/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
+                        <h3 className="font-black text-xl mb-6 relative z-10 text-primary-400">Strategic Commands</h3>
                         <div className="space-y-4 relative z-10">
                             {[
-                                { label: 'Identity Control', icon: Shield, color: 'bg-purple-600', note: 'User & Access Management', tab: 'users' },
+                                { label: 'Identity Control', icon: Shield, color: 'bg-primary-600', note: 'User & Access Management', tab: 'users' },
                                 { label: 'Center Network', icon: Building, color: 'bg-blue-600', note: 'Global Facility Oversight', tab: 'centers' },
                                 { label: 'Global Staffing', icon: BadgeCheck, color: 'bg-emerald-600', note: 'Professional Directory', tab: 'staff' }
                             ].map((action, i) => (

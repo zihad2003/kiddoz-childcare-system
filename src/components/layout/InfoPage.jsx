@@ -71,8 +71,8 @@ const InfoPage = ({ type }) => {
         <Section className="py-20 bg-slate-50 min-h-[60vh]">
             <div className="max-w-4xl mx-auto">
                 <Card className="p-8 md:p-12 animate-in fade-in slide-in-from-bottom-8 duration-500">
-                    <div className="flex items-center gap-4 mb-8 border-b border-purple-100 pb-6">
-                        <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center text-purple-600 shadow-sm">
+                    <div className="flex items-center gap-4 mb-8 border-b border-primary-100 pb-6">
+                        <div className="w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center text-primary-600 shadow-sm">
                             <data.icon size={32} />
                         </div>
                         <h1 className="text-3xl md:text-4xl font-bold text-slate-900">{data.title}</h1>

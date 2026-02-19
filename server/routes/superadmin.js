@@ -436,20 +436,20 @@ router.get('/financials/overview', async (req, res) => {
             group: ['type']
         });
 
-        // MySQL compatible monthly aggregation
+        // SQLite compatible monthly aggregation
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         const monthlyStats = await sequelize.query(`
             SELECT 
-                MONTH(createdAt) as month_num,
-                MONTHNAME(createdAt) as month_name,
+                CAST(strftime('%m', createdAt) AS INTEGER) as month_num,
                 SUM(CASE WHEN status = 'Paid' THEN amount ELSE 0 END) as revenue
             FROM Billings
-            GROUP BY month_num, month_name
+            GROUP BY month_num
             ORDER BY month_num ASC
             LIMIT 6
         `, { type: sequelize.QueryTypes.SELECT });
 
         const monthlyRevenue = monthlyStats.map(s => ({
-            month: s.month_name.substring(0, 3),
+            month: monthNames[(s.month_num || 1) - 1],
             revenue: s.revenue || 0,
             expenses: 40000 // Fallback for demo since joining Payrolls across months is complex in one query
         }));

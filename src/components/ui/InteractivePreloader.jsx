@@ -48,8 +48,8 @@ const InteractivePreloader = ({ onComplete }) => {
 
             {/* Background Animations */}
             <div className="absolute inset-0 z-0">
-                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-[100px] animate-pulse"></div>
-                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-600/20 rounded-full blur-[100px] animate-pulse delay-1000"></div>
+                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-600/20 rounded-full blur-[100px] animate-pulse"></div>
+                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-primary-600/20 rounded-full blur-[100px] animate-pulse delay-1000"></div>
                 {/* Grid Overlay */}
                 <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
             </div>
@@ -59,14 +59,14 @@ const InteractivePreloader = ({ onComplete }) => {
                 {/* Logo */}
                 <div className="mb-8 relative group cursor-default">
                     <div className="absolute inset-0 bg-white/10 rounded-full blur-xl animate-pulse"></div>
-                    <div className="w-24 h-24 bg-gradient-to-tr from-purple-600 to-indigo-500 rounded-2xl flex items-center justify-center shadow-2xl transform hover:rotate-6 transition-all duration-500">
+                    <div className="w-24 h-24 bg-gradient-to-tr from-primary-600 to-primary-500 rounded-2xl flex items-center justify-center shadow-2xl transform hover:rotate-6 transition-all duration-500">
                         <span className="text-4xl font-black text-white tracking-tighter">K</span>
                     </div>
                 </div>
 
                 {/* Main Heading */}
                 <h1 className="text-4xl md:text-6xl font-black text-white tracking-tight mb-4">
-                    Kiddo<span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">Z</span>
+                    Kiddo<span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-400">Z</span>
                 </h1>
 
                 {/* Changing Text */}
@@ -79,7 +79,7 @@ const InteractivePreloader = ({ onComplete }) => {
                 {/* Progress Bar (Replaces Button) */}
                 <div className="w-64 h-1 bg-white/10 rounded-full overflow-hidden relative">
                     <div
-                        className="absolute inset-y-0 left-0 bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-75 ease-linear shadow-[0_0_10px_rgba(168,85,247,0.5)]"
+                        className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary-500 to-secondary-500 transition-all duration-75 ease-linear shadow-[0_0_10px_rgba(168,85,247,0.5)]"
                         style={{ width: `${progress}%` }}
                     />
                 </div>

@@ -37,7 +37,7 @@ const PaymentModal = ({ isOpen, onClose, payment, onConfirm }) => {
             <Card className="w-full max-w-md relative overflow-hidden p-0">
                 <div className="bg-slate-50 p-4 border-b border-slate-100 flex justify-between items-center">
                     <h3 className="font-bold text-lg text-slate-800 flex items-center gap-2">
-                        <Wallet className="text-purple-600" size={20} /> Secure Payment
+                        <Wallet className="text-primary-600" size={20} /> Secure Payment
                     </h3>
                     <button onClick={onClose} className="text-slate-400 hover:text-slate-600"><X size={20} /></button>
                 </div>
@@ -48,7 +48,7 @@ const PaymentModal = ({ isOpen, onClose, payment, onConfirm }) => {
                             <div className="text-center mb-6">
                                 <p className="text-slate-500 text-sm">Payment Amount</p>
                                 <h2 className="text-4xl font-bold text-slate-800">${payment.amount.toLocaleString()}</h2>
-                                <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-xs font-bold">
+                                <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-primary-50 text-primary-700 rounded-full text-xs font-bold">
                                     <UserCheck size={12} /> {payment.recipientName || payment.name} ({payment.role})
                                 </div>
                             </div>
@@ -64,7 +64,7 @@ const PaymentModal = ({ isOpen, onClose, payment, onConfirm }) => {
                                 </div>
                             </div>
 
-                            <Button onClick={() => setStep(2)} className="w-full mt-4 bg-purple-600 hover:bg-purple-700">
+                            <Button onClick={() => setStep(2)} className="w-full mt-4 bg-primary-600 hover:bg-primary-700">
                                 Proceed to Pay <ArrowRight size={16} className="ml-2" />
                             </Button>
                         </div>
@@ -119,8 +119,8 @@ const PaymentModal = ({ isOpen, onClose, payment, onConfirm }) => {
                         <div className="text-center py-8 animate-in fade-in duration-300">
                             <div className="relative w-20 h-20 mx-auto mb-6">
                                 <div className="absolute inset-0 border-4 border-slate-100 rounded-full"></div>
-                                <div className="absolute inset-0 border-4 border-purple-600 rounded-full border-t-transparent animate-spin"></div>
-                                <CheckCircle className="absolute inset-0 m-auto text-purple-600" size={24} />
+                                <div className="absolute inset-0 border-4 border-primary-600 rounded-full border-t-transparent animate-spin"></div>
+                                <CheckCircle className="absolute inset-0 m-auto text-primary-600" size={24} />
                             </div>
                             <h3 className="font-bold text-xl text-slate-800 mb-2">Processing Payment...</h3>
                             <p className="text-slate-500">Contacting bank gateway secure channel.</p>
@@ -208,15 +208,15 @@ const PayrollManager = () => {
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card className="bg-gradient-to-br from-purple-900 to-indigo-950 text-white border-0 shadow-xl overflow-hidden relative">
+                <Card className="bg-gradient-to-br from-primary-900 to-indigo-950 text-white border-0 shadow-xl overflow-hidden relative">
                     <div className="absolute top-0 right-0 p-8 opacity-10">
                         <DollarSign size={120} />
                     </div>
                     <div className="flex justify-between items-start relative z-10">
                         <div>
-                            <p className="text-purple-200 font-medium mb-1 border-b border-purple-800/50 pb-1">Enrollment Revenue</p>
+                            <p className="text-primary-200 font-medium mb-1 border-b border-primary-800/50 pb-1">Enrollment Revenue</p>
                             <h3 className="text-4xl font-bold tracking-tight">${revenue.total.toLocaleString()}</h3>
-                            <p className="text-xs text-purple-300 mt-2">Monthly income from {revenue.count} active students</p>
+                            <p className="text-xs text-primary-300 mt-2">Monthly income from {revenue.count} active students</p>
                         </div>
                         <div className="bg-white/10 p-3 rounded-xl border border-white/10 backdrop-blur-sm">
                             <Plus size={24} className="text-white" />
@@ -224,15 +224,15 @@ const PayrollManager = () => {
                     </div>
                     <div className="mt-8 grid grid-cols-3 gap-2 relative z-10 text-[10px] font-bold uppercase tracking-wider">
                         <div className="bg-white/5 p-2 rounded-lg text-center">
-                            <p className="text-purple-300">Little</p>
+                            <p className="text-primary-300">Little</p>
                             <p>${(revenue.byPlan['Little Explorer'] || 0).toLocaleString()}</p>
                         </div>
                         <div className="bg-white/5 p-2 rounded-lg text-center">
-                            <p className="text-purple-300">Growth</p>
+                            <p className="text-primary-300">Growth</p>
                             <p>${(revenue.byPlan['Growth Scholar'] || 0).toLocaleString()}</p>
                         </div>
                         <div className="bg-white/5 p-2 rounded-lg text-center">
-                            <p className="text-purple-300">VIP</p>
+                            <p className="text-primary-300">VIP</p>
                             <p>${(revenue.byPlan['VIP Guardian'] || 0).toLocaleString()}</p>
                         </div>
                     </div>
@@ -253,7 +253,7 @@ const PayrollManager = () => {
                         </div>
                     </div>
                     <div className="mt-8 flex gap-3 relative z-10">
-                        <Button onClick={() => setShowCreateModal(true)} className="bg-purple-500 hover:bg-purple-600 text-white border-0 flex-1 shadow-lg shadow-purple-900/20">
+                        <Button onClick={() => setShowCreateModal(true)} className="bg-primary-500 hover:bg-primary-600 text-white border-0 flex-1 shadow-lg shadow-primary-900/20">
                             <Plus size={18} className="mr-2" /> New Request
                         </Button>
                         <Button variant="outline" className="text-white border-white/20 hover:bg-white/10 flex-1 text-xs">
@@ -262,15 +262,15 @@ const PayrollManager = () => {
                     </div>
                 </Card>
 
-                <Card className="bg-white border hover:border-purple-200 transition-colors">
+                <Card className="bg-white border hover:border-primary-200 transition-colors">
                     <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                        <Clock size={20} className="text-purple-600" /> Recent Activity
+                        <Clock size={20} className="text-primary-600" /> Recent Activity
                     </h3>
                     <div className="space-y-3">
                         {payments.slice(0, 3).map(p => (
                             <div key={p.id} className="flex justify-between items-center text-sm p-3 hover:bg-slate-50 rounded-lg transition-colors border border-transparent hover:border-slate-100">
                                 <div className="flex items-center gap-3">
-                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${p.status === 'Paid' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${p.status === 'Paid' ? 'bg-green-100 text-green-700' : 'bg-secondary-100 text-secondary-700'}`}>
                                         {(p.name || '?').charAt(0)}
                                     </div>
                                     <div>
@@ -280,7 +280,7 @@ const PayrollManager = () => {
                                 </div>
                                 <div className="text-right">
                                     <p className="font-bold text-slate-800">${p.amount}</p>
-                                    <span className={`text-[10px] font-bold ${p.status === 'Paid' ? 'text-green-600' : 'text-amber-600'}`}>
+                                    <span className={`text-[10px] font-bold ${p.status === 'Paid' ? 'text-green-600' : 'text-secondary-600'}`}>
                                         {p.status}
                                     </span>
                                 </div>
@@ -297,7 +297,7 @@ const PayrollManager = () => {
                         <p className="text-sm text-slate-500">Manage salaries, bonuses, and vendor payments.</p>
                     </div>
                     <div className="flex gap-2">
-                        <select className="bg-slate-50 border border-slate-200 rounded-lg text-sm p-2 outline-none focus:ring-2 focus:ring-purple-100">
+                        <select className="bg-slate-50 border border-slate-200 rounded-lg text-sm p-2 outline-none focus:ring-2 focus:ring-primary-100">
                             <option>All Types</option>
                             <option>Salary</option>
                             <option>Maintenance</option>
@@ -337,7 +337,7 @@ const PayrollManager = () => {
                                                 <CheckCircle size={12} /> Paid
                                             </div>
                                         ) : (
-                                            <div className="flex items-center gap-1 text-amber-600 font-bold text-xs bg-amber-50 w-fit px-2 py-1 rounded-full border border-amber-100">
+                                            <div className="flex items-center gap-1 text-secondary-600 font-bold text-xs bg-secondary-50 w-fit px-2 py-1 rounded-full border border-secondary-100">
                                                 <Clock size={12} /> Pending
                                             </div>
                                         )}
@@ -386,7 +386,7 @@ const PayrollManager = () => {
                                 <div>
                                     <label className="block text-sm font-bold text-slate-700 mb-2">Role/Category</label>
                                     <select
-                                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-200 transition"
+                                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary-200 transition"
                                         value={newPayment.role}
                                         onChange={e => setNewPayment({ ...newPayment, role: e.target.value })}
                                     >
@@ -400,7 +400,7 @@ const PayrollManager = () => {
                                 <div>
                                     <label className="block text-sm font-bold text-slate-700 mb-2">Payment Type</label>
                                     <select
-                                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-200 transition"
+                                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary-200 transition"
                                         value={newPayment.type}
                                         onChange={e => setNewPayment({ ...newPayment, type: e.target.value })}
                                     >
@@ -419,7 +419,7 @@ const PayrollManager = () => {
                                 required
                                 placeholder="0.00"
                             />
-                            <Button type="submit" className="w-full mt-2 bg-gradient-to-r from-purple-600 to-indigo-600 border-0 hover:opacity-90">Create Request</Button>
+                            <Button type="submit" className="w-full mt-2 bg-gradient-to-r from-primary-600 to-primary-600 border-0 hover:opacity-90">Create Request</Button>
                         </form>
                     </Card>
                 </div>

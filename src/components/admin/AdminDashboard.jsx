@@ -55,6 +55,14 @@ const AdminDashboard = ({ user, handleLogout }) => {
     else navigate(`/admin/${tab}`);
   };
 
+  const canAccess = (feature) => {
+    if (user?.role === 'superadmin') return true;
+    if (feature === 'financials' || feature === 'settings') {
+      return currentRole === 'admin';
+    }
+    return true;
+  };
+
   const [students, setStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -170,8 +178,8 @@ const AdminDashboard = ({ user, handleLogout }) => {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row font-sans">
       {/* Sidebar */}
-      <div className="w-full md:w-72 bg-purple-900 text-white p-6 flex flex-col shadow-2xl z-10 transition-colors duration-500"
-        style={{ backgroundColor: currentRole === 'nurse' ? '#0f766e' : (currentRole === 'teacher' ? '#ea580c' : (currentRole === 'nanny' ? '#be185d' : '')) }}>
+      <div className="w-full md:w-72 bg-primary-900 text-white p-6 flex flex-col shadow-2xl z-10 transition-colors duration-500"
+        style={{ backgroundColor: currentRole === 'nurse' ? '#0f766e' : (currentRole === 'teacher' ? '#a05f5a' : (currentRole === 'nanny' ? '#be185d' : '')) }}>
 
         {/* Role Switcher (Simulation) */}
         <div className="mb-8">
@@ -188,7 +196,7 @@ const AdminDashboard = ({ user, handleLogout }) => {
         </div>
 
         <div className="mb-6 flex items-center gap-3 font-bold text-2xl">
-          <div className="bg-white text-purple-900 p-2 rounded-lg shadow-lg">K</div>
+          <div className="bg-white text-primary-900 p-2 rounded-lg shadow-lg">K</div>
           <span>
             {currentRole === 'admin' ? 'KiddoZ Admin' : (currentRole === 'teacher' ? 'Teacher Portal' : 'Nurse Station')}
           </span>
@@ -197,49 +205,49 @@ const AdminDashboard = ({ user, handleLogout }) => {
         <nav className="space-y-3 flex-1">
           <button
             onClick={() => setTab('roster')}
-            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'roster' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-purple-100 hover:text-white'}`}
+            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'roster' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-primary-100 hover:text-white'}`}
           >
             <Users size={20} /> {currentRole === 'nurse' ? 'Health Check' : 'Student Roster'}
           </button>
 
           <button
             onClick={() => setTab('nannies')}
-            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'nannies' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-purple-100 hover:text-white'}`}
+            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'nannies' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-primary-100 hover:text-white'}`}
           >
             <UserCheck size={20} /> Manage Staff
           </button>
 
           <button
             onClick={() => setTab('parents')}
-            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'parents' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-purple-100 hover:text-white'}`}
+            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'parents' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-primary-100 hover:text-white'}`}
           >
             <Users size={20} /> Parent Directory
           </button>
 
           <button
             onClick={() => setTab('care')}
-            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'care' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-purple-100 hover:text-white'}`}
+            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'care' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-primary-100 hover:text-white'}`}
           >
             <Clock size={20} /> Care & Tasks
           </button>
 
           <button
             onClick={() => setTab('live')}
-            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'live' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-purple-100 hover:text-white'}`}
+            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'live' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-primary-100 hover:text-white'}`}
           >
             <ScanFace size={20} /> AI Surveillance
           </button>
 
           <button
             onClick={() => setTab('alerts')}
-            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'alerts' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-purple-100 hover:text-white'}`}
+            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'alerts' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-primary-100 hover:text-white'}`}
           >
             <Bell size={20} /> Alerts Center
           </button>
 
           <button
             onClick={() => setTab('incidents')}
-            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'incidents' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-purple-100 hover:text-white'}`}
+            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'incidents' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-primary-100 hover:text-white'}`}
           >
             <FileText size={20} /> Incidents
           </button>
@@ -249,13 +257,13 @@ const AdminDashboard = ({ user, handleLogout }) => {
               <p className="px-4 text-xs font-bold text-white/50 uppercase tracking-widest mb-2">Admin Tools</p>
               <button
                 onClick={() => setTab('financials')}
-                className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'financials' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-purple-100 hover:text-white'}`}
+                className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'financials' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-primary-100 hover:text-white'}`}
               >
                 <DollarSign size={20} /> Financials
               </button>
               <button
                 onClick={() => setTab('settings')}
-                className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'settings' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-purple-100 hover:text-white'}`}
+                className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'settings' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-primary-100 hover:text-white'}`}
               >
                 <Settings size={20} /> App Settings
               </button>
@@ -273,7 +281,7 @@ const AdminDashboard = ({ user, handleLogout }) => {
           </div>
         </div>
 
-        <button onClick={() => { if (handleLogout) handleLogout(); navigate('/login'); }} className="mt-auto flex items-center gap-3 px-4 py-3 rounded-xl text-purple-200 hover:text-red-300 hover:bg-white/5 transition">
+        <button onClick={() => { if (handleLogout) handleLogout(); navigate('/login'); }} className="mt-auto flex items-center gap-3 px-4 py-3 rounded-xl text-primary-200 hover:text-red-300 hover:bg-white/5 transition">
           <LogOut size={20} /> Exit Portal
         </button>
       </div>
@@ -282,15 +290,15 @@ const AdminDashboard = ({ user, handleLogout }) => {
       <div className="flex-1 overflow-y-auto">
         <header className="bg-white border-b border-slate-100 p-8 sticky top-0 z-10 bg-white/80 backdrop-blur-md">
           <h2 className="text-3xl font-bold text-slate-800 capitalize flex items-center gap-3">
-            {adminTab === 'roster' && <><Users className="text-purple-600" /> Student Roster</>}
-            {adminTab === 'care' && <><Clock className="text-purple-600" /> Daily Care Management</>}
-            {adminTab === 'live' && <><ScanFace className="text-purple-600" /> AI Surveillance</>}
-            {adminTab === 'nannies' && <><UserCheck className="text-purple-600" /> Staff Directory</>}
-            {adminTab === 'parents' && <><Users className="text-purple-600" /> Parent Directory</>}
-            {adminTab === 'alerts' && <><Bell className="text-purple-600" /> Notifications</>}
-            {adminTab === 'incidents' && <><FileText className="text-purple-600" /> Incident Reports</>}
-            {adminTab === 'financials' && <><DollarSign className="text-purple-600" /> Financial Overview</>}
-            {adminTab === 'settings' && <><Settings className="text-purple-600" /> System Settings</>}
+            {adminTab === 'roster' && <><Users className="text-primary-600" /> Student Roster</>}
+            {adminTab === 'care' && <><Clock className="text-primary-600" /> Daily Care Management</>}
+            {adminTab === 'live' && <><ScanFace className="text-primary-600" /> AI Surveillance</>}
+            {adminTab === 'nannies' && <><UserCheck className="text-primary-600" /> Staff Directory</>}
+            {adminTab === 'parents' && <><Users className="text-primary-600" /> Parent Directory</>}
+            {adminTab === 'alerts' && <><Bell className="text-primary-600" /> Notifications</>}
+            {adminTab === 'incidents' && <><FileText className="text-primary-600" /> Incident Reports</>}
+            {adminTab === 'financials' && <><DollarSign className="text-primary-600" /> Financial Overview</>}
+            {adminTab === 'settings' && <><Settings className="text-primary-600" /> System Settings</>}
           </h2>
         </header>
 
@@ -312,20 +320,20 @@ const AdminDashboard = ({ user, handleLogout }) => {
                         placeholder="Search by Name or ID..."
                         value={searchTerm}
                         onChange={e => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition shadow-sm"
+                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition shadow-sm"
                       />
                     </div>
                     <div className="flex gap-2">
                       <Button
                         onClick={() => setIsAddingStudent(true)}
-                        className="bg-purple-600 hover:bg-purple-700 text-white"
+                        className="bg-primary-600 hover:bg-primary-700 text-white"
                         size="sm"
                       >
                         <PlusCircle size={16} className="mr-2" /> New Enrollment
                       </Button>
                     </div>
                     <div className="flex gap-2">
-                      <Badge color="bg-purple-100 text-purple-700">{students.length} Total Students</Badge>
+                      <Badge color="bg-primary-100 text-primary-700">{students.length} Total Students</Badge>
                       <Badge color="bg-green-100 text-green-700">{students.filter(s => s.attendance === 'Present').length} Present</Badge>
                     </div>
                   </div>
@@ -372,20 +380,20 @@ const AdminDashboard = ({ user, handleLogout }) => {
                         <Button
                           onClick={() => { setSearchTerm(''); setFilterConfig({ status: 'All', grade: 'All' }); }}
                           variant="ghost"
-                          className="mt-6 text-purple-600 font-black text-xs uppercase tracking-widest"
+                          className="mt-6 text-primary-600 font-black text-xs uppercase tracking-widest"
                         >
                           Clear All Filters
                         </Button>
                       </div>
                     ) : (
                       filteredStudents.map(student => (
-                        <Card key={student.id} className="group hover:border-purple-300 relative overflow-hidden">
+                        <Card key={student.id} className="group hover:border-primary-300 relative overflow-hidden">
                           <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
-                            <button onClick={() => { setSelectedStudent(student); setIsEditing(true); }} className="p-2 bg-white/90 hover:bg-purple-100 text-purple-700 rounded-lg shadow-sm transition" title="Edit Profile"><Edit2 size={16} /></button>
+                            <button onClick={() => { setSelectedStudent(student); setIsEditing(true); }} className="p-2 bg-white/90 hover:bg-primary-100 text-primary-700 rounded-lg shadow-sm transition" title="Edit Profile"><Edit2 size={16} /></button>
                             <button onClick={() => handleDeleteStudent(student.id, student.fullName || student.name)} className="p-2 bg-white/90 hover:bg-red-100 text-red-600 rounded-lg shadow-sm transition" title="Remove"><Trash2 size={16} /></button>
                           </div>
                           <div className="mb-4">
-                            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg mb-3">
+                            <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg mb-3">
                               {(student.fullName || student.name || '?').charAt(0)}
                             </div>
                             <h3 className="font-bold text-lg text-slate-800 truncate">{student.fullName || student.name}</h3>
@@ -395,14 +403,14 @@ const AdminDashboard = ({ user, handleLogout }) => {
                           <div className="space-y-2 text-sm text-slate-600 mb-6">
                             <div className="flex justify-between"><span className="text-slate-400">Temp</span> <span className="font-semibold">{student.temp || '--'}°F</span></div>
                             <div className="flex justify-between"><span className="text-slate-400">Status</span> <span className={`font-semibold ${student.attendance === 'Present' ? 'text-green-600' : 'text-slate-600'}`}>{student.attendance || '--'}</span></div>
-                            <div className="flex justify-between"><span className="text-slate-400">Plan</span> <span className="font-semibold text-purple-600">{student.plan}</span></div>
+                            <div className="flex justify-between"><span className="text-slate-400">Plan</span> <span className="font-semibold text-primary-600">{student.plan}</span></div>
                           </div>
 
                           <div className="flex gap-2">
                             <Button onClick={() => { setSelectedStudent(student); setShowVitalsModal(true); }} variant="outline" size="sm" className="flex-1">
                               Vitals
                             </Button>
-                            <Button onClick={() => { setSelectedStudent(student); setIsEditing(true); }} variant="ghost" size="sm" className="flex-1 text-purple-600">
+                            <Button onClick={() => { setSelectedStudent(student); setIsEditing(true); }} variant="ghost" size="sm" className="flex-1 text-primary-600">
                               Edit
                             </Button>
                           </div>
@@ -516,8 +524,8 @@ const AlertsFeed = () => {
 
   const getTypeStyle = (type) => {
     switch (type) {
-      case 'warning': return { border: 'border-l-amber-500', bg: 'bg-amber-100 text-amber-600', icon: <AlertTriangle size={20} /> };
-      case 'admin': return { border: 'border-l-purple-500', bg: 'bg-purple-100 text-purple-600', icon: <ShieldCheck size={20} /> };
+      case 'warning': return { border: 'border-l-secondary-500', bg: 'bg-secondary-100 text-secondary-600', icon: <AlertTriangle size={20} /> };
+      case 'admin': return { border: 'border-l-primary-500', bg: 'bg-primary-100 text-primary-600', icon: <ShieldCheck size={20} /> };
       case 'health': return { border: 'border-l-teal-500', bg: 'bg-teal-100 text-teal-600', icon: <CheckCircle size={20} /> };
       case 'system': return { border: 'border-l-red-500', bg: 'bg-red-100 text-red-600', icon: <AlertTriangle size={20} /> };
       default: return { border: 'border-l-blue-500', bg: 'bg-blue-100 text-blue-600', icon: <Info size={20} /> };
@@ -542,14 +550,14 @@ const AlertsFeed = () => {
     <div className="space-y-4">
       {/* Send Notification Button */}
       <div className="flex justify-end">
-        <Button onClick={() => setShowForm(!showForm)} className="bg-purple-600 hover:bg-purple-700 text-white">
+        <Button onClick={() => setShowForm(!showForm)} className="bg-primary-600 hover:bg-primary-700 text-white">
           <Send size={16} className="mr-2" /> {showForm ? 'Cancel' : 'Send Notification'}
         </Button>
       </div>
 
       {/* Send Form */}
       {showForm && (
-        <Card className="p-6 border-t-4 border-t-purple-500 animate-in fade-in slide-in-from-top-2">
+        <Card className="p-6 border-t-4 border-t-primary-500 animate-in fade-in slide-in-from-top-2">
           <h4 className="font-bold mb-4 text-slate-800">Create New Notification</h4>
           <form onSubmit={handleSend} className="space-y-3">
             <input
@@ -557,14 +565,14 @@ const AlertsFeed = () => {
               placeholder="Notification title..."
               value={newAlert.title}
               onChange={e => setNewAlert({ ...newAlert, title: e.target.value })}
-              className="w-full p-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500/20"
+              className="w-full p-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary-500/20"
               required
             />
             <textarea
               placeholder="Write your message..."
               value={newAlert.message}
               onChange={e => setNewAlert({ ...newAlert, message: e.target.value })}
-              className="w-full p-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500/20 h-24 resize-none"
+              className="w-full p-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary-500/20 h-24 resize-none"
               required
             />
             <div className="grid grid-cols-2 gap-3">
@@ -581,7 +589,7 @@ const AlertsFeed = () => {
                 <option value="admin">🛡️ Admins Only</option>
               </select>
             </div>
-            <Button type="submit" disabled={sending} className="w-full bg-purple-600 hover:bg-purple-700 text-white">
+            <Button type="submit" disabled={sending} className="w-full bg-primary-600 hover:bg-primary-700 text-white">
               {sending ? <><Loader2 size={16} className="animate-spin mr-2" /> Sending...</> : <><Send size={16} className="mr-2" /> Send Notification</>}
             </Button>
           </form>

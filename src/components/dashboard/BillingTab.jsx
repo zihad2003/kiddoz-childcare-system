@@ -44,13 +44,13 @@ const BillingTab = ({ student }) => {
 
             {/* Financial Overview Cards */}
             <div className="grid md:grid-cols-3 gap-6">
-                <Card className="bg-gradient-to-br from-indigo-600 to-purple-700 text-white border-0 relative overflow-hidden">
+                <Card className="bg-gradient-to-br from-primary-600 to-primary-700 text-white border-0 relative overflow-hidden">
                     <div className="relative z-10">
                         <p className="text-indigo-200 font-medium mb-1">Outstanding Balance</p>
                         <h2 className="text-4xl font-bold mb-6">৳{outstandingBalance.toLocaleString()}</h2>
 
                         {outstandingBalance > 0 ? (
-                            <Button onClick={handlePayNow} className="w-full bg-white text-indigo-700 hover:bg-indigo-50 border-0 shadow-lg">
+                            <Button onClick={handlePayNow} className="w-full bg-white text-primary-700 hover:bg-primary-50 border-0 shadow-lg">
                                 <CreditCard size={18} className="mr-2" /> Pay Now
                             </Button>
                         ) : (
@@ -80,7 +80,7 @@ const BillingTab = ({ student }) => {
                             <p className="text-xs text-slate-400">Expires 12/26</p>
                         </div>
                     </div>
-                    <Button variant="ghost" size="sm" className="self-start text-purple-600 p-0 h-auto hover:text-purple-700">Update Method</Button>
+                    <Button variant="ghost" size="sm" className="self-start text-primary-600 p-0 h-auto hover:text-primary-700">Update Method</Button>
                 </Card>
             </div>
 
@@ -119,13 +119,13 @@ const BillingTab = ({ student }) => {
                                         <td className="py-4 font-bold text-slate-800">৳{parseFloat(inv.amount).toLocaleString()}</td>
                                         <td className="py-4">
                                             <Badge
-                                                className={`${inv.status === 'Paid' ? 'bg-emerald-100 text-emerald-700' : (inv.status === 'Overdue' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700')}`}
+                                                className={`${inv.status === 'Paid' ? 'bg-emerald-100 text-emerald-700' : (inv.status === 'Overdue' ? 'bg-red-100 text-red-700' : 'bg-secondary-100 text-secondary-700')}`}
                                             >
                                                 {inv.status}
                                             </Badge>
                                         </td>
                                         <td className="py-4 pr-4 text-right">
-                                            <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity text-slate-400 hover:text-purple-600">
+                                            <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity text-slate-400 hover:text-primary-600">
                                                 <Download size={16} />
                                             </Button>
                                         </td>

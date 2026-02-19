@@ -102,7 +102,7 @@ const SupportFeedback = () => {
                         <button
                             key={f}
                             onClick={() => setFilter(f)}
-                            className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-all ${filter === f ? 'bg-purple-600 text-white shadow' : 'text-slate-500 hover:text-slate-700'}`}
+                            className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-all ${filter === f ? 'bg-primary-600 text-white shadow' : 'text-slate-500 hover:text-slate-700'}`}
                         >
                             {f}
                         </button>
@@ -114,7 +114,7 @@ const SupportFeedback = () => {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 {[
                     { label: 'Avg. Rating', value: avgRating, icon: Star, color: 'text-yellow-500', bg: 'bg-yellow-50', sub: `From ${feedback.length} responses` },
-                    { label: 'Pending Review', value: pendingCount, icon: Clock, color: 'text-orange-500', bg: 'bg-orange-50', sub: 'Awaiting response' },
+                    { label: 'Pending Review', value: pendingCount, icon: Clock, color: 'text-secondary-500', bg: 'bg-orange-50', sub: 'Awaiting response' },
                     { label: 'Resolved', value: resolvedCount, icon: CheckCircle, color: 'text-emerald-500', bg: 'bg-emerald-50', sub: 'Issues closed' },
                 ].map((stat, i) => (
                     <Card key={i} className="p-6 border-none shadow-xl flex items-center gap-5 bg-white">
@@ -133,7 +133,7 @@ const SupportFeedback = () => {
             {/* Feedback List */}
             {loading ? (
                 <div className="flex flex-col items-center justify-center py-32 bg-white rounded-3xl border-2 border-dashed border-slate-100">
-                    <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mb-4" />
+                    <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mb-4" />
                     <p className="text-slate-400 font-medium">Loading feedback...</p>
                 </div>
             ) : filtered.length === 0 ? (
@@ -150,7 +150,7 @@ const SupportFeedback = () => {
                         <Card key={item.id} className="border-none shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden bg-white p-0">
                             <div className="flex flex-col">
                                 {/* Priority stripe */}
-                                <div className={`h-1 ${item.status === 'resolved' ? 'bg-emerald-400' : item.rating <= 2 ? 'bg-red-500' : 'bg-purple-500'}`} />
+                                <div className={`h-1 ${item.status === 'resolved' ? 'bg-emerald-400' : item.rating <= 2 ? 'bg-red-500' : 'bg-primary-500'}`} />
                                 <div className="p-6">
                                     <div className="flex items-start justify-between gap-4 flex-wrap">
                                         <div className="flex items-center gap-4">
@@ -181,7 +181,7 @@ const SupportFeedback = () => {
                                                 </Badge>
                                             )}
                                             <Badge
-                                                color={item.status === 'resolved' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}
+                                                color={item.status === 'resolved' ? 'bg-emerald-100 text-emerald-700' : 'bg-secondary-100 text-secondary-700'}
                                                 className="text-[9px] font-black uppercase tracking-widest px-3 py-1"
                                             >
                                                 {item.status === 'resolved' ? '✓ Resolved' : '⏳ Pending'}
@@ -197,7 +197,7 @@ const SupportFeedback = () => {
                                             <>
                                                 <button
                                                     onClick={() => openReply(item)}
-                                                    className="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-xl text-xs font-black hover:bg-purple-600 hover:text-white transition-all uppercase tracking-widest"
+                                                    className="flex items-center gap-2 px-4 py-2 bg-primary-50 text-primary-700 rounded-xl text-xs font-black hover:bg-primary-600 hover:text-white transition-all uppercase tracking-widest"
                                                 >
                                                     <Send size={13} /> Reply
                                                 </button>
@@ -221,8 +221,8 @@ const SupportFeedback = () => {
                                     </div>
 
                                     {expandedId === item.id && item.response && (
-                                        <div className="mt-4 p-4 bg-purple-50 rounded-2xl border border-purple-100">
-                                            <p className="text-[10px] font-black text-purple-500 uppercase tracking-widest mb-2">Admin Response</p>
+                                        <div className="mt-4 p-4 bg-primary-50 rounded-2xl border border-primary-100">
+                                            <p className="text-[10px] font-black text-primary-500 uppercase tracking-widest mb-2">Admin Response</p>
                                             <p className="text-sm text-slate-700 font-medium">{item.response}</p>
                                         </div>
                                     )}
@@ -244,7 +244,7 @@ const SupportFeedback = () => {
                         <div className="space-y-2">
                             <label className="text-sm font-black text-slate-900 uppercase tracking-widest">Your Response</label>
                             <textarea
-                                className="w-full p-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-purple-500 focus:bg-white outline-none transition-all min-h-[120px] font-medium text-slate-700"
+                                className="w-full p-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-primary-500 focus:bg-white outline-none transition-all min-h-[120px] font-medium text-slate-700"
                                 placeholder="Write a helpful response..."
                                 value={replyText}
                                 onChange={(e) => setReplyText(e.target.value)}
@@ -252,7 +252,7 @@ const SupportFeedback = () => {
                         </div>
                         <div className="flex gap-4 pt-2">
                             <Button type="button" variant="secondary" className="flex-1 h-12 font-bold" onClick={() => setIsReplyModalOpen(false)}>Cancel</Button>
-                            <Button type="button" variant="primary" className="flex-1 h-12 font-bold shadow-lg shadow-purple-100" onClick={handleReply}>
+                            <Button type="button" variant="primary" className="flex-1 h-12 font-bold shadow-lg shadow-primary-100" onClick={handleReply}>
                                 <Send size={16} className="mr-2" /> Send Reply
                             </Button>
                         </div>

@@ -61,16 +61,22 @@ app.get('/metrics', async (req, res, next) => {
     }
 });
 
+// CORS Configuration
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id']
+}));
+
 // Set security HTTP headers
 app.use(helmet());
-
 // Compress all responses
 app.use(compression());
 
 // Limit requests from same API (Rate Limiting)
 const limiter = rateLimit({
-    max: 100,
-    windowMs: 60 * 60 * 1000,
+    max: 10000, // Increased for dev
+    windowMs: 15 * 60 * 1000, // 15 minutes window
     message: 'Too many requests from this IP, please try again in an hour!'
 });
 app.use('/api', limiter);
@@ -80,13 +86,6 @@ app.use(express.json({ limit: '10kb' }));
 
 // Prevent parameter pollution
 app.use(hpp());
-
-// CORS Configuration
-app.use(cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id']
-}));
 
 // Use morgan for HTTP request logging, piped to winston
 app.use(morgan('combined', { stream: { write: message => logger.http(message.trim()) } }));
@@ -112,7 +111,7 @@ app.use('/api/ai', require('./routes/ai'));
 app.use('/api/incidents', require('./routes/incidents'));
 
 // Catch-all for React SPA
-app.get('*', (req, res) => {
+app.get('/*splat', (req, res) => {
     if (req.originalUrl.startsWith('/api')) {
         return res.status(404).json({ message: 'API Endpoint Not Found' });
     }

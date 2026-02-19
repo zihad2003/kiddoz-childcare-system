@@ -102,8 +102,8 @@ const NannyBooking = ({ student }) => {
                         <div className="space-y-4">
                             {[
                                 { time: '10:00 AM', text: 'Arrived and checked in.', icon: CheckCircle, color: 'text-green-500' },
-                                { time: '10:15 AM', text: 'Started drawing activity.', icon: Heart, color: 'text-pink-500' },
-                                { time: '10:45 AM', text: 'Snack time prepared.', icon: Clock, color: 'text-amber-500' }
+                                { time: '10:15 AM', text: 'Started drawing activity.', icon: Heart, color: 'text-secondary-500' },
+                                { time: '10:45 AM', text: 'Snack time prepared.', icon: Clock, color: 'text-secondary-500' }
                             ].map((update, i) => (
                                 <div key={i} className="flex gap-4 items-start">
                                     <div className="w-12 text-xs text-slate-400 font-medium pt-1">{update.time}</div>
@@ -119,12 +119,12 @@ const NannyBooking = ({ student }) => {
 
                 {/* Control Panel */}
                 <div className="space-y-6">
-                    <Card className="bg-gradient-to-br from-purple-700 to-indigo-800 text-white border-0">
+                    <Card className="bg-gradient-to-br from-primary-700 to-primary-800 text-white border-0">
                         <div className="flex items-center gap-4 mb-6">
                             <img src={nanny.img} alt={nanny.name} className="w-16 h-16 rounded-full border-2 border-white/30" />
                             <div>
                                 <h3 className="font-bold text-lg">{nanny.name}</h3>
-                                <p className="text-purple-200 text-xs">Certified Pro</p>
+                                <p className="text-primary-200 text-xs">Certified Pro</p>
                             </div>
                         </div>
                         <div className="grid grid-cols-2 gap-3">
@@ -162,11 +162,11 @@ const NannyBooking = ({ student }) => {
             {/* Search & Filter Header */}
             {bookingStep === 'list' && (
                 <>
-                    <Card className="bg-gradient-to-r from-pink-500 to-rose-500 text-white border-0">
+                    <Card className="bg-gradient-to-r from-secondary-500 to-rose-500 text-white border-0">
                         <div className="md:flex justify-between items-center">
                             <div>
                                 <h2 className="text-3xl font-bold mb-2">Find a Trusted Nanny</h2>
-                                <p className="text-pink-100">Professional care at your doorstep. Verified & Background Checked.</p>
+                                <p className="text-secondary-100">Professional care at your doorstep. Verified & Background Checked.</p>
                             </div>
                             <div className="mt-6 md:mt-0 flex gap-4 bg-white/20 p-2 rounded-xl backdrop-blur-sm">
                                 <select
@@ -189,7 +189,7 @@ const NannyBooking = ({ student }) => {
                                     <img src={nanny.img} alt={nanny.name} className="w-16 h-16 rounded-full bg-slate-100" />
                                     <div>
                                         <h3 className="font-bold text-lg text-slate-800">{nanny.name}</h3>
-                                        <div className="flex items-center text-amber-500 text-sm font-bold">
+                                        <div className="flex items-center text-secondary-500 text-sm font-bold">
                                             <Star size={14} fill="currentColor" className="mr-1" />
                                             {nanny.rating} ({nanny.reviews} reviews)
                                         </div>
@@ -308,7 +308,7 @@ const NannyBooking = ({ student }) => {
                         {selectedNanny?.name} has been notified.
                     </p>
                     <div className="flex flex-col gap-3">
-                        <Button onClick={() => setBookingStep('active')} className="bg-purple-600 hover:bg-purple-700 shadow-xl">
+                        <Button onClick={() => setBookingStep('active')} className="bg-primary-600 hover:bg-primary-700 shadow-xl">
                             Track Live Status
                         </Button>
                         <Button variant="ghost" onClick={() => setBookingStep('list')}>Book Another</Button>

@@ -32,35 +32,35 @@ const Hero = () => {
         .delay-300 { animation-delay: 0.3s; }
       `}</style>
       {/* Dynamic Background Elements */}
-      <div className="absolute top-0 left-0 w-full h-[120%] bg-gradient-to-b from-purple-50 via-white to-slate-50 -z-10" />
-      <div className="absolute top-20 left-10 w-72 h-72 bg-purple-200/40 rounded-full blur-[100px] animate-blob -z-10" />
-      <div className="absolute bottom-10 right-10 w-96 h-96 bg-amber-100/40 rounded-full blur-[120px] animate-blob animation-delay-2000 -z-10" />
+      <div className="absolute top-0 left-0 w-full h-[120%] bg-gradient-to-b from-primary-50 via-white to-slate-50 -z-10" />
+      <div className="absolute top-20 left-10 w-72 h-72 bg-primary-200/40 rounded-full blur-[100px] animate-blob -z-10" />
+      <div className="absolute bottom-10 right-10 w-96 h-96 bg-secondary-200/40 rounded-full blur-[120px] animate-blob animation-delay-2000 -z-10" />
 
       <div className="relative max-w-7xl mx-auto px-4 flex flex-col lg:flex-row items-center gap-16">
         {/* Text Content */}
         <div className="flex-1 text-left lg:pr-10 z-10">
           <div className="opacity-0 animate-fade-in-up">
-            <Badge color="bg-purple-100 text-purple-700 border border-purple-200 mb-6 px-4 py-1.5 rounded-full inline-flex items-center gap-2 shadow-sm hover:shadow-md transition-shadow cursor-default">
-              <span className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" />
+            <Badge color="bg-primary-100 text-primary-700 border border-primary-200 mb-6 px-4 py-1.5 rounded-full inline-flex items-center gap-2 shadow-sm hover:shadow-md transition-shadow cursor-default">
+              <span className="w-2 h-2 bg-primary-500 rounded-full animate-pulse" />
               Next Generation Childcare
             </Badge>
           </div>
 
           <h1 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter leading-[1.1] text-slate-900 opacity-0 animate-fade-in-up delay-100">
             Safe. Smart. <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-pink-500 to-amber-500 animate-gradient-x bg-[length:200%_auto]">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 via-secondary-400 to-secondary-300 animate-gradient-x bg-[length:200%_auto]">
               Connected.
             </span>
           </h1>
 
           <p className="text-lg md:text-xl text-slate-600 mb-10 max-w-xl leading-relaxed opacity-0 animate-fade-in-up delay-200">
-            KiddoZ is the complete ecosystem for modern families. Experience peace of mind with <span className="text-purple-600 font-bold bg-purple-50 px-1 rounded">AI Health Tracking</span> and real-time <span className="text-pink-500 font-bold bg-pink-50 px-1 rounded">Smart Monitoring</span>.
+            KiddoZ is the complete ecosystem for modern families. Experience peace of mind with <span className="text-primary-600 font-bold bg-primary-50 px-1 rounded">AI Health Tracking</span> and real-time <span className="text-secondary-500 font-bold bg-secondary-50 px-1 rounded">Smart Monitoring</span>.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 opacity-0 animate-fade-in-up delay-300">
             <button
               onClick={() => navigate('/tour')}
-              className="group relative bg-purple-600 hover:bg-purple-700 text-white font-bold px-8 py-4 rounded-2xl transition-all shadow-xl shadow-purple-200 hover:shadow-2xl hover:shadow-purple-300 transform hover:-translate-y-1 overflow-hidden"
+              className="group relative bg-primary-600 hover:bg-primary-700 text-white font-bold px-8 py-4 rounded-2xl transition-all shadow-xl shadow-primary-200 hover:shadow-2xl hover:shadow-primary-300 transform hover:-translate-y-1 overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shimmer" />
               <span className="flex items-center gap-2">
@@ -70,7 +70,7 @@ const Hero = () => {
             </button>
             <button
               onClick={() => navigate('/enroll')}
-              className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold px-8 py-4 rounded-2xl transition hover:shadow-lg hover:border-purple-200"
+              className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold px-8 py-4 rounded-2xl transition hover:shadow-lg hover:border-primary-200"
             >
               Enroll Now
             </button>
@@ -93,7 +93,7 @@ const Hero = () => {
 
         {/* Hero Image / Animation Area */}
         <div className="flex-1 relative group w-full max-w-2xl lg:max-w-none opacity-0 animate-slide-in-right delay-200">
-          <div className="absolute inset-0 bg-gradient-to-tr from-purple-500 to-amber-500 rounded-[2.5rem] blur-2xl opacity-20 group-hover:opacity-30 transition duration-700 -rotate-3 animate-pulse" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-primary-500 to-secondary-400 rounded-[2.5rem] blur-2xl opacity-20 group-hover:opacity-30 transition duration-700 -rotate-3 animate-pulse" />
           <div className="relative rounded-[2.5rem] overflow-hidden border-8 border-white shadow-2xl transform transition duration-700 hover:scale-[1.01] rotate-1 hover:rotate-0 bg-white">
             <img
               src={heroImg}
@@ -112,7 +112,7 @@ const Hero = () => {
             </div>
             <div className="absolute bottom-6 left-6 glass-dark p-4 rounded-2xl shadow-xl backdrop-blur-xl bg-slate-900/80 border border-white/10 animate-float delay-700">
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg">A+</div>
+                <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg">A+</div>
                 <div>
                   <div className="text-[10px] uppercase text-slate-300 font-bold tracking-widest leading-none mb-1">Health Score</div>
                   <div className="text-lg font-black text-white leading-none">Perfect</div>
@@ -122,8 +122,8 @@ const Hero = () => {
           </div>
 
           {/* Floating decorative cards */}
-          <div className="absolute -top-10 -right-5 w-24 h-24 bg-gradient-to-br from-amber-300 to-orange-400 rounded-3xl -z-10 animate-float delay-100 shadow-xl opacity-80" />
-          <div className="absolute -bottom-10 -left-5 w-32 h-32 bg-gradient-to-tr from-purple-400 to-pink-400 rounded-[3rem] -z-10 animate-float delay-500 shadow-xl opacity-80" />
+          <div className="absolute -top-10 -right-5 w-24 h-24 bg-gradient-to-br from-secondary-300 to-secondary-400 rounded-3xl -z-10 animate-float delay-100 shadow-xl opacity-80" />
+          <div className="absolute -bottom-10 -left-5 w-32 h-32 bg-gradient-to-tr from-primary-400 to-secondary-400 rounded-[3rem] -z-10 animate-float delay-500 shadow-xl opacity-80" />
         </div>
       </div>
     </div>

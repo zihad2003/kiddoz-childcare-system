@@ -64,7 +64,7 @@ const SecurityCompliance = () => {
 
     const severityConfig = {
         info: { color: 'bg-blue-100 text-blue-700', dot: 'bg-blue-500', label: 'INFO' },
-        warn: { color: 'bg-amber-100 text-amber-700', dot: 'bg-amber-500', label: 'WARN' },
+        warn: { color: 'bg-secondary-100 text-secondary-700', dot: 'bg-secondary-500', label: 'WARN' },
         critical: { color: 'bg-red-100 text-red-700', dot: 'bg-red-500 animate-pulse', label: 'CRITICAL' },
     };
 
@@ -90,7 +90,7 @@ const SecurityCompliance = () => {
                 </div>
                 <button
                     onClick={() => { setLoading(true); setTimeout(fetchData, 500); }}
-                    className="flex items-center gap-2 px-5 py-3 bg-white border border-slate-200 rounded-xl text-slate-600 hover:border-purple-300 hover:text-purple-600 transition-all font-black text-xs uppercase tracking-widest shadow-sm"
+                    className="flex items-center gap-2 px-5 py-3 bg-white border border-slate-200 rounded-xl text-slate-600 hover:border-primary-300 hover:text-primary-600 transition-all font-black text-xs uppercase tracking-widest shadow-sm"
                 >
                     <RefreshCw size={14} /> Refresh Scan
                 </button>
@@ -101,15 +101,15 @@ const SecurityCompliance = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* Score Card */}
                     <Card className="md:col-span-1 p-8 border-none shadow-xl bg-gradient-to-br from-slate-900 to-slate-800 text-white overflow-hidden relative">
-                        <div className="absolute top-0 right-0 w-48 h-48 bg-purple-600/20 rounded-full -mr-10 -mt-10 blur-2xl" />
+                        <div className="absolute top-0 right-0 w-48 h-48 bg-primary-600/20 rounded-full -mr-10 -mt-10 blur-2xl" />
                         <div className="relative z-10">
                             <div className="flex items-center gap-2 mb-6">
-                                <ShieldCheck size={16} className="text-purple-400" />
+                                <ShieldCheck size={16} className="text-primary-400" />
                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Compliance Score</p>
                             </div>
                             <div className="flex items-end gap-2 mb-2">
                                 <span className="text-6xl font-black text-white leading-none">{compliance.score}</span>
-                                <span className="text-2xl font-black text-purple-400 mb-1">/100</span>
+                                <span className="text-2xl font-black text-primary-400 mb-1">/100</span>
                             </div>
                             <Badge color="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" className="text-[9px] font-black uppercase tracking-widest px-3 py-1 mt-3">
                                 ✓ {compliance.status}
@@ -125,11 +125,11 @@ const SecurityCompliance = () => {
                         <p className="text-xs font-black text-slate-500 uppercase tracking-widest mb-5">Security Checklist</p>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             {(compliance.checks || []).map((check, i) => (
-                                <div key={i} className={`flex items-center gap-3 p-3 rounded-xl ${check.status === 'pass' ? 'bg-emerald-50' : check.status === 'warn' ? 'bg-amber-50' : 'bg-red-50'}`}>
+                                <div key={i} className={`flex items-center gap-3 p-3 rounded-xl ${check.status === 'pass' ? 'bg-emerald-50' : check.status === 'warn' ? 'bg-secondary-50' : 'bg-red-50'}`}>
                                     {check.status === 'pass' && <CheckCircle2 size={16} className="text-emerald-500 flex-shrink-0" />}
-                                    {check.status === 'warn' && <AlertTriangle size={16} className="text-amber-500 flex-shrink-0" />}
+                                    {check.status === 'warn' && <AlertTriangle size={16} className="text-secondary-500 flex-shrink-0" />}
                                     {check.status === 'fail' && <XCircle size={16} className="text-red-500 flex-shrink-0" />}
-                                    <span className={`text-xs font-bold ${check.status === 'pass' ? 'text-emerald-700' : check.status === 'warn' ? 'text-amber-700' : 'text-red-700'}`}>
+                                    <span className={`text-xs font-bold ${check.status === 'pass' ? 'text-emerald-700' : check.status === 'warn' ? 'text-secondary-700' : 'text-red-700'}`}>
                                         {check.label}
                                     </span>
                                 </div>
@@ -144,7 +144,7 @@ const SecurityCompliance = () => {
                 <div className="p-6 border-b border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div>
                         <h3 className="font-black text-slate-900 flex items-center gap-2">
-                            <Eye size={18} className="text-purple-600" /> Audit Trail
+                            <Eye size={18} className="text-primary-600" /> Audit Trail
                         </h3>
                         <p className="text-xs text-slate-400 font-medium mt-0.5">{logs.length} events recorded</p>
                     </div>
@@ -164,7 +164,7 @@ const SecurityCompliance = () => {
 
                 {loading ? (
                     <div className="p-12 text-center">
-                        <div className="w-10 h-10 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                        <div className="w-10 h-10 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
                         <p className="text-slate-400 font-medium text-sm">Loading audit logs...</p>
                     </div>
                 ) : (

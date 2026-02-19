@@ -2,9 +2,9 @@ import React from 'react';
 import { Loader2 } from 'lucide-react';
 
 const variants = {
-    primary: "bg-purple-600 text-white hover:bg-purple-700 shadow-lg hover:shadow-purple-500/30",
-    secondary: "bg-amber-400 text-purple-900 hover:bg-amber-500 shadow-lg hover:shadow-amber-400/30",
-    outline: "bg-transparent border-2 border-purple-600 text-purple-600 hover:bg-purple-50",
+    primary: "bg-primary-600 text-white hover:bg-primary-700 shadow-lg hover:shadow-primary-500/30",
+    secondary: "bg-secondary-400 text-primary-900 hover:bg-secondary-500 shadow-lg hover:shadow-secondary-400/30",
+    outline: "bg-transparent border-2 border-primary-600 text-primary-600 hover:bg-primary-50",
     ghost: "bg-transparent text-slate-600 hover:bg-slate-100 hover:text-slate-900",
     danger: "bg-red-500 text-white hover:bg-red-600 shadow-lg hover:shadow-red-500/30",
     glass: "bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20"

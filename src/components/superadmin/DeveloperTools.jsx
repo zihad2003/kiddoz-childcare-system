@@ -72,7 +72,7 @@ const DeveloperTools = () => {
                 <div className="p-6 border-b border-slate-100 flex justify-between items-center">
                     <div>
                         <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-                            <Key size={20} className="text-purple-600" />
+                            <Key size={20} className="text-primary-600" />
                             API Keys
                         </h3>
                         <p className="text-sm text-slate-500">Manage access tokens for third-party integrations</p>
@@ -173,8 +173,8 @@ const DeveloperTools = () => {
                         </div>
 
                         <div className="bg-slate-100 p-4 rounded-xl flex items-center justify-between border border-slate-200">
-                            <code className="text-purple-700 font-mono font-bold text-sm break-all">{generatedKey}</code>
-                            <button onClick={() => copyToClipboard(generatedKey)} className="text-slate-500 hover:text-purple-600">
+                            <code className="text-primary-700 font-mono font-bold text-sm break-all">{generatedKey}</code>
+                            <button onClick={() => copyToClipboard(generatedKey)} className="text-slate-500 hover:text-primary-600">
                                 {copied ? <Check size={20} /> : <Copy size={20} />}
                             </button>
                         </div>

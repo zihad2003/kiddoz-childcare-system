@@ -47,13 +47,13 @@ const BiometricRegistration = ({ onComplete, onBack, defaultImages = { face: nul
             title: "Facial Recognition Scan",
             desc: "Please look directly at the camera. Ensure your face is well-lit and centered.",
             icon: User,
-            overlay: "border-purple-500 rounded-full w-64 h-64 border-4 opacity-50"
+            overlay: "border-primary-500 rounded-full w-64 h-64 border-4 opacity-50"
         },
         body: {
             title: "Full Body Identification",
             desc: "Please step back to capture your full torso and posture for gait analysis.",
             icon: Activity,
-            overlay: "border-indigo-500 rounded-3xl w-64 h-96 border-4 opacity-50"
+            overlay: "border-primary-500 rounded-3xl w-64 h-96 border-4 opacity-50"
         }
     };
 
@@ -63,7 +63,7 @@ const BiometricRegistration = ({ onComplete, onBack, defaultImages = { face: nul
     return (
         <Card className="max-w-2xl mx-auto p-8 animate-in slide-in-from-right-8 duration-500">
             <div className="text-center mb-8">
-                <Badge color="bg-purple-100 text-purple-700 mb-4 animate-pulse">AI Enrollment • Step {step === 'face' ? '1' : '2'} of 2</Badge>
+                <Badge color="bg-primary-100 text-primary-700 mb-4 animate-pulse">AI Enrollment • Step {step === 'face' ? '1' : '2'} of 2</Badge>
                 <h2 className="text-3xl font-bold text-slate-900 mb-2">{currentGuide.title}</h2>
                 <p className="text-slate-500 max-w-md mx-auto">{currentGuide.desc}</p>
             </div>
@@ -72,9 +72,9 @@ const BiometricRegistration = ({ onComplete, onBack, defaultImages = { face: nul
                 {!currentImage ? (
                     !isCameraOpen ? (
                         <div className="absolute inset-0 flex flex-col items-center justify-center text-white bg-slate-900">
-                            <currentGuide.icon size={64} className="mb-4 text-purple-400 opacity-50" />
+                            <currentGuide.icon size={64} className="mb-4 text-primary-400 opacity-50" />
                             <p className="mb-6 font-bold text-lg">Camera access required for AI setup</p>
-                            <Button onClick={() => setIsCameraOpen(true)} icon={Camera} className="shadow-purple-500/50">
+                            <Button onClick={() => setIsCameraOpen(true)} icon={Camera} className="shadow-primary-500/50">
                                 Activate Camera
                             </Button>
                         </div>
@@ -95,7 +95,7 @@ const BiometricRegistration = ({ onComplete, onBack, defaultImages = { face: nul
                             <div className="absolute bottom-6 inset-x-0 flex justify-center">
                                 <button
                                     onClick={capture}
-                                    className="w-16 h-16 bg-white rounded-full border-4 border-purple-500 shadow-lg hover:scale-110 transition-transform active:scale-95"
+                                    className="w-16 h-16 bg-white rounded-full border-4 border-primary-500 shadow-lg hover:scale-110 transition-transform active:scale-95"
                                 ></button>
                             </div>
                         </div>
@@ -116,7 +116,7 @@ const BiometricRegistration = ({ onComplete, onBack, defaultImages = { face: nul
 
             <div className="flex justify-between items-center bg-slate-50 p-4 rounded-2xl border border-slate-100">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-secondary-100 text-secondary-600 flex items-center justify-center flex-shrink-0">
                         <AlertCircle size={20} />
                     </div>
                     <p className="text-xs text-slate-500 leading-tight">
@@ -134,7 +134,7 @@ const BiometricRegistration = ({ onComplete, onBack, defaultImages = { face: nul
                         <Button
                             onClick={handleNext}
                             disabled={!currentImage}
-                            className={!currentImage ? 'opacity-50 cursor-not-allowed' : 'shadow-lg shadow-purple-200'}
+                            className={!currentImage ? 'opacity-50 cursor-not-allowed' : 'shadow-lg shadow-primary-200'}
                         >
                             {step === 'face' ? 'Next Step' : 'Complete Setup'}
                         </Button>

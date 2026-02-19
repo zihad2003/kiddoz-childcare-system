@@ -44,7 +44,7 @@ const DataQueryFilter = ({ onFilterChange, onSortChange, onLayoutChange }) => {
 
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
                 <select
-                    className="p-2 rounded-lg border border-slate-200 text-sm bg-slate-50 outline-none focus:ring-2 focus:ring-purple-200"
+                    className="p-2 rounded-lg border border-slate-200 text-sm bg-slate-50 outline-none focus:ring-2 focus:ring-primary-200"
                     onChange={(e) => handleFilterUpdate('status', e.target.value)}
                 >
                     <option value="All">All Attendance</option>
@@ -54,7 +54,7 @@ const DataQueryFilter = ({ onFilterChange, onSortChange, onLayoutChange }) => {
                 </select>
 
                 <select
-                    className="p-2 rounded-lg border border-slate-200 text-sm bg-slate-50 outline-none focus:ring-2 focus:ring-purple-200"
+                    className="p-2 rounded-lg border border-slate-200 text-sm bg-slate-50 outline-none focus:ring-2 focus:ring-primary-200"
                     onChange={(e) => handleFilterUpdate('payment', e.target.value)}
                 >
                     <option value="All">All Payment Status</option>
@@ -64,7 +64,7 @@ const DataQueryFilter = ({ onFilterChange, onSortChange, onLayoutChange }) => {
                 </select>
 
                 <select
-                    className="p-2 rounded-lg border border-slate-200 text-sm bg-slate-50 outline-none focus:ring-2 focus:ring-purple-200"
+                    className="p-2 rounded-lg border border-slate-200 text-sm bg-slate-50 outline-none focus:ring-2 focus:ring-primary-200"
                     onChange={(e) => handleFilterUpdate('grade', e.target.value)}
                 >
                     <option value="All">All Grades</option>
@@ -78,14 +78,14 @@ const DataQueryFilter = ({ onFilterChange, onSortChange, onLayoutChange }) => {
 
                 <input
                     type="date"
-                    className="p-2 rounded-lg border border-slate-200 text-sm bg-slate-50 outline-none focus:ring-2 focus:ring-purple-200"
+                    className="p-2 rounded-lg border border-slate-200 text-sm bg-slate-50 outline-none focus:ring-2 focus:ring-primary-200"
                     onChange={(e) => handleFilterUpdate('date', e.target.value)}
                 />
 
                 <input
                     type="number"
                     placeholder="Min Age"
-                    className="p-2 rounded-lg border border-slate-200 text-sm bg-slate-50 outline-none focus:ring-2 focus:ring-purple-200"
+                    className="p-2 rounded-lg border border-slate-200 text-sm bg-slate-50 outline-none focus:ring-2 focus:ring-primary-200"
                     onChange={(e) => handleFilterUpdate('minAge', e.target.value)}
                 />
             </div>
@@ -96,7 +96,7 @@ const DataQueryFilter = ({ onFilterChange, onSortChange, onLayoutChange }) => {
                     <button
                         key={field}
                         onClick={() => handleSortUpdate(field)}
-                        className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium transition-colors border ${sortConfig.field === field ? 'bg-purple-100 text-purple-700 border-purple-200' : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100'}`}
+                        className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium transition-colors border ${sortConfig.field === field ? 'bg-primary-100 text-primary-700 border-primary-200' : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100'}`}
                     >
                         {field.charAt(0).toUpperCase() + field.slice(1)}
                         {sortConfig.field === field && (

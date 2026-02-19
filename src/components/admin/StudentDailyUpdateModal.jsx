@@ -9,6 +9,7 @@ import DoctorUpload from './DoctorUpload';
 import { studentService } from '../../services/studentService';
 import { healthService } from '../../services/healthService';
 import { notificationService } from '../../services/notificationService';
+import { useToast } from '../../context/ToastContext';
 
 const StudentDailyUpdateModal = ({
     isOpen,
@@ -114,7 +115,7 @@ const StudentDailyUpdateModal = ({
                     <button
                         key={tab}
                         onClick={() => setStatsForm(prev => ({ ...prev, activeModalTab: tab }))}
-                        className={`px-4 py-2 font-bold text-sm border-b-2 transition-colors capitalize ${statsForm.activeModalTab === tab ? 'border-purple-600 text-purple-700' : 'border-transparent text-slate-400 hover:text-slate-600'
+                        className={`px-4 py-2 font-bold text-sm border-b-2 transition-colors capitalize ${statsForm.activeModalTab === tab ? 'border-primary-600 text-primary-700' : 'border-transparent text-slate-400 hover:text-slate-600'
                             }`}
                     >
                         {tab === 'docs' ? 'Medical Docs' : tab}
@@ -125,8 +126,8 @@ const StudentDailyUpdateModal = ({
             {/* Milestones Tab */}
             {statsForm.activeModalTab === 'milestones' && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-                    <div className="bg-amber-50 p-6 rounded-2xl border border-amber-100">
-                        <h4 className="font-bold text-amber-800 mb-4 flex items-center gap-2 text-lg">
+                    <div className="bg-secondary-50 p-6 rounded-2xl border border-secondary-100">
+                        <h4 className="font-bold text-secondary-800 mb-4 flex items-center gap-2 text-lg">
                             🌟 Record New Milestone
                         </h4>
                         <div className="grid grid-cols-2 gap-4">
@@ -150,9 +151,9 @@ const StudentDailyUpdateModal = ({
                             />
                         </div>
                         <div className="mt-4">
-                            <label className="block text-sm font-bold text-amber-800 mb-1">Details / Observations</label>
+                            <label className="block text-sm font-bold text-secondary-800 mb-1">Details / Observations</label>
                             <textarea
-                                className="w-full p-3 rounded-xl border border-amber-200 focus:ring-2 focus:ring-amber-500/20 outline-none h-24"
+                                className="w-full p-3 rounded-xl border border-secondary-200 focus:ring-2 focus:ring-secondary-500/20 outline-none h-24"
                                 placeholder="Describe the achievement..."
                                 value={statsForm.milestoneDescription || ''}
                                 onChange={e => setStatsForm({ ...statsForm, milestoneDescription: e.target.value })}
@@ -179,7 +180,7 @@ const StudentDailyUpdateModal = ({
                                     }
                                 }}
                                 disabled={loading}
-                                className="bg-amber-600 hover:bg-amber-700 text-white"
+                                className="bg-secondary-600 hover:bg-secondary-700 text-white"
                             >
                                 Save Milestone
                             </Button>
@@ -197,7 +198,7 @@ const StudentDailyUpdateModal = ({
                     {/* Vitals Section */}
                     <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
                         <h4 className="font-bold text-slate-700 mb-3 flex items-center gap-2">
-                            <Thermometer size={18} className="text-purple-600" /> Vitals & Wellness
+                            <Thermometer size={18} className="text-primary-600" /> Vitals & Wellness
                         </h4>
                         <div className="grid grid-cols-2 gap-4">
                             <Input
@@ -224,7 +225,7 @@ const StudentDailyUpdateModal = ({
                     {/* Meal Tracker */}
                     <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
                         <h4 className="font-bold text-slate-700 mb-3 flex items-center gap-2">
-                            <Utensils size={18} className="text-orange-600" /> Meal Intake
+                            <Utensils size={18} className="text-secondary-600" /> Meal Intake
                         </h4>
                         <div className="grid grid-cols-2 gap-4">
                             <Select
@@ -321,7 +322,7 @@ const StudentDailyUpdateModal = ({
                     <div className="space-y-4">
                         <label className="block text-sm font-bold text-slate-700">Observations (Message to Parent)</label>
                         <textarea
-                            className="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-purple-500/20 outline-none h-24"
+                            className="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-500/20 outline-none h-24"
                             placeholder="Details for parent to see..."
                             value={statsForm.observations}
                             onChange={e => setStatsForm({ ...statsForm, observations: e.target.value })}

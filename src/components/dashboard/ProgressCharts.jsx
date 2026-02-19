@@ -27,9 +27,9 @@ const ProgressCharts = () => {
         </div>
 
         <SkillBar label="Social Interaction" percentage={85} color="bg-blue-500" />
-        <SkillBar label="Motor Skills" percentage={70} color="bg-purple-500" />
+        <SkillBar label="Motor Skills" percentage={70} color="bg-primary-500" />
         <SkillBar label="Language" percentage={92} color="bg-emerald-500" />
-        <SkillBar label="Creative Arts" percentage={65} color="bg-amber-500" />
+        <SkillBar label="Creative Arts" percentage={65} color="bg-secondary-500" />
 
         <div className="mt-6 pt-4 border-t border-slate-100">
           <p className="text-xs text-slate-400">Based on weekly teacher assessments.</p>
@@ -37,25 +37,25 @@ const ProgressCharts = () => {
       </Card>
 
       <div className="space-y-6">
-        <Card className="p-6 bg-gradient-to-br from-violet-600 to-purple-700 text-white border-0">
+        <Card className="p-6 bg-gradient-to-br from-primary-600 to-primary-700 text-white border-0">
           <div className="flex justify-between items-start mb-4">
             <div>
               <h3 className="font-bold text-lg">Next Milestone</h3>
-              <p className="text-purple-200 text-sm">Approaching fast!</p>
+              <p className="text-primary-200 text-sm">Approaching fast!</p>
             </div>
-            <Award className="text-amber-300" size={32} />
+            <Award className="text-secondary-300" size={32} />
           </div>
           <div className="mb-4">
             <h2 className="text-3xl font-bold">Vocabulary 500+</h2>
-            <p className="text-sm text-purple-200 mt-1">Expected: Nov 15</p>
+            <p className="text-sm text-primary-200 mt-1">Expected: Nov 15</p>
           </div>
           <div className="w-full bg-black/20 rounded-full h-2">
-            <div className="h-2 rounded-full bg-amber-400 w-3/4"></div>
+            <div className="h-2 rounded-full bg-secondary-400 w-3/4"></div>
           </div>
         </Card>
 
         <Card className="p-6">
-          <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2"><Star className="text-amber-400" size={18} /> Recent Achievements</h3>
+          <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2"><Star className="text-secondary-400" size={18} /> Recent Achievements</h3>
           <div className="space-y-3">
             <div className="flex items-center gap-3 p-2 hover:bg-slate-50 rounded-lg transition">
               <div className="w-8 h-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center font-bold text-xs"><Check /></div>

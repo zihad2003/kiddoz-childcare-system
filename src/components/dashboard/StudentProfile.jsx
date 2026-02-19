@@ -31,7 +31,7 @@ const StudentProfile = () => {
 
     if (loading) return (
         <div className="h-screen flex items-center justify-center bg-slate-50">
-            <Loader2 className="animate-spin text-purple-600" size={40} />
+            <Loader2 className="animate-spin text-primary-600" size={40} />
         </div>
     );
 
@@ -39,16 +39,16 @@ const StudentProfile = () => {
         <div className="h-screen flex flex-col items-center justify-center bg-slate-50 text-slate-500">
             <User size={64} className="mb-4 opacity-20" />
             <p className="text-xl font-bold">Student not found</p>
-            <Link to="/dashboard" className="mt-4 text-purple-600 font-bold hover:underline">Return to Dashboard</Link>
+            <Link to="/dashboard" className="mt-4 text-primary-600 font-bold hover:underline">Return to Dashboard</Link>
         </div>
     );
 
     return (
         <div className="min-h-screen bg-slate-50 font-sans pb-20">
-            <div className="bg-purple-900 h-60 w-full absolute top-0 left-0 z-0"></div>
+            <div className="bg-primary-900 h-60 w-full absolute top-0 left-0 z-0"></div>
 
             <div className="max-w-4xl mx-auto px-4 relative z-10 pt-10">
-                <Link to="/dashboard" className="text-purple-200 hover:text-white flex items-center gap-2 mb-8 font-bold transition">
+                <Link to="/dashboard" className="text-primary-200 hover:text-white flex items-center gap-2 mb-8 font-bold transition">
                     <ArrowLeft size={20} /> Back to Dashboard
                 </Link>
 
@@ -95,15 +95,15 @@ const StudentProfile = () => {
                             <h3 className="font-bold text-slate-800 mb-4 border-b border-slate-100 pb-2">Guardians</h3>
                             <div className="space-y-4 text-sm">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-bold">P</div>
+                                    <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 font-bold">P</div>
                                     <div>
                                         <p className="font-bold text-slate-800">{student.parentName}</p>
                                         <p className="text-xs text-slate-500">Primary Contact</p>
                                     </div>
                                 </div>
                                 <div className="grid gap-2 mt-2">
-                                    <a href={`tel:${student.phone} `} className="flex items-center gap-2 text-slate-600 hover:text-purple-600 transition"><Phone size={14} /> {student.phone}</a>
-                                    <a href={`mailto:${student.email} `} className="flex items-center gap-2 text-slate-600 hover:text-purple-600 transition"><Mail size={14} /> {student.email || 'Email not set'}</a>
+                                    <a href={`tel:${student.phone} `} className="flex items-center gap-2 text-slate-600 hover:text-primary-600 transition"><Phone size={14} /> {student.phone}</a>
+                                    <a href={`mailto:${student.email} `} className="flex items-center gap-2 text-slate-600 hover:text-primary-600 transition"><Mail size={14} /> {student.email || 'Email not set'}</a>
                                 </div>
                             </div>
                         </Card>
@@ -111,7 +111,7 @@ const StudentProfile = () => {
 
                     <div className="md:col-span-2 space-y-6">
                         <Card className="p-6">
-                            <h3 className="font-bold text-lg text-slate-800 mb-6 flex items-center gap-2"><Activity className="text-purple-600" /> Recent Health History</h3>
+                            <h3 className="font-bold text-lg text-slate-800 mb-6 flex items-center gap-2"><Activity className="text-primary-600" /> Recent Health History</h3>
                             <div className="space-y-4">
                                 {/* Mock History Items */}
                                 {[1, 2, 3].map((_, i) => (
@@ -125,7 +125,7 @@ const StudentProfile = () => {
                                     </div>
                                 ))}
                             </div>
-                            <button className="w-full mt-4 py-2 text-purple-600 text-sm font-bold bg-purple-50 rounded-lg hover:bg-purple-100 transition">View All Records</button>
+                            <button className="w-full mt-4 py-2 text-primary-600 text-sm font-bold bg-primary-50 rounded-lg hover:bg-primary-100 transition">View All Records</button>
                         </Card>
 
                         <Card className="p-6">

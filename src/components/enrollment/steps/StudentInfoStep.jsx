@@ -19,10 +19,10 @@ const StudentInfoStep = ({ data, updateData, onNext, onBack, planName, errors = 
     return (
         <div className="max-w-2xl mx-auto animate-in slide-in-from-right-8 duration-500">
             <Card className="p-8 md:p-10">
-                <button type="button" onClick={onBack} className="text-slate-400 hover:text-purple-600 flex items-center gap-2 mb-6 font-medium transition"><ArrowLeft size={18} /> Back to Plans</button>
+                <button type="button" onClick={onBack} className="text-slate-400 hover:text-primary-600 flex items-center gap-2 mb-6 font-medium transition"><ArrowLeft size={18} /> Back to Plans</button>
 
                 <div className="mb-8">
-                    <Badge color="bg-purple-50 text-purple-700 border-purple-100 mb-4">Selected: {planName || "No Plan Selected"}</Badge>
+                    <Badge color="bg-primary-50 text-primary-700 border-primary-100 mb-4">Selected: {planName || "No Plan Selected"}</Badge>
                     <h2 className="text-3xl font-bold text-slate-900">Student Registration</h2>
                     <p className="text-slate-500 mt-2">Please fill in your child's details accurately.</p>
                 </div>
@@ -144,7 +144,7 @@ const StudentInfoStep = ({ data, updateData, onNext, onBack, planName, errors = 
                     </div>
 
                     <div className="flex gap-4 pt-4">
-                        <Button type="submit" size="lg" className="w-full shadow-xl shadow-purple-200">
+                        <Button type="submit" size="lg" className="w-full shadow-xl shadow-primary-200">
                             Continue to AI Setup
                         </Button>
                     </div>

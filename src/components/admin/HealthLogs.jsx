@@ -6,9 +6,9 @@ import Badge from '../ui/Badge';
 // Mock data generator for history
 const MOCK_HISTORY = [
   { date: 'Today, 10:30 AM', type: 'Vitals', note: 'Temperature 98.6°F, Mood: Happy', icon: Thermometer, color: 'text-green-500 bg-green-100' },
-  { date: 'Yesterday, 2:15 PM', type: 'Incident', note: 'Small scraped knee on playground. Cleaned and bandaged.', icon: AlertTriangle, color: 'text-amber-500 bg-amber-100' },
+  { date: 'Yesterday, 2:15 PM', type: 'Incident', note: 'Small scraped knee on playground. Cleaned and bandaged.', icon: AlertTriangle, color: 'text-secondary-500 bg-secondary-100' },
   { date: 'Yesterday, 9:00 AM', type: 'Check-in', note: 'Dropped off by Father. Mood: Sleepy.', icon: Clock, color: 'text-blue-500 bg-blue-100' },
-  { date: 'Oct 24, 11:30 AM', type: 'Meal', note: 'Ate 100% of lunch. Chicken and Rice.', icon: Calendar, color: 'text-purple-500 bg-purple-100' },
+  { date: 'Oct 24, 11:30 AM', type: 'Meal', note: 'Ate 100% of lunch. Chicken and Rice.', icon: Calendar, color: 'text-primary-500 bg-primary-100' },
 ];
 
 const HealthLogs = ({ student }) => {
@@ -18,10 +18,10 @@ const HealthLogs = ({ student }) => {
     <Card className="h-full">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-          <Activity className="text-purple-600" size={24} />
+          <Activity className="text-primary-600" size={24} />
           Health & Activity Log
         </h3>
-        <Badge color="bg-purple-100 text-purple-700">Last 7 Days</Badge>
+        <Badge color="bg-primary-100 text-primary-700">Last 7 Days</Badge>
       </div>
 
       <div className="relative pl-4 border-l-2 border-slate-100 space-y-8">
@@ -49,7 +49,7 @@ const HealthLogs = ({ student }) => {
       </div>
 
       <div className="mt-8 pt-6 border-t border-slate-100 text-center">
-        <button className="text-purple-600 font-bold text-sm hover:underline">View Full History</button>
+        <button className="text-primary-600 font-bold text-sm hover:underline">View Full History</button>
       </div>
     </Card>
   );

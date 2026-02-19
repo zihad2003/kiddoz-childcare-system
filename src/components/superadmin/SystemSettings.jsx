@@ -61,7 +61,7 @@ const SystemSettings = () => {
 
     if (loading) return (
         <div className="flex flex-col items-center justify-center py-32 bg-white rounded-3xl border-2 border-dashed border-slate-100">
-            <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+            <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mb-4"></div>
             <p className="text-slate-400 font-medium">Loading platform configuration...</p>
         </div>
     );
@@ -77,7 +77,7 @@ const SystemSettings = () => {
                     <Button variant="secondary" onClick={fetchSettings} className="font-bold border-2">
                         <RefreshCw size={18} className="mr-2" /> Reset
                     </Button>
-                    <Button variant="primary" onClick={handleSave} disabled={saving} className="font-bold shadow-lg shadow-indigo-100 px-8">
+                    <Button variant="primary" onClick={handleSave} disabled={saving} className="font-bold shadow-lg shadow-primary-100 px-8">
                         {saving ? 'Synchronizing...' : (
                             <><Save size={18} className="mr-2" /> Deploy Changes</>
                         )}
@@ -89,7 +89,7 @@ const SystemSettings = () => {
                 {/* General Config */}
                 <Card className="p-8 border-none shadow-xl bg-white">
                     <div className="flex items-center gap-3 mb-8">
-                        <div className="p-3 bg-indigo-50 text-indigo-600 rounded-2xl"><Globe size={20} /></div>
+                        <div className="p-3 bg-primary-50 text-primary-600 rounded-2xl"><Globe size={20} /></div>
                         <h3 className="text-xl font-black text-slate-900">General Configuration</h3>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -99,7 +99,7 @@ const SystemSettings = () => {
                                 type="text"
                                 value={settings.systemName}
                                 onChange={(e) => setSettings({ ...settings, systemName: e.target.value })}
-                                className="w-full p-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-indigo-500 focus:bg-white outline-none transition-all font-bold text-slate-700"
+                                className="w-full p-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-primary-500 focus:bg-white outline-none transition-all font-bold text-slate-700"
                             />
                         </div>
                         <div className="space-y-2">
@@ -108,7 +108,7 @@ const SystemSettings = () => {
                                 type="email"
                                 value={settings.supportEmail}
                                 onChange={(e) => setSettings({ ...settings, supportEmail: e.target.value })}
-                                className="w-full p-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-indigo-500 focus:bg-white outline-none transition-all font-bold text-slate-700"
+                                className="w-full p-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-primary-500 focus:bg-white outline-none transition-all font-bold text-slate-700"
                             />
                         </div>
                     </div>
@@ -174,7 +174,7 @@ const SystemSettings = () => {
                 {/* Infrastructure */}
                 <Card className="p-8 border-none shadow-xl bg-white">
                     <div className="flex items-center gap-3 mb-8">
-                        <div className="p-3 bg-amber-50 text-amber-600 rounded-2xl"><Server size={20} /></div>
+                        <div className="p-3 bg-secondary-50 text-secondary-600 rounded-2xl"><Server size={20} /></div>
                         <h3 className="text-xl font-black text-slate-900">Infrastructure & AI</h3>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -184,7 +184,7 @@ const SystemSettings = () => {
                                 type="number"
                                 value={settings.maxUploadSize}
                                 onChange={(e) => setSettings({ ...settings, maxUploadSize: e.target.value })}
-                                className="w-full p-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-amber-500 focus:bg-white outline-none transition-all font-bold text-slate-700"
+                                className="w-full p-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-secondary-500 focus:bg-white outline-none transition-all font-bold text-slate-700"
                             />
                         </div>
 
@@ -192,7 +192,7 @@ const SystemSettings = () => {
                         <div className="space-y-4 p-6 bg-slate-900 rounded-3xl text-white">
                             <div className="flex items-center justify-between mb-2">
                                 <div className="flex items-center gap-2">
-                                    <Activity className="text-purple-400" size={18} />
+                                    <Activity className="text-primary-400" size={18} />
                                     <h4 className="font-black text-sm italic">Live Broadcast Matrix</h4>
                                 </div>
                                 <div
@@ -200,7 +200,7 @@ const SystemSettings = () => {
                                         ...settings,
                                         'yolo.liveStream': { ...settings['yolo.liveStream'], active: !settings['yolo.liveStream']?.active }
                                     })}
-                                    className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-all ${settings['yolo.liveStream']?.active ? 'bg-purple-500' : 'bg-slate-700'}`}
+                                    className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-all ${settings['yolo.liveStream']?.active ? 'bg-primary-500' : 'bg-slate-700'}`}
                                 >
                                     <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${settings['yolo.liveStream']?.active ? 'translate-x-6' : 'translate-x-0'}`}></div>
                                 </div>
@@ -215,7 +215,7 @@ const SystemSettings = () => {
                                             'yolo.liveStream': { ...settings['yolo.liveStream'], type: mode }
                                         })}
                                         className={`py-2 rounded-xl text-[10px] font-black uppercase tracking-tighter transition-all ${settings['yolo.liveStream']?.type === mode
-                                            ? 'bg-purple-600 border border-purple-400 text-white'
+                                            ? 'bg-primary-600 border border-primary-400 text-white'
                                             : 'bg-slate-800 border border-slate-700 text-slate-500'}`}
                                     >
                                         {mode}
@@ -235,7 +235,7 @@ const SystemSettings = () => {
                                                 'yolo.liveStream': { ...settings['yolo.liveStream'], url: e.target.value }
                                             })}
                                             placeholder="http://192.168.1.100:8080"
-                                            className="w-full p-3 bg-slate-800 border border-slate-700 rounded-xl font-mono text-xs text-purple-300 outline-none focus:border-purple-500"
+                                            className="w-full p-3 bg-slate-800 border border-slate-700 rounded-xl font-mono text-xs text-primary-300 outline-none focus:border-primary-500"
                                         />
                                     </div>
                                     <p className="text-[9px] text-slate-500 leading-tight italic">

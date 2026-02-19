@@ -120,7 +120,7 @@ const StaffManager = () => {
                     <p className="text-slate-500">Manage all staff: Nannies, Teachers, and Nurses.</p>
                 </div>
                 <div className="flex gap-2">
-                    <Button onClick={openAddModal} className="bg-purple-600 hover:bg-purple-700">
+                    <Button onClick={openAddModal} className="bg-primary-600 hover:bg-primary-700">
                         <Plus size={20} className="mr-2" /> Add Staff Member
                     </Button>
                 </div>
@@ -135,7 +135,7 @@ const StaffManager = () => {
                         placeholder="Search by Name or Specialty..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-purple-200"
+                        className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-primary-200"
                     />
                 </div>
                 <div className="flex items-center gap-2 min-w-[200px]">
@@ -143,7 +143,7 @@ const StaffManager = () => {
                     <select
                         value={filterRole}
                         onChange={(e) => setFilterRole(e.target.value)}
-                        className="w-full p-2 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-purple-200 bg-slate-50"
+                        className="w-full p-2 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-primary-200 bg-slate-50"
                     >
                         <option value="All">All Roles</option>
                         <option value="Nanny">Home Nanny</option>
@@ -189,7 +189,7 @@ const StaffManager = () => {
                                 <div>
                                     <h3 className="font-bold text-lg text-slate-800">{member.fullName}</h3>
                                     <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${member.role === 'Nurse' ? 'bg-teal-100 text-teal-700' :
-                                        (member.role === 'Teacher' ? 'bg-orange-100 text-orange-700' : 'bg-pink-100 text-pink-700')
+                                        (member.role === 'Teacher' ? 'bg-secondary-100 text-orange-700' : 'bg-secondary-100 text-secondary-700')
                                         }`}>
                                         {member.role || 'Nanny'}
                                     </span>

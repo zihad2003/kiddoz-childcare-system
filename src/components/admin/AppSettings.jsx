@@ -27,7 +27,7 @@ const AppSettings = () => {
                     <h2 className="text-2xl font-bold text-slate-800">System Settings</h2>
                     <p className="text-slate-500">Manage application preferences and security.</p>
                 </div>
-                <Button onClick={handleSave} className="bg-purple-600 hover:bg-purple-700 text-white">
+                <Button onClick={handleSave} className="bg-primary-600 hover:bg-primary-700 text-white">
                     <Save size={18} className="mr-2" /> Save Changes
                 </Button>
             </div>
@@ -38,7 +38,7 @@ const AppSettings = () => {
 
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <div className="p-2 bg-purple-100 text-purple-600 rounded-lg"><Bell size={20} /></div>
+                            <div className="p-2 bg-primary-100 text-primary-600 rounded-lg"><Bell size={20} /></div>
                             <div>
                                 <p className="font-semibold text-slate-700">Push Notifications</p>
                                 <p className="text-xs text-slate-400">Receive alerts for incidents & messages</p>
@@ -46,13 +46,13 @@ const AppSettings = () => {
                         </div>
                         <label className="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" checked={settings.notifications} onChange={e => setSettings({ ...settings, notifications: e.target.checked })} className="sr-only peer" />
-                            <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                            <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
                         </label>
                     </div>
 
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <div className="p-2 bg-indigo-100 text-indigo-600 rounded-lg"><Moon size={20} /></div>
+                            <div className="p-2 bg-primary-100 text-primary-600 rounded-lg"><Moon size={20} /></div>
                             <div>
                                 <p className="font-semibold text-slate-700">Dark Mode</p>
                                 <p className="text-xs text-slate-400">Switch to dark theme interface</p>
@@ -60,7 +60,7 @@ const AppSettings = () => {
                         </div>
                         <label className="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" checked={settings.darkMode} onChange={e => setSettings({ ...settings, darkMode: e.target.checked })} className="sr-only peer" />
-                            <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                            <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
                         </label>
                     </div>
 
@@ -101,9 +101,9 @@ const AppSettings = () => {
                         </label>
                     </div>
 
-                    <div className="bg-amber-50 border border-amber-100 rounded-xl p-4">
-                        <p className="text-xs text-amber-800 font-bold mb-1">Administrative Access</p>
-                        <p className="text-xs text-amber-600 leading-relaxed">
+                    <div className="bg-secondary-50 border border-secondary-100 rounded-xl p-4">
+                        <p className="text-xs text-secondary-800 font-bold mb-1">Administrative Access</p>
+                        <p className="text-xs text-secondary-600 leading-relaxed">
                             Changes to security settings will require re-authentication for all admin users. Ensure you have backup codes saved before enabling 2FA.
                         </p>
                     </div>

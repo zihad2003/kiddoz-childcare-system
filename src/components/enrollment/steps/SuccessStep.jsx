@@ -15,11 +15,11 @@ const SuccessStep = ({ planName, onGoDashboard }) => {
                     Your enrollment in <strong>{planName || "our program"}</strong> is confirmed.
                 </p>
 
-                <div className="bg-purple-50 p-6 rounded-2xl mb-8 text-left border border-purple-100">
-                    <h3 className="font-bold text-purple-900 flex items-center gap-2 mb-3">
+                <div className="bg-primary-50 p-6 rounded-2xl mb-8 text-left border border-primary-100">
+                    <h3 className="font-bold text-primary-900 flex items-center gap-2 mb-3">
                         <Calendar size={20} /> First Day Schedule
                     </h3>
-                    <ul className="space-y-2 text-sm text-purple-800">
+                    <ul className="space-y-2 text-sm text-primary-800">
                         <li>• Drop-off: <strong>8:00 AM - 8:30 AM</strong></li>
                         <li>• Bring: Change of clothes, Water bottle</li>
                         <li>• Location: Main Entrance (Zone A)</li>

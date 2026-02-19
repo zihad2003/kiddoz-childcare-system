@@ -71,8 +71,8 @@ const AddStudentModal = ({ isOpen, onClose, onStudentAdded, studentToEdit }) => 
     return (
         <Modal isOpen={isOpen} onClose={onClose} title="New Student Enrollment" maxWidth="max-w-xl">
             <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="bg-purple-50 p-4 rounded-xl border border-purple-100 mb-4">
-                    <p className="text-sm text-purple-700 font-medium">
+                <div className="bg-primary-50 p-4 rounded-xl border border-primary-100 mb-4">
+                    <p className="text-sm text-primary-700 font-medium">
                         Fill in the details below to add a new student to the relational database.
                         This will automatically set up their profile and initial billing.
                     </p>
@@ -144,7 +144,7 @@ const AddStudentModal = ({ isOpen, onClose, onStudentAdded, studentToEdit }) => 
 
                 <div className="flex gap-3 pt-4 border-t border-slate-100">
                     <Button type="button" variant="ghost" className="flex-1" onClick={onClose}>Cancel</Button>
-                    <Button type="submit" isLoading={loading} className="flex-1 bg-purple-600 hover:bg-purple-700">Complete Enrollment</Button>
+                    <Button type="submit" isLoading={loading} className="flex-1 bg-primary-600 hover:bg-primary-700">Complete Enrollment</Button>
                 </div>
             </form>
         </Modal>

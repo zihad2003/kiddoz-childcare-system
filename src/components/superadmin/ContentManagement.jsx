@@ -28,11 +28,12 @@ const ContentManagement = () => {
 
     const fetchBulletins = async () => {
         try {
-            const data = await api.get('/superadmin/bulletins').then(res => res.data);
-            setBulletins(data);
+            const data = await api.get('/superadmin/bulletins');
+            setBulletins(Array.isArray(data) ? data : []);
             setLoading(false);
         } catch (error) {
             addToast('Failed to load bulletins', 'error');
+            setBulletins([]);
             setLoading(false);
         }
     };
@@ -65,7 +66,7 @@ const ContentManagement = () => {
     const getPriorityColor = (p) => {
         switch (p) {
             case 'Critical': return 'bg-red-100 text-red-700';
-            case 'High': return 'bg-orange-100 text-orange-700';
+            case 'High': return 'bg-secondary-100 text-orange-700';
             case 'Medium': return 'bg-blue-100 text-blue-700';
             default: return 'bg-slate-100 text-slate-700';
         }
@@ -78,14 +79,14 @@ const ContentManagement = () => {
                     <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Platform Content</h2>
                     <p className="text-slate-500 mt-1">Manage global announcements and bulletin board notices</p>
                 </div>
-                <Button variant="primary" onClick={() => setIsModalOpen(true)} className="shadow-lg shadow-purple-100">
+                <Button variant="primary" onClick={() => setIsModalOpen(true)} className="shadow-lg shadow-primary-100">
                     <Plus size={20} className="mr-2" /> <span className="font-bold">New Announcement</span>
                 </Button>
             </div>
 
             {loading ? (
                 <div className="flex flex-col items-center justify-center py-32 bg-white rounded-3xl border-2 border-dashed border-slate-100">
-                    <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                    <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mb-4"></div>
                     <p className="text-slate-400 font-medium">Syncing bulletin board...</p>
                 </div>
             ) : bulletins.length === 0 ? (
@@ -103,7 +104,7 @@ const ContentManagement = () => {
                     {bulletins.map(item => (
                         <Card key={item.id} className="p-0 border-none shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden group">
                             <div className="flex flex-col h-full">
-                                <div className={`h-2 ${item.priority === 'Critical' ? 'bg-red-500' : item.priority === 'High' ? 'bg-orange-500' : 'bg-purple-500'}`}></div>
+                                <div className={`h-2 ${item.priority === 'Critical' ? 'bg-red-500' : item.priority === 'High' ? 'bg-secondary-500' : 'bg-primary-500'}`}></div>
                                 <div className="p-6 flex-1 flex flex-col">
                                     <div className="flex flex-wrap items-center gap-3 mb-4">
                                         <Badge color={getPriorityColor(item.priority)} className="font-extrabold text-[8px] uppercase tracking-widest px-2 py-0.5">
@@ -153,7 +154,7 @@ const ContentManagement = () => {
                     <div className="space-y-2">
                         <label className="text-sm font-black text-slate-900 uppercase tracking-widest">Description</label>
                         <textarea
-                            className="w-full p-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-purple-500 focus:bg-white outline-none transition-all min-h-[120px] font-medium text-slate-700"
+                            className="w-full p-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-primary-500 focus:bg-white outline-none transition-all min-h-[120px] font-medium text-slate-700"
                             placeholder="Provide detailed information..."
                             value={formData.content}
                             onChange={(e) => setFormData({ ...formData, content: e.target.value })}
@@ -187,7 +188,7 @@ const ContentManagement = () => {
 
                     <div className="pt-6 flex gap-4">
                         <Button type="button" variant="secondary" className="flex-1 h-12 font-bold" onClick={() => setIsModalOpen(false)}>Discard</Button>
-                        <Button type="submit" variant="primary" className="flex-1 h-12 font-bold shadow-lg shadow-purple-100">Broadcast Now</Button>
+                        <Button type="submit" variant="primary" className="flex-1 h-12 font-bold shadow-lg shadow-primary-100">Broadcast Now</Button>
                     </div>
                 </form>
             </Modal>

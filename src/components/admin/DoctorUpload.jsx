@@ -62,15 +62,15 @@ const DoctorUpload = ({ studentId, uploader, appId, db }) => {
     return (
         <Card className="p-6">
             <h3 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
-                <Upload className="text-purple-600" size={24} />
+                <Upload className="text-primary-600" size={24} />
                 Upload Medical Records
             </h3>
 
             <div
                 className={`
           relative border-2 border-dashed rounded-2xl p-8 text-center transition-all duration-300
-          ${dragActive ? 'border-purple-500 bg-purple-50' : 'border-slate-200 hover:border-purple-300'}
-          ${file ? 'bg-purple-50 border-purple-500' : ''}
+          ${dragActive ? 'border-primary-500 bg-primary-50' : 'border-slate-200 hover:border-primary-300'}
+          ${file ? 'bg-primary-50 border-primary-500' : ''}
         `}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
@@ -79,7 +79,7 @@ const DoctorUpload = ({ studentId, uploader, appId, db }) => {
             >
                 {!file ? (
                     <>
-                        <div className="w-16 h-16 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <div className="w-16 h-16 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center mx-auto mb-4">
                             <FileText size={32} />
                         </div>
                         <p className="text-slate-600 font-medium mb-1">Drag & Drop medical files here</p>

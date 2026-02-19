@@ -15,10 +15,10 @@ const PlanSelectionStep = ({ PLANS, selectedPlan, onSelect, onNext }) => {
                     <div
                         key={plan.id}
                         onClick={() => onSelect(plan)}
-                        className={`cursor-pointer relative bg-white rounded-3xl p-8 border-2 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl flex flex-col ${selectedPlan?.id === plan.id ? 'border-purple-500 shadow-purple-200 ring-4 ring-purple-500/10' : 'border-transparent shadow-xl'}`}
+                        className={`cursor-pointer relative bg-white rounded-3xl p-8 border-2 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl flex flex-col ${selectedPlan?.id === plan.id ? 'border-primary-500 shadow-primary-200 ring-4 ring-primary-500/10' : 'border-transparent shadow-xl'}`}
                     >
                         {plan.popular && (
-                            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg">
+                            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary-600 to-primary-600 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg">
                                 Most Popular
                             </div>
                         )}

@@ -56,8 +56,8 @@ const PLANS = [
     price: '৳25,000',
     period: '/month',
     features: ['Pre-School Curriculum', 'Full Meals Included', 'Development Tracking', 'Access to Live View'],
-    color: 'bg-purple-50 border-purple-100 text-purple-900',
-    btnColor: 'bg-purple-600 hover:bg-purple-700',
+    color: 'bg-primary-50 border-primary-100 text-primary-900',
+    btnColor: 'bg-primary-600 hover:bg-primary-700',
     popular: true
   },
   {
@@ -66,8 +66,8 @@ const PLANS = [
     price: '৳45,000',
     period: '/month',
     features: ['Extended Hours', 'Priority Nanny Booking', '1-on-1 Tutoring', 'Premium Health Insights'],
-    color: 'bg-amber-50 border-amber-100 text-amber-900',
-    btnColor: 'bg-amber-500 hover:bg-amber-600'
+    color: 'bg-secondary-50 border-secondary-100 text-amber-900',
+    btnColor: 'bg-secondary-500 hover:bg-secondary-600'
   }
 ];
 
@@ -78,7 +78,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center">
-        <Loader2 className="animate-spin text-purple-600 w-12 h-12" />
+        <Loader2 className="animate-spin text-primary-600 w-12 h-12" />
       </div>
     );
   }
@@ -109,7 +109,7 @@ function AppContent() {
   // Preloader and Global Loading
   if (loading && !showApp) return (
     <div className="h-screen flex items-center justify-center flex-col gap-4">
-      <Loader2 className="animate-spin text-purple-600 w-12 h-12" />
+      <Loader2 className="animate-spin text-primary-600 w-12 h-12" />
       <p className="text-slate-400 font-bold text-xs uppercase tracking-widest animate-pulse">Synchronizing Identity...</p>
     </div>
   );
@@ -128,7 +128,7 @@ function AppContent() {
       <main className="flex-grow">
         <React.Suspense fallback={
           <div className="h-screen flex items-center justify-center">
-            <Loader2 className="animate-spin text-purple-600 w-12 h-12" />
+            <Loader2 className="animate-spin text-primary-600 w-12 h-12" />
           </div>
         }>
           <Routes>
@@ -161,7 +161,7 @@ function AppContent() {
             <Route path="/tour" element={<TourBookingPage />} />
 
             <Route path="/admin/*" element={
-              <ProtectedRoute allowedRoles={['admin', 'teacher', 'nurse', 'nanny']}>
+              <ProtectedRoute allowedRoles={['superadmin', 'admin', 'teacher', 'nurse', 'nanny']}>
                 <AdminDashboard user={user} handleLogout={handleLogout} />
               </ProtectedRoute>
             } />
@@ -173,13 +173,13 @@ function AppContent() {
             } />
 
             <Route path="/dashboard/*" element={
-              <ProtectedRoute allowedRoles={['parent', 'admin']}>
+              <ProtectedRoute allowedRoles={['superadmin', 'parent', 'admin']}>
                 <ParentDashboard user={user} db={db} appId={appId} />
               </ProtectedRoute>
             } />
 
             <Route path="/dashboard" element={
-              <ProtectedRoute allowedRoles={['parent', 'admin']}>
+              <ProtectedRoute allowedRoles={['superadmin', 'parent', 'admin']}>
                 <ParentDashboard user={user} db={db} appId={appId} />
               </ProtectedRoute>
             } />

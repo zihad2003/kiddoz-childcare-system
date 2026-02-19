@@ -307,10 +307,10 @@ const LiveViewYOLO = ({ student }) => {
 
       {/* ── Mixed-Content Notice ── */}
       {onHttps && config.type === 'ip-cam' && config.active && (
-        <div className="flex items-start gap-3 p-4 bg-amber-950/50 border border-amber-700/50 rounded-xl text-amber-200 text-xs">
-          <Info size={16} className="shrink-0 mt-0.5 text-amber-400" />
+        <div className="flex items-start gap-3 p-4 bg-amber-950/50 border border-secondary-700/50 rounded-xl text-secondary-200 text-xs">
+          <Info size={16} className="shrink-0 mt-0.5 text-secondary-400" />
           <p>
-            <strong className="text-amber-300">Proxy Mode Active:</strong> Your IP camera stream is being routed
+            <strong className="text-secondary-300">Proxy Mode Active:</strong> Your IP camera stream is being routed
             through the KiddoZ backend server to avoid browser mixed-content blocking.
             If the stream doesn't appear, ensure the backend is reachable.
           </p>
@@ -323,7 +323,7 @@ const LiveViewYOLO = ({ student }) => {
           { label: 'My Children', value: stats.myChildren, color: 'border-green-500', badge: 'text-green-400 bg-green-500/10', badgeText: 'Detected' },
           { label: 'Total Students', value: stats.total, color: 'border-blue-500', badge: null },
           { label: 'Unknown', value: stats.unknown, color: 'border-red-500', badge: `text-red-400 bg-red-500/10`, badgeText: stats.unknown > 0 ? 'ALERT' : 'Safe' },
-          { label: 'System FPS', value: stats.fps, color: 'border-purple-500', badge: null, icon: <Activity size={16} className="text-purple-400" /> },
+          { label: 'System FPS', value: stats.fps, color: 'border-primary-500', badge: null, icon: <Activity size={16} className="text-primary-400" /> },
         ].map((s, i) => (
           <div key={i} className={`bg-slate-800 p-4 rounded-2xl border-l-4 ${s.color}`}>
             <p className="text-slate-400 text-xs uppercase font-bold tracking-wider">{s.label}</p>
@@ -346,8 +346,8 @@ const LiveViewYOLO = ({ student }) => {
             {/* Status badges */}
             <div className="absolute top-4 left-4 z-20 flex gap-2 flex-wrap">
               {config.active && <Badge color="bg-red-600 text-white animate-pulse">🔴 LIVE</Badge>}
-              {isModelLoading && <Badge color="bg-purple-600 text-white animate-bounce">LOADING AI...</Badge>}
-              {connectionStatus === 'connecting' && <Badge color="bg-amber-600 text-white">CONNECTING...</Badge>}
+              {isModelLoading && <Badge color="bg-primary-600 text-white animate-bounce">LOADING AI...</Badge>}
+              {connectionStatus === 'connecting' && <Badge color="bg-secondary-600 text-white">CONNECTING...</Badge>}
               {connectionStatus === 'error' && <Badge color="bg-red-800 text-red-200">NO SIGNAL</Badge>}
             </div>
 

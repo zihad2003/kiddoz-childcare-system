@@ -97,18 +97,18 @@ const SuperAdminDashboard = ({ user, handleLogout }) => {
             )}
 
             {/* Sidebar */}
-            <aside className={`fixed md:relative z-30 w-72 h-screen bg-[#1a0533] text-white flex flex-col shadow-2xl transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+            <aside className={`fixed md:relative z-30 w-72 h-screen bg-[#085078] text-white flex flex-col shadow-2xl transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
                 {/* Logo */}
                 <div className="p-6 flex justify-between items-center border-b border-white/10">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-violet-500 via-purple-500 to-pink-500 flex items-center justify-center font-black text-xl shadow-lg shadow-purple-900/50">
+                        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary-500 via-primary-500 to-secondary-500 flex items-center justify-center font-black text-xl shadow-lg shadow-primary-900/50">
                             K
                         </div>
                         <div>
                             <h1 className="font-black text-base tracking-tight">KiddoZ</h1>
                             <div className="flex items-center gap-1.5">
                                 <Sparkles size={10} className="text-yellow-400" />
-                                <p className="text-[10px] text-purple-300 font-bold uppercase tracking-widest">Super Admin</p>
+                                <p className="text-[10px] text-primary-300 font-bold uppercase tracking-widest">Super Admin</p>
                             </div>
                         </div>
                     </div>
@@ -121,7 +121,7 @@ const SuperAdminDashboard = ({ user, handleLogout }) => {
                 <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-6">
                     {navGroups.map(group => (
                         <div key={group.label}>
-                            <p className="text-[9px] font-black text-purple-400/60 uppercase tracking-[0.2em] px-3 mb-2">{group.label}</p>
+                            <p className="text-[9px] font-black text-primary-400/60 uppercase tracking-[0.2em] px-3 mb-2">{group.label}</p>
                             <div className="space-y-0.5">
                                 {group.items.map(item => (
                                     <button
@@ -129,8 +129,8 @@ const SuperAdminDashboard = ({ user, handleLogout }) => {
                                         onClick={() => { setActiveTab(item.id); setSidebarOpen(false); }}
                                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden
                                             ${activeTab === item.id
-                                                ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white font-bold shadow-lg shadow-purple-900/50'
-                                                : 'text-purple-200/70 hover:bg-white/8 hover:text-white'
+                                                ? 'bg-gradient-to-r from-primary-600 to-primary-600 text-white font-bold shadow-lg shadow-primary-900/50'
+                                                : 'text-primary-200/70 hover:bg-white/8 hover:text-white'
                                             }`}
                                     >
                                         {activeTab === item.id && (
@@ -138,7 +138,7 @@ const SuperAdminDashboard = ({ user, handleLogout }) => {
                                         )}
                                         <item.icon
                                             size={18}
-                                            className={activeTab === item.id ? 'text-white' : 'text-purple-400 group-hover:text-purple-200 transition-colors'}
+                                            className={activeTab === item.id ? 'text-white' : 'text-primary-400 group-hover:text-primary-200 transition-colors'}
                                         />
                                         <span className="text-sm">{item.label}</span>
                                     </button>
@@ -152,13 +152,13 @@ const SuperAdminDashboard = ({ user, handleLogout }) => {
                 <div className="p-4 border-t border-white/10 space-y-3">
                     <div className="flex items-center gap-3 px-3 py-2">
                         <img
-                            src={`https://ui-avatars.com/api/?name=${user?.fullName || 'Super+Admin'}&background=8b5cf6&color=fff`}
+                            src={`https://ui-avatars.com/api/?name=${user?.fullName || 'Super+Admin'}&background=6968A6&color=fff`}
                             alt="avatar"
-                            className="w-9 h-9 rounded-full border-2 border-purple-500 shadow-md"
+                            className="w-9 h-9 rounded-full border-2 border-primary-500 shadow-md"
                         />
                         <div className="min-w-0">
                             <p className="text-sm font-bold truncate">{user?.fullName || 'Super Admin'}</p>
-                            <p className="text-[10px] text-purple-400 font-medium">System Administrator</p>
+                            <p className="text-[10px] text-primary-400 font-medium">System Administrator</p>
                         </div>
                     </div>
                     <button
@@ -178,7 +178,7 @@ const SuperAdminDashboard = ({ user, handleLogout }) => {
                     <div className="flex items-center gap-4">
                         <button
                             onClick={() => setSidebarOpen(true)}
-                            className="md:hidden text-slate-500 hover:text-purple-600 p-2 rounded-xl hover:bg-slate-50 transition"
+                            className="md:hidden text-slate-500 hover:text-primary-600 p-2 rounded-xl hover:bg-slate-50 transition"
                         >
                             <Menu size={20} />
                         </button>
@@ -190,7 +190,7 @@ const SuperAdminDashboard = ({ user, handleLogout }) => {
 
                     <div className="flex items-center gap-3">
                         {/* Notifications */}
-                        <button className="relative p-2.5 text-slate-400 hover:text-purple-600 transition rounded-xl hover:bg-slate-50">
+                        <button className="relative p-2.5 text-slate-400 hover:text-primary-600 transition rounded-xl hover:bg-slate-50">
                             <Bell size={20} />
                             {notifications > 0 && (
                                 <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-red-500 text-white rounded-full text-[9px] font-black flex items-center justify-center">

@@ -288,7 +288,7 @@ const CameraFeed = ({ camId, label, streamType, streamUrl, isActive, selectedStu
         <div
             className={`relative bg-black rounded-xl overflow-hidden border-2 transition-all duration-300 cursor-pointer group
                 ${hasUnknown ? 'border-red-500 shadow-lg shadow-red-500/30'
-                    : camStatus === 'error' ? 'border-amber-600'
+                    : camStatus === 'error' ? 'border-secondary-600'
                         : 'border-slate-700 hover:border-slate-500'}`}
             style={{ aspectRatio: '16/9' }}
             onClick={() => onFullscreen(camId)}
@@ -309,7 +309,7 @@ const CameraFeed = ({ camId, label, streamType, streamUrl, isActive, selectedStu
                     <div className={`w-2 h-2 rounded-full ${isActive ? 'bg-green-400 animate-pulse' : 'bg-slate-500'}`} />
                     <span className="text-[10px] font-bold text-white/80 font-mono">{label}</span>
                     {streamType === 'ip-cam' && camStatus === 'error' && (
-                        <span className="text-[9px] text-amber-400 bg-amber-900/70 px-1 rounded">NO SIGNAL</span>
+                        <span className="text-[9px] text-secondary-400 bg-amber-900/70 px-1 rounded">NO SIGNAL</span>
                     )}
                 </div>
                 <div className="flex items-center gap-2">
@@ -467,10 +467,10 @@ const LiveStreamManager = () => {
 
             {/* ── Mixed-Content Warning (HTTPS + IP-Cam) ── */}
             {onHttps && config.type === 'ip-cam' && (
-                <div className="flex items-start gap-3 p-4 bg-amber-950/40 border border-amber-700/50 rounded-xl text-amber-200 text-sm">
-                    <Info size={18} className="shrink-0 mt-0.5 text-amber-400" />
+                <div className="flex items-start gap-3 p-4 bg-amber-950/40 border border-secondary-700/50 rounded-xl text-secondary-200 text-sm">
+                    <Info size={18} className="shrink-0 mt-0.5 text-secondary-400" />
                     <div>
-                        <p className="font-bold text-amber-300 mb-1">HTTPS → HTTP Mixed Content Notice</p>
+                        <p className="font-bold text-secondary-300 mb-1">HTTPS → HTTP Mixed Content Notice</p>
                         <p className="text-xs leading-relaxed opacity-90">
                             This page is served over <strong>HTTPS</strong>. Direct connections to your IP camera
                             (<code className="bg-amber-900/50 px-1 rounded">http://192.168.x.x</code>) are blocked by the browser.
@@ -487,7 +487,7 @@ const LiveStreamManager = () => {
                     { icon: <Radio size={18} className={config.active ? 'text-red-400 animate-pulse' : 'text-slate-500'} />, label: 'Broadcast', value: config.active ? 'LIVE' : 'OFFLINE', color: config.active ? 'text-red-400' : 'text-slate-500', bg: config.active ? 'bg-red-950/30 border-red-800/40' : 'bg-slate-800/50 border-slate-700/50' },
                     { icon: <Clock size={18} className="text-blue-400" />, label: 'Uptime', value: formatUptime(systemStats.uptime), color: 'text-blue-300', bg: 'bg-slate-800/50 border-slate-700/50' },
                     { icon: <Eye size={18} className="text-green-400" />, label: 'Detections', value: systemStats.totalDetections.toString(), color: 'text-green-300', bg: 'bg-slate-800/50 border-slate-700/50' },
-                    { icon: <AlertTriangle size={18} className="text-amber-400" />, label: 'Alerts', value: systemStats.alerts.toString(), color: systemStats.alerts > 0 ? 'text-amber-300' : 'text-slate-500', bg: systemStats.alerts > 0 ? 'bg-amber-950/30 border-amber-800/40' : 'bg-slate-800/50 border-slate-700/50' },
+                    { icon: <AlertTriangle size={18} className="text-secondary-400" />, label: 'Alerts', value: systemStats.alerts.toString(), color: systemStats.alerts > 0 ? 'text-secondary-300' : 'text-slate-500', bg: systemStats.alerts > 0 ? 'bg-amber-950/30 border-secondary-800/40' : 'bg-slate-800/50 border-slate-700/50' },
                 ].map((stat, i) => (
                     <div key={i} className={`flex items-center gap-3 p-4 rounded-xl border ${stat.bg}`}>
                         <div className="p-2 bg-white/5 rounded-lg">{stat.icon}</div>
@@ -571,7 +571,7 @@ const LiveStreamManager = () => {
                     {/* Broadcast Control */}
                     <div className="bg-slate-900 rounded-xl border border-slate-700/50 p-4">
                         <h3 className="text-sm font-bold text-white flex items-center gap-2 mb-4">
-                            <MonitorPlay size={16} className="text-purple-400" /> Stream Control
+                            <MonitorPlay size={16} className="text-primary-400" /> Stream Control
                         </h3>
 
                         <button
@@ -593,7 +593,7 @@ const LiveStreamManager = () => {
                                         key={opt.val}
                                         onClick={() => setConfig(c => ({ ...c, type: opt.val }))}
                                         className={`p-2.5 rounded-lg border text-xs flex items-center justify-center gap-1.5 font-bold transition-all
-                                            ${config.type === opt.val ? 'bg-purple-600/20 border-purple-500/60 text-purple-300' : 'border-slate-700 text-slate-500 hover:border-slate-500 hover:text-slate-300'}`}
+                                            ${config.type === opt.val ? 'bg-primary-600/20 border-primary-500/60 text-primary-300' : 'border-slate-700 text-slate-500 hover:border-slate-500 hover:text-slate-300'}`}
                                     >
                                         {opt.icon} {opt.label}
                                     </button>
@@ -605,7 +605,7 @@ const LiveStreamManager = () => {
                                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Camera Base URL</label>
                                     <input
                                         type="text"
-                                        className="w-full p-2.5 bg-slate-800 border border-slate-600 rounded-lg font-mono text-xs text-white outline-none focus:border-purple-500 transition"
+                                        className="w-full p-2.5 bg-slate-800 border border-slate-600 rounded-lg font-mono text-xs text-white outline-none focus:border-primary-500 transition"
                                         placeholder="http://192.168.x.x:8080"
                                         value={config.url}
                                         onChange={e => setConfig(c => ({ ...c, url: e.target.value }))}
@@ -615,7 +615,7 @@ const LiveStreamManager = () => {
                                             <label className="text-[9px] text-slate-500 block mb-1">Quick IP</label>
                                             <input
                                                 type="text"
-                                                className="w-full p-2 bg-slate-800 border border-slate-700 rounded-lg font-mono text-[10px] text-white outline-none focus:border-purple-500"
+                                                className="w-full p-2 bg-slate-800 border border-slate-700 rounded-lg font-mono text-[10px] text-white outline-none focus:border-primary-500"
                                                 placeholder="192.168.0.102"
                                                 onChange={e => { const ip = e.target.value.trim(); if (ip) setConfig(c => ({ ...c, url: `http://${ip}:8080` })); }}
                                             />
@@ -624,7 +624,7 @@ const LiveStreamManager = () => {
                                             <label className="text-[9px] text-slate-500 block mb-1">Port</label>
                                             <input
                                                 type="text"
-                                                className="w-full p-2 bg-slate-800 border border-slate-700 rounded-lg font-mono text-[10px] text-white outline-none focus:border-purple-500"
+                                                className="w-full p-2 bg-slate-800 border border-slate-700 rounded-lg font-mono text-[10px] text-white outline-none focus:border-primary-500"
                                                 placeholder="8080"
                                                 defaultValue="8080"
                                                 onChange={e => {

@@ -38,7 +38,7 @@ const PaymentModal = ({ isOpen, onClose, payment, onConfirm }) => {
             <Card className="w-full max-w-md relative overflow-hidden p-0">
                 <div className="bg-slate-50 p-4 border-b border-slate-100 flex justify-between items-center">
                     <h3 className="font-bold text-lg text-slate-800 flex items-center gap-2">
-                        <CreditCard className="text-purple-600" size={20} /> Secure Payment
+                        <CreditCard className="text-primary-600" size={20} /> Secure Payment
                     </h3>
                     <button onClick={onClose} className="text-slate-400 hover:text-slate-600"><X size={20} /></button>
                 </div>
@@ -49,11 +49,11 @@ const PaymentModal = ({ isOpen, onClose, payment, onConfirm }) => {
                             <div className="text-center mb-6">
                                 <p className="text-slate-500 text-sm">Amount Disbursed</p>
                                 <h2 className="text-4xl font-bold text-slate-800">৳{(parseFloat(payment.amount) || 0).toLocaleString()}</h2>
-                                <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-xs font-bold">
+                                <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-primary-50 text-primary-700 rounded-full text-xs font-bold">
                                     <UserCheck size={12} /> {payment.recipientName} ({payment.role})
                                 </div>
                             </div>
-                            <Button onClick={() => setStep(2)} className="w-full mt-4 bg-purple-600 hover:bg-purple-700">
+                            <Button onClick={() => setStep(2)} className="w-full mt-4 bg-primary-600 hover:bg-primary-700">
                                 Confirm & Proceed <ArrowRight size={16} className="ml-2" />
                             </Button>
                         </div>
@@ -72,7 +72,7 @@ const PaymentModal = ({ isOpen, onClose, payment, onConfirm }) => {
 
                     {step === 3 && (
                         <div className="text-center py-8">
-                            <div className="w-16 h-16 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                            <div className="w-16 h-16 border-4 border-primary-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                             <h3 className="font-bold">Processing Transaction...</h3>
                         </div>
                     )}
@@ -149,9 +149,9 @@ const PayrollManager = () => {
             />
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="bg-gradient-to-br from-purple-800 to-indigo-900 text-white border-0 overflow-hidden relative">
+                <Card className="bg-gradient-to-br from-primary-800 to-primary-900 text-white border-0 overflow-hidden relative">
                     <div className="relative z-10">
-                        <p className="text-purple-200 text-xs font-bold uppercase tracking-widest mb-1">Monthly Revenue</p>
+                        <p className="text-primary-200 text-xs font-bold uppercase tracking-widest mb-1">Monthly Revenue</p>
                         <h3 className="text-3xl font-black">৳{revenueStats?.paidAmount.toLocaleString() || '0'}</h3>
                         <div className="mt-4 flex items-center gap-2 text-[10px] font-bold">
                             <span className="bg-white/20 px-2 py-0.5 rounded-full">৳{revenueStats?.pendingAmount.toLocaleString() || '0'} Pending</span>
@@ -241,7 +241,7 @@ const PayrollManager = () => {
                                             <p className="text-[10px] text-slate-400 font-bold">{item.type} • {item.role}</p>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <Badge color={item.status === 'Paid' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}>
+                                            <Badge color={item.status === 'Paid' ? 'bg-green-100 text-green-700' : 'bg-secondary-100 text-secondary-700'}>
                                                 {item.status}
                                             </Badge>
                                         </td>
@@ -266,7 +266,7 @@ const PayrollManager = () => {
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
                     <Card className="w-full max-w-md relative animate-in slide-in-from-bottom-4">
                         <button onClick={() => setShowCreateModal(false)} className="absolute top-4 right-4 text-slate-300 hover:text-slate-600"><X size={20} /></button>
-                        <h2 className="text-xl font-black mb-6 flex items-center gap-2"><Plus className="text-purple-600" /> New Payment Request</h2>
+                        <h2 className="text-xl font-black mb-6 flex items-center gap-2"><Plus className="text-primary-600" /> New Payment Request</h2>
                         <form onSubmit={handleCreateRequest} className="space-y-4">
                             <Input label="Recipient" value={newPayment.recipientName} onChange={e => setNewPayment({ ...newPayment, recipientName: e.target.value })} required />
                             <div className="grid grid-cols-2 gap-4">
@@ -274,7 +274,7 @@ const PayrollManager = () => {
                                 <Input label="Type" value={newPayment.type} onChange={e => setNewPayment({ ...newPayment, type: e.target.value })} required />
                             </div>
                             <Input label="Amount (৳)" type="number" value={newPayment.amount} onChange={e => setNewPayment({ ...newPayment, amount: e.target.value })} required />
-                            <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700 mt-2">Initialize Payment</Button>
+                            <Button type="submit" className="w-full bg-primary-600 hover:bg-primary-700 mt-2">Initialize Payment</Button>
                         </form>
                     </Card>
                 </div>

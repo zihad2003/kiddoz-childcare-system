@@ -86,12 +86,12 @@ const ChildCareTaskManager = ({ students, currentUser }) => {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-                        <CalendarCheck className="text-purple-600" /> Daily Care & Compliance
+                        <CalendarCheck className="text-primary-600" /> Daily Care & Compliance
                     </h2>
                     <p className="text-slate-500">Track routine care tasks for all age groups.</p>
                 </div>
                 <div className="flex gap-2">
-                    <Button onClick={handleGenerateTasks} isLoading={loading} className="bg-purple-600 hover:bg-purple-700 text-white">
+                    <Button onClick={handleGenerateTasks} isLoading={loading} className="bg-primary-600 hover:bg-primary-700 text-white">
                         <Clock size={16} className="mr-2" /> Generate Today's Schedule
                     </Button>
                 </div>
@@ -103,17 +103,17 @@ const ChildCareTaskManager = ({ students, currentUser }) => {
                     <p className="text-xs font-bold text-blue-600 uppercase">Total Tasks</p>
                     <p className="text-2xl font-bold text-blue-900">{tasks.length}</p>
                 </Card>
-                <Card className="p-4 bg-amber-50 border-amber-100">
-                    <p className="text-xs font-bold text-amber-600 uppercase">Pending</p>
+                <Card className="p-4 bg-secondary-50 border-secondary-100">
+                    <p className="text-xs font-bold text-secondary-600 uppercase">Pending</p>
                     <p className="text-2xl font-bold text-amber-900">{pendingCount}</p>
                 </Card>
                 <Card className="p-4 bg-green-50 border-green-100">
                     <p className="text-xs font-bold text-green-600 uppercase">Completed</p>
                     <p className="text-2xl font-bold text-green-900">{completedCount}</p>
                 </Card>
-                <Card className="p-4 bg-purple-50 border-purple-100">
-                    <p className="text-xs font-bold text-purple-600 uppercase">Completion Rate</p>
-                    <p className="text-2xl font-bold text-purple-900">
+                <Card className="p-4 bg-primary-50 border-primary-100">
+                    <p className="text-xs font-bold text-primary-600 uppercase">Completion Rate</p>
+                    <p className="text-2xl font-bold text-primary-900">
                         {tasks.length > 0 ? Math.round((completedCount / tasks.length) * 100) : 0}%
                     </p>
                 </Card>
@@ -177,7 +177,7 @@ const ChildCareTaskManager = ({ students, currentUser }) => {
                                     </td>
                                     <td className="p-4">
                                         <div className="flex items-center gap-2">
-                                            <div className="w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-xs">
+                                            <div className="w-6 h-6 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center font-bold text-xs">
                                                 {task.studentName?.charAt(0)}
                                             </div>
                                             <div>
@@ -199,7 +199,7 @@ const ChildCareTaskManager = ({ students, currentUser }) => {
                                         {task.status === 'Completed' ? (
                                             <Badge className="bg-green-100 text-green-700">Completed</Badge>
                                         ) : (
-                                            <Badge className="bg-amber-100 text-amber-700">Pending</Badge>
+                                            <Badge className="bg-secondary-100 text-secondary-700">Pending</Badge>
                                         )}
                                     </td>
                                     <td className="p-4 text-right">

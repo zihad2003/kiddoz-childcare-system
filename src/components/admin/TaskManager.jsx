@@ -75,7 +75,7 @@ const TaskManager = ({ currentUserRole, currentUserEmail }) => {
     return (
         <Card className="h-full flex flex-col">
             <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                <Clock size={18} className="text-purple-600" /> Pending Tasks
+                <Clock size={18} className="text-primary-600" /> Pending Tasks
             </h3>
 
             <div className="flex-1 overflow-y-auto space-y-3 mb-4 pr-2 custom-scrollbar" style={{ maxHeight: '300px' }}>
@@ -93,8 +93,8 @@ const TaskManager = ({ currentUserRole, currentUserEmail }) => {
                     <p className="text-slate-400 text-sm text-center py-4">No pending tasks for your role.</p>
                 ) : (
                     filteredTasks.map(task => (
-                        <div key={task.id} className={`p-3 rounded-lg border flex items-start gap-3 group transition-colors ${task.completed ? 'bg-slate-50 border-slate-100' : 'bg-white border-purple-100 hover:border-purple-300'}`}>
-                            <button onClick={() => toggleTask(task)} className={`mt-0.5 ${task.completed ? 'text-slate-300' : 'text-purple-500 hover:text-purple-600'}`}>
+                        <div key={task.id} className={`p-3 rounded-lg border flex items-start gap-3 group transition-colors ${task.completed ? 'bg-slate-50 border-slate-100' : 'bg-white border-primary-100 hover:border-primary-300'}`}>
+                            <button onClick={() => toggleTask(task)} className={`mt-0.5 ${task.completed ? 'text-slate-300' : 'text-primary-500 hover:text-primary-600'}`}>
                                 {task.completed ? <CheckCircle size={18} /> : <Circle size={18} />}
                             </button>
                             <div className="flex-1">
@@ -116,7 +116,7 @@ const TaskManager = ({ currentUserRole, currentUserEmail }) => {
                 <input
                     type="text"
                     placeholder="Add new task..."
-                    className="w-full text-sm p-2 mb-2 rounded border border-slate-200 outline-none focus:border-purple-400"
+                    className="w-full text-sm p-2 mb-2 rounded border border-slate-200 outline-none focus:border-primary-400"
                     value={newTask}
                     onChange={e => setNewTask(e.target.value)}
                 />

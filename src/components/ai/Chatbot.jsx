@@ -249,13 +249,13 @@ const Chatbot = ({ user }) => {
           {msgs.map((msg, idx) => (
             <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               {msg.role === 'assistant' && (
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-2 shrink-0 ${contextMode === 'health' ? 'bg-green-100 text-green-600' : 'bg-purple-100 text-purple-600'}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-2 shrink-0 ${contextMode === 'health' ? 'bg-green-100 text-green-600' : 'bg-primary-100 text-primary-600'}`}>
                   {contextMode === 'health' ? <Activity size={14} /> : <MessageCircle size={14} />}
                 </div>
               )}
               <div
                 className={`max-w-[85%] p-3.5 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${msg.role === 'user'
-                  ? (contextMode === 'health' ? 'bg-green-600 text-white rounded-br-none' : 'bg-purple-600 text-white rounded-br-none')
+                  ? (contextMode === 'health' ? 'bg-green-600 text-white rounded-br-none' : 'bg-primary-600 text-white rounded-br-none')
                   : 'bg-white border border-slate-200 text-slate-700 rounded-bl-none shadow-sm'
                   }`}
               >
@@ -267,7 +267,7 @@ const Chatbot = ({ user }) => {
           {isTyping && (
             <div className="flex justify-start ml-10">
               <div className="bg-white border border-slate-200 p-3 rounded-2xl rounded-bl-none shadow-sm">
-                <Loader2 className={`animate-spin ${contextMode === 'health' ? 'text-green-500' : 'text-purple-500'}`} size={16} />
+                <Loader2 className={`animate-spin ${contextMode === 'health' ? 'text-green-500' : 'text-primary-500'}`} size={16} />
               </div>
             </div>
           )}
@@ -283,7 +283,7 @@ const Chatbot = ({ user }) => {
                 onClick={() => handleSendMessage(qr)}
                 className={`whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium border transition ${contextMode === 'health'
                   ? 'bg-green-50 border-green-200 text-green-700 hover:bg-green-100'
-                  : 'bg-purple-50 border-purple-200 text-purple-700 hover:bg-purple-100'
+                  : 'bg-primary-50 border-primary-200 text-primary-700 hover:bg-primary-100'
                   }`}
               >
                 {qr}
@@ -309,7 +309,7 @@ const Chatbot = ({ user }) => {
             data-testid="send-button"
             onClick={() => handleSendMessage()}
             disabled={isTyping || !input.trim()}
-            className={`p-2.5 rounded-full text-white shadow-lg transition transform hover:scale-105 disabled:opacity-50 disabled:scale-100 ${contextMode === 'health' ? 'bg-green-600 hover:bg-green-700' : 'bg-purple-600 hover:bg-purple-700'
+            className={`p-2.5 rounded-full text-white shadow-lg transition transform hover:scale-105 disabled:opacity-50 disabled:scale-100 ${contextMode === 'health' ? 'bg-green-600 hover:bg-green-700' : 'bg-primary-600 hover:bg-primary-700'
               }`}
           >
             <Send size={18} />
@@ -329,7 +329,7 @@ const Chatbot = ({ user }) => {
         <span className="absolute -top-10 right-0 bg-white text-slate-800 text-xs font-bold py-1 px-3 rounded-xl shadow-lg border border-slate-100 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
           Ask AI about KiddoZ! 👋
         </span>
-        <div className="bg-gradient-to-br from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 text-white p-4 rounded-full shadow-2xl transition-all transform group-hover:scale-110 flex items-center justify-center border-4 border-white/20">
+        <div className="bg-gradient-to-br from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white p-4 rounded-full shadow-2xl transition-all transform group-hover:scale-110 flex items-center justify-center border-4 border-white/20">
           <MessageCircle size={28} />
         </div>
         {/* Simple Notification Badge */}
@@ -344,7 +344,7 @@ const Chatbot = ({ user }) => {
       <div className="bg-white rounded-3xl shadow-2xl w-[350px] md:w-[400px] overflow-hidden border border-slate-200 flex flex-col h-[600px] relative">
 
         {/* Header */}
-        <div className={`p-5 text-white transition-colors duration-300 ${activeTab === 'health' ? 'bg-gradient-to-r from-green-600 to-teal-600' : 'bg-gradient-to-r from-purple-700 to-indigo-600'}`}>
+        <div className={`p-5 text-white transition-colors duration-300 ${activeTab === 'health' ? 'bg-gradient-to-r from-green-600 to-teal-600' : 'bg-gradient-to-r from-primary-700 to-primary-600'}`}>
           <div className="flex justify-between items-start mb-4">
             <div>
               <h3 className="font-bold text-lg flex items-center gap-2">
@@ -365,7 +365,7 @@ const Chatbot = ({ user }) => {
             <button
               onClick={() => handleTabSwitch('general')}
               className={`flex-1 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 ${activeTab === 'general'
-                ? 'bg-white text-purple-700 shadow-sm'
+                ? 'bg-white text-primary-700 shadow-sm'
                 : 'text-white/70 hover:bg-white/10 hover:text-white'
                 }`}
             >
