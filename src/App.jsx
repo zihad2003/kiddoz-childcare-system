@@ -1,9 +1,9 @@
 import React from 'react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+import { useAuth } from './context/AuthContext';
+import { db } from './firebase';
 import { Loader2 } from 'lucide-react';
 import ErrorBoundary from './components/ui/ErrorBoundary';
 
@@ -34,16 +34,17 @@ import TourCTA from './components/layout/TourCTA';
 import Preloader from './components/ui/Preloader';
 import InteractivePreloader from './components/ui/InteractivePreloader';
 
-import { auth, db } from './config/firebase';
+import { auth } from './firebase';
 
 const appId = 'kiddoz-163cd';
 
 // Pricing Plans Constant
+// Pricing Plans Constant (Support BDT)
 const PLANS = [
   {
     id: 'basic',
     name: 'Little Explorer',
-    price: '$450',
+    price: '৳15,000',
     period: '/month',
     features: ['Day Care (8AM - 4PM)', 'Healthy Snacks', 'Nap Time Monitoring', 'Daily Reports'],
     color: 'bg-blue-50 border-blue-100 text-blue-900',
@@ -52,7 +53,7 @@ const PLANS = [
   {
     id: 'growth',
     name: 'Growth Scholar',
-    price: '$750',
+    price: '৳25,000',
     period: '/month',
     features: ['Pre-School Curriculum', 'Full Meals Included', 'Development Tracking', 'Access to Live View'],
     color: 'bg-purple-50 border-purple-100 text-purple-900',
@@ -62,7 +63,7 @@ const PLANS = [
   {
     id: 'vip',
     name: 'VIP Guardian',
-    price: '$1200',
+    price: '৳45,000',
     period: '/month',
     features: ['Extended Hours', 'Priority Nanny Booking', '1-on-1 Tutoring', 'Premium Health Insights'],
     color: 'bg-amber-50 border-amber-100 text-amber-900',

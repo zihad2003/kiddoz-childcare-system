@@ -5,14 +5,16 @@ import Badge from '../ui/Badge';
 import Modal from '../ui/Modal';
 import Input from '../ui/Input';
 import { Users, Thermometer, Activity, Heart, Search, FileText, AlertCircle, CheckCircle } from 'lucide-react';
-import api from '../../services/api';
-import { useToast } from '../../context/ToastContext';
+import { healthService } from '../../services/healthService';
+import { studentService } from '../../services/studentService';
+import { notificationService } from '../../services/notificationService';
 
 const NurseDashboard = ({ students, user }) => {
     const { addToast } = useToast();
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [vitals, setVitals] = useState({ temp: '', notes: '', medication: '' });
 
     // Use local state for students to reflect immediate updates
@@ -23,7 +25,7 @@ const NurseDashboard = ({ students, user }) => {
     }, [students]);
 
     const filteredStudents = localStudents.filter(s =>
-        s.name.toLowerCase().includes(searchTerm.toLowerCase())
+        (s.name || s.fullName || '').toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const handleOpenVitals = (student) => {
@@ -38,29 +40,39 @@ const NurseDashboard = ({ students, user }) => {
 
     const handleSubmitVitals = async () => {
         if (!selectedStudent) return;
+        setIsSubmitting(true);
         try {
-            await api.updateStudent(selectedStudent.id, {
+            // Update student profile
+            await studentService.updateStudent(selectedStudent.id, {
                 temp: vitals.temp,
             });
 
-            setLocalStudents(prev => prev.map(s => s.id === selectedStudent.id ? { ...s, temp: vitals.temp } : s));
+            // Log official health record
+            await healthService.logHealth({
+                studentId: selectedStudent.id,
+                temp: vitals.temp,
+                notes: vitals.notes,
+                recordedBy: user?.uid,
+                isParentVisible: true
+            });
 
-            // Log the medical event as a notification
-            await api.addNotification({
+            // Notify Parent
+            await notificationService.addNotification({
                 title: 'Medical Log Updated',
-                message: `Nurse ${user?.email || ''} logged vitals for ${selectedStudent.name}. Temp: ${vitals.temp}°F.`,
+                message: `${selectedStudent.fullName || selectedStudent.name}'s temp was recorded as ${vitals.temp}°F.`,
                 type: 'health',
                 targetRole: 'parent',
                 recipientId: selectedStudent.parentId,
-                studentId: selectedStudent.id,
-                details: { temp: vitals.temp, notes: vitals.notes }
+                studentId: selectedStudent.id
             });
 
-            addToast(`Updated vitals for ${selectedStudent.name}`, 'success');
+            addToast(`Updated vitals for ${selectedStudent.fullName || selectedStudent.name}`, 'success');
             setIsModalOpen(false);
         } catch (e) {
             console.error(e);
             addToast('Failed to update vitals', 'error');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 

@@ -4,15 +4,20 @@ import Button from '../ui/Button';
 import { CheckCircle, Circle, Clock, Plus, Trash2 } from 'lucide-react';
 import api from '../../services/api';
 import { useToast } from '../../context/ToastContext';
+import Skeleton from '../ui/Skeleton';
 
 const TaskManager = ({ currentUserRole, currentUserEmail }) => {
     const { addToast } = useToast();
     const [tasks, setTasks] = useState([]);
     const [newTask, setNewTask] = useState('');
     const [assignTo, setAssignTo] = useState('All');
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        api.getTasks().then(setTasks).catch(console.error);
+        setLoading(true);
+        api.getTasks()
+            .then(data => { setTasks(data); setLoading(false); })
+            .catch(err => { console.error(err); setLoading(false); });
     }, []);
 
     const handleAddTask = async (e) => {
@@ -74,25 +79,37 @@ const TaskManager = ({ currentUserRole, currentUserEmail }) => {
             </h3>
 
             <div className="flex-1 overflow-y-auto space-y-3 mb-4 pr-2 custom-scrollbar" style={{ maxHeight: '300px' }}>
-                {filteredTasks.length === 0 && <p className="text-slate-400 text-sm text-center py-4">No pending tasks for your role.</p>}
-
-                {filteredTasks.map(task => (
-                    <div key={task.id} className={`p-3 rounded-lg border flex items-start gap-3 group transition-colors ${task.completed ? 'bg-slate-50 border-slate-100' : 'bg-white border-purple-100 hover:border-purple-300'}`}>
-                        <button onClick={() => toggleTask(task)} className={`mt-0.5 ${task.completed ? 'text-slate-300' : 'text-purple-500 hover:text-purple-600'}`}>
-                            {task.completed ? <CheckCircle size={18} /> : <Circle size={18} />}
-                        </button>
-                        <div className="flex-1">
-                            <p className={`text-sm font-medium ${task.completed ? 'text-slate-400 line-through' : 'text-slate-700'}`}>{task.title}</p>
-                            <div className="flex justify-between items-center mt-1">
-                                <span className="text-[10px] uppercase font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">{task.assignedTo}</span>
-                                {task.completed && <span className="text-[10px] text-green-600">Done by {task.completedBy?.split('@')[0]}</span>}
+                {loading ? (
+                    Array.from({ length: 3 }).map((_, i) => (
+                        <div key={i} className="p-3 rounded-lg border flex items-start gap-3 bg-white border-slate-100">
+                            <Skeleton variant="circular" width="20px" height="20px" />
+                            <div className="flex-1 space-y-2">
+                                <Skeleton width="80%" height="16px" />
+                                <Skeleton width="40%" height="12px" />
                             </div>
                         </div>
-                        <button onClick={() => deleteTask(task.id)} className="text-slate-300 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <Trash2 size={16} />
-                        </button>
-                    </div>
-                ))}
+                    ))
+                ) : filteredTasks.length === 0 ? (
+                    <p className="text-slate-400 text-sm text-center py-4">No pending tasks for your role.</p>
+                ) : (
+                    filteredTasks.map(task => (
+                        <div key={task.id} className={`p-3 rounded-lg border flex items-start gap-3 group transition-colors ${task.completed ? 'bg-slate-50 border-slate-100' : 'bg-white border-purple-100 hover:border-purple-300'}`}>
+                            <button onClick={() => toggleTask(task)} className={`mt-0.5 ${task.completed ? 'text-slate-300' : 'text-purple-500 hover:text-purple-600'}`}>
+                                {task.completed ? <CheckCircle size={18} /> : <Circle size={18} />}
+                            </button>
+                            <div className="flex-1">
+                                <p className={`text-sm font-medium ${task.completed ? 'text-slate-400 line-through' : 'text-slate-700'}`}>{task.title}</p>
+                                <div className="flex items-center justify-between mt-1">
+                                    <span className="text-[10px] uppercase font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">{task.assignedTo}</span>
+                                    {task.completed && <span className="text-[10px] text-green-600">Done by {task.completedBy?.split('@')[0]}</span>}
+                                </div>
+                            </div>
+                            <button onClick={() => deleteTask(task.id)} className="text-slate-300 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <Trash2 size={16} />
+                            </button>
+                        </div>
+                    ))
+                )}
             </div>
 
             <form onSubmit={handleAddTask} className="mt-auto border-t pt-4">

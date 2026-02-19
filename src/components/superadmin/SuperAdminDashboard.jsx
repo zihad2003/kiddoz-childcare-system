@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { LayoutDashboard, Users, Building, PieChart, DollarSign, FileText, BadgeCheck, Shield, Settings, Code, Smartphone, MessageSquare, FileBarChart, Bell, LogOut, ChevronDown, Menu, X } from 'lucide-react';
+import {
+    LayoutDashboard, Users, Building, PieChart, DollarSign, FileText,
+    BadgeCheck, Shield, Settings, Code, Smartphone, MessageSquare,
+    FileBarChart, Bell, LogOut, Menu, X, Sparkles
+} from 'lucide-react';
 import PlatformOverview from './PlatformOverview';
 import UserManagement from './UserManagement';
 import CenterManagement from './CenterManagement';
@@ -20,21 +24,49 @@ const SuperAdminDashboard = ({ user, handleLogout }) => {
     const initialTab = searchParams.get('tab') || 'overview';
     const [activeTab, setActiveTab] = useState(initialTab);
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [notifications] = useState(3);
 
     useEffect(() => {
         setSearchParams({ tab: activeTab });
     }, [activeTab, setSearchParams]);
 
-    const navItems = [
-        { id: 'overview', label: 'Overview', icon: LayoutDashboard },
-        { id: 'users', label: 'User Management', icon: Users },
-        { id: 'centers', label: 'Centers', icon: Building },
-        { id: 'analytics', label: 'Analytics', icon: PieChart },
-        { id: 'financials', label: 'Financials', icon: DollarSign },
-        { id: 'content', label: 'Content', icon: FileText },
-        { id: 'staff', label: 'Staff Directory', icon: BadgeCheck },
-        { id: 'settings', label: 'Settings', icon: Settings },
+    const navGroups = [
+        {
+            label: 'Core',
+            items: [
+                { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+                { id: 'analytics', label: 'Analytics', icon: PieChart },
+                { id: 'reports', label: 'Reports', icon: FileBarChart },
+            ]
+        },
+        {
+            label: 'Management',
+            items: [
+                { id: 'users', label: 'User Management', icon: Users },
+                { id: 'centers', label: 'Centers', icon: Building },
+                { id: 'staff', label: 'Staff Directory', icon: BadgeCheck },
+                { id: 'content', label: 'Content', icon: FileText },
+            ]
+        },
+        {
+            label: 'Operations',
+            items: [
+                { id: 'financials', label: 'Financials', icon: DollarSign },
+                { id: 'security', label: 'Security & Logs', icon: Shield },
+                { id: 'support', label: 'Support & Feedback', icon: MessageSquare },
+            ]
+        },
+        {
+            label: 'System',
+            items: [
+                { id: 'settings', label: 'Settings', icon: Settings },
+                { id: 'developer', label: 'Developer Tools', icon: Code },
+                { id: 'app', label: 'App Management', icon: Smartphone },
+            ]
+        }
     ];
+
+    const allNavItems = navGroups.flatMap(g => g.items);
 
     const renderContent = () => {
         switch (activeTab) {
@@ -45,47 +77,96 @@ const SuperAdminDashboard = ({ user, handleLogout }) => {
             case 'financials': return <FinancialOverview />;
             case 'content': return <ContentManagement />;
             case 'staff': return <StaffDirectory />;
+            case 'security': return <SecurityCompliance />;
             case 'settings': return <SystemSettings />;
+            case 'developer': return <DeveloperTools />;
+            case 'app': return <AppManagement />;
+            case 'support': return <SupportFeedback />;
+            case 'reports': return <ReportsGenerator />;
             default: return <PlatformOverview setActiveTab={setActiveTab} />;
         }
     };
+
+    const currentLabel = allNavItems.find(i => i.id === activeTab)?.label || 'Dashboard';
 
     return (
         <div className="min-h-screen bg-slate-50 flex font-sans">
             {/* Mobile Sidebar Overlay */}
             {sidebarOpen && (
-                <div className="fixed inset-0 bg-black/50 z-20 md:hidden" onClick={() => setSidebarOpen(false)} />
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-20 md:hidden" onClick={() => setSidebarOpen(false)} />
             )}
 
             {/* Sidebar */}
-            <aside className={`fixed md:relative z-30 w-72 h-screen bg-purple-900 text-white flex flex-col shadow-2xl transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
-                <div className="p-6 flex justify-between items-center">
+            <aside className={`fixed md:relative z-30 w-72 h-screen bg-[#1a0533] text-white flex flex-col shadow-2xl transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+                {/* Logo */}
+                <div className="p-6 flex justify-between items-center border-b border-white/10">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-orange-400 to-pink-500 flex items-center justify-center font-bold text-xl shadow-lg">K</div>
+                        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-violet-500 via-purple-500 to-pink-500 flex items-center justify-center font-black text-xl shadow-lg shadow-purple-900/50">
+                            K
+                        </div>
                         <div>
-                            <h1 className="font-bold text-lg tracking-tight">KiddoZ Admin</h1>
-                            <p className="text-xs text-slate-300">Super Admin Portal</p>
+                            <h1 className="font-black text-base tracking-tight">KiddoZ</h1>
+                            <div className="flex items-center gap-1.5">
+                                <Sparkles size={10} className="text-yellow-400" />
+                                <p className="text-[10px] text-purple-300 font-bold uppercase tracking-widest">Super Admin</p>
+                            </div>
                         </div>
                     </div>
-                    <button onClick={() => setSidebarOpen(false)} className="md:hidden text-white/70 hover:text-white"><X /></button>
+                    <button onClick={() => setSidebarOpen(false)} className="md:hidden text-white/50 hover:text-white transition p-1 rounded-lg hover:bg-white/10">
+                        <X size={20} />
+                    </button>
                 </div>
 
-                <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1 scrollbar-thin scrollbar-thumb-purple-700">
-                    {navItems.map(item => (
-                        <button
-                            key={item.id}
-                            onClick={() => { setActiveTab(item.id); setSidebarOpen(false); }}
-                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${activeTab === item.id ? 'bg-white text-purple-900 font-semibold shadow-lg scale-105' : 'text-slate-300 hover:bg-white/10 hover:text-white'}`}
-                        >
-                            <item.icon size={20} className={activeTab === item.id ? 'text-purple-600' : 'group-hover:text-white/80'} />
-                            {item.label}
-                        </button>
+                {/* Navigation */}
+                <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-6">
+                    {navGroups.map(group => (
+                        <div key={group.label}>
+                            <p className="text-[9px] font-black text-purple-400/60 uppercase tracking-[0.2em] px-3 mb-2">{group.label}</p>
+                            <div className="space-y-0.5">
+                                {group.items.map(item => (
+                                    <button
+                                        key={item.id}
+                                        onClick={() => { setActiveTab(item.id); setSidebarOpen(false); }}
+                                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden
+                                            ${activeTab === item.id
+                                                ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white font-bold shadow-lg shadow-purple-900/50'
+                                                : 'text-purple-200/70 hover:bg-white/8 hover:text-white'
+                                            }`}
+                                    >
+                                        {activeTab === item.id && (
+                                            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-white rounded-r-full" />
+                                        )}
+                                        <item.icon
+                                            size={18}
+                                            className={activeTab === item.id ? 'text-white' : 'text-purple-400 group-hover:text-purple-200 transition-colors'}
+                                        />
+                                        <span className="text-sm">{item.label}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
                     ))}
                 </nav>
 
-                <div className="p-4 border-t border-white/10">
-                    <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-red-300 hover:bg-red-500/10 hover:text-red-200 rounded-xl transition">
-                        <LogOut size={20} /> Logout
+                {/* User / Logout */}
+                <div className="p-4 border-t border-white/10 space-y-3">
+                    <div className="flex items-center gap-3 px-3 py-2">
+                        <img
+                            src={`https://ui-avatars.com/api/?name=${user?.fullName || 'Super+Admin'}&background=8b5cf6&color=fff`}
+                            alt="avatar"
+                            className="w-9 h-9 rounded-full border-2 border-purple-500 shadow-md"
+                        />
+                        <div className="min-w-0">
+                            <p className="text-sm font-bold truncate">{user?.fullName || 'Super Admin'}</p>
+                            <p className="text-[10px] text-purple-400 font-medium">System Administrator</p>
+                        </div>
+                    </div>
+                    <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-red-300/80 hover:bg-red-500/10 hover:text-red-200 rounded-xl transition"
+                    >
+                        <LogOut size={18} />
+                        <span className="text-sm font-medium">Sign Out</span>
                     </button>
                 </div>
             </aside>
@@ -93,29 +174,30 @@ const SuperAdminDashboard = ({ user, handleLogout }) => {
             {/* Main Content */}
             <main className="flex-1 flex flex-col h-screen overflow-hidden">
                 {/* Header */}
-                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 z-10">
-                    <button onClick={() => setSidebarOpen(true)} className="md:hidden text-slate-500 hover:text-purple-600"><Menu /></button>
-
-                    <div className="flex-1 px-6">
-                        <h2 className="text-xl font-bold text-slate-800 capitalize">{navItems.find(i => i.id === activeTab)?.label}</h2>
+                <header className="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-6 z-10 shadow-sm">
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => setSidebarOpen(true)}
+                            className="md:hidden text-slate-500 hover:text-purple-600 p-2 rounded-xl hover:bg-slate-50 transition"
+                        >
+                            <Menu size={20} />
+                        </button>
+                        <div>
+                            <h2 className="text-lg font-black text-slate-900">{currentLabel}</h2>
+                            <p className="text-[10px] text-slate-400 font-medium uppercase tracking-widest hidden md:block">KiddoZ Super Admin Portal</p>
+                        </div>
                     </div>
 
-                    <div className="flex items-center gap-4">
-                        <button className="relative p-2 text-slate-400 hover:text-purple-600 transition rounded-full hover:bg-slate-50">
+                    <div className="flex items-center gap-3">
+                        {/* Notifications */}
+                        <button className="relative p-2.5 text-slate-400 hover:text-purple-600 transition rounded-xl hover:bg-slate-50">
                             <Bell size={20} />
-                            <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                            {notifications > 0 && (
+                                <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-red-500 text-white rounded-full text-[9px] font-black flex items-center justify-center">
+                                    {notifications}
+                                </span>
+                            )}
                         </button>
-
-                        <div className="flex items-center gap-3 pl-4 border-l border-slate-100">
-                            <div className="text-right hidden md:block">
-                                <p className="text-sm font-bold text-slate-800">{user?.fullName || 'Super Admin'}</p>
-                                <p className="text-xs text-slate-500">System Administrator</p>
-                            </div>
-                            <div className="w-10 h-10 rounded-full bg-slate-100 border-2 border-white shadow-sm overflow-hidden">
-                                <img src={`https://ui-avatars.com/api/?name=${user?.fullName || 'Super+Admin'}&background=8b5cf6&color=fff`} alt="Profile" />
-                            </div>
-                            <ChevronDown size={16} className="text-slate-400 cursor-pointer" />
-                        </div>
                     </div>
                 </header>
 

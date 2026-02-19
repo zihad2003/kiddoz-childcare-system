@@ -10,7 +10,7 @@ const AuthPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { addToast } = useToast();
-  const { login, register } = useAuth();
+  const { login, register, loginAsDemo } = useAuth();
 
   // Determine mode based on URL
   const isSignUp = location.pathname === '/signup';
@@ -34,47 +34,28 @@ const AuthPage = () => {
 
     try {
       if (isSignUp) {
-        await register({
-          email,
-          password,
-          fullName,
-          phone
-        });
-        navigate('/dashboard'); // New users go to parent dashboard by default
+        await register({ email, password, fullName, phone });
+        navigate('/dashboard');
       } else {
         const user = await login(email, password);
-        if (user.role === 'superadmin') {
-          navigate('/superadmin');
-        } else if (user.role === 'admin') {
-          navigate('/admin');
-        } else {
-          navigate('/dashboard');
-        }
+        if (user.role === 'admin') navigate('/admin');
+        else navigate('/dashboard');
       }
     } catch (err) {
-      console.error(err);
-      setError(err.response?.data?.error || err.message || "Authentication failed.");
+      setError(err.message || "Failed.");
     } finally {
       setLoading(false);
     }
   };
 
   const handleDemoLogin = async (role) => {
-    try {
-      setLoading(true);
-      if (role === 'admin') {
-        await login('admin@kiddoz.com', 'admin123');
-        navigate('/admin');
-      } else {
-        await login('rahim@gmail.com', 'password123'); // Updated to seeded Bangladeshi parent
-        navigate('/dashboard');
-      }
-    } catch (err) {
-      console.error("Demo login failed", err);
-    } finally {
-      setLoading(false);
+    const result = await loginAsDemo(role);
+    if (result.success) {
+      navigate(role === 'admin' ? '/admin' : '/dashboard');
+    } else {
+      addToast(result.error, 'error');
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-purple-50 p-4 font-sans">

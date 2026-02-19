@@ -1,0 +1,57 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isSignedIn() { return request.auth != null; }
+    function isAdmin() {
+      return isSignedIn() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    function isStaff() {
+      return isSignedIn() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'teacher', 'caregiver'];
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow write: if isAdmin();
+    }
+
+    // Students
+    match /students/{studentId} {
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+
+    // Attendance
+    match /attendance/{recordId} {
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+
+    // Health records
+    match /healthRecords/{recordId} {
+      allow read: if isStaff() || (isSignedIn() && resource.data.isParentVisible == true);
+      allow write: if isStaff();
+    }
+
+    // Payments
+    match /payments/{paymentId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // Notifications
+    match /notifications/{notifId} {
+      allow read: if isSignedIn();
+      allow write: if isStaff();
+    }
+
+    // Programs (public read)
+    match /programs/{programId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}

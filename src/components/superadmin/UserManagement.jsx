@@ -7,6 +7,7 @@ import Select from '../ui/Select';
 import Badge from '../ui/Badge';
 import Button from '../ui/Button';
 import Modal from '../ui/Modal';
+import Skeleton from '../ui/Skeleton';
 
 const UserManagement = () => {
     const [users, setUsers] = useState([]);
@@ -181,9 +182,15 @@ const UserManagement = () => {
                         </thead>
                         <tbody className="divide-y divide-slate-50">
                             {loading ? (
-                                <tr>
-                                    <td colSpan="5" className="px-8 py-20 text-center text-slate-400 font-black uppercase tracking-widest animate-pulse">Synchronizing Identities...</td>
-                                </tr>
+                                Array.from({ length: 5 }).map((_, i) => (
+                                    <tr key={i} className="animate-pulse">
+                                        <td className="px-8 py-5"><div className="flex items-center gap-4"><Skeleton variant="circular" width="48px" height="48px" /><div className="space-y-2"><Skeleton width="120px" height="16px" /><Skeleton width="80px" height="12px" /></div></div></td>
+                                        <td className="px-8 py-5"><Skeleton width="60px" height="24px" variant="rounded" /></td>
+                                        <td className="px-8 py-5"><div className="space-y-2"><Skeleton width="150px" height="14px" /><Skeleton width="100px" height="14px" /></div></td>
+                                        <td className="px-8 py-5"><Skeleton width="80px" height="24px" variant="rounded" /></td>
+                                        <td className="px-8 py-5"><Skeleton width="100px" height="32px" className="ml-auto" /></td>
+                                    </tr>
+                                ))
                             ) : users.length === 0 ? (
                                 <tr>
                                     <td colSpan="5" className="px-8 py-20 text-center text-slate-400 font-black uppercase tracking-widest">No matching records found</td>

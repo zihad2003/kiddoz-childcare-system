@@ -6,6 +6,8 @@ import api from '../../services/api';
 import { useToast } from '../../context/ToastContext';
 import LiveViewYOLO from '../ai/LiveViewYOLO';
 
+import { studentService } from '../../services/studentService';
+
 const TeacherDashboard = ({ students, user }) => {
     const { addToast } = useToast();
     const [searchTerm, setSearchTerm] = useState('');
@@ -22,7 +24,7 @@ const TeacherDashboard = ({ students, user }) => {
     }, [students]);
 
     const filteredStudents = localStudents.filter(s =>
-        s.name.toLowerCase().includes(searchTerm.toLowerCase())
+        (s.name || s.fullName || '').toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const handleQuickAction = async (student, action) => {
@@ -42,10 +44,8 @@ const TeacherDashboard = ({ students, user }) => {
         }
 
         try {
-            await api.updateStudent(student.id, updates);
-
-            setLocalStudents(prev => prev.map(s => s.id === student.id ? { ...s, ...updates } : s));
-            addToast(`${student.name}: ${message}`, 'success');
+            await studentService.updateStudent(student.id, updates);
+            addToast(`${student.fullName || student.name}: ${message}`, 'success');
         } catch (e) {
             console.error(e);
             addToast('Action failed', 'error');

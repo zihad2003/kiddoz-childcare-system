@@ -33,8 +33,10 @@ const BillingTab = ({ student }) => {
         .filter(inv => inv.status === 'Pending' || inv.status === 'Unpaid' || inv.status === 'Overdue')
         .reduce((acc, curr) => acc + parseFloat(curr.amount || 0), 0);
 
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+
     const handlePayNow = () => {
-        alert("Payment Gateway Integration would open here (Stripe/PayPal)");
+        setIsPaymentModalOpen(true);
     };
 
     return (
@@ -45,7 +47,7 @@ const BillingTab = ({ student }) => {
                 <Card className="bg-gradient-to-br from-indigo-600 to-purple-700 text-white border-0 relative overflow-hidden">
                     <div className="relative z-10">
                         <p className="text-indigo-200 font-medium mb-1">Outstanding Balance</p>
-                        <h2 className="text-4xl font-bold mb-6">${outstandingBalance.toFixed(2)}</h2>
+                        <h2 className="text-4xl font-bold mb-6">৳{outstandingBalance.toLocaleString()}</h2>
 
                         {outstandingBalance > 0 ? (
                             <Button onClick={handlePayNow} className="w-full bg-white text-indigo-700 hover:bg-indigo-50 border-0 shadow-lg">
@@ -114,7 +116,7 @@ const BillingTab = ({ student }) => {
                                         <td className="py-4 pl-4 font-medium text-slate-700">{inv.invoiceNumber || inv.id}</td>
                                         <td className="py-4 text-slate-500 text-sm">{new Date(inv.createdAt || inv.date).toLocaleDateString()}</td>
                                         <td className="py-4 text-slate-600 text-sm max-w-xs truncate">{inv.description}</td>
-                                        <td className="py-4 font-bold text-slate-800">${parseFloat(inv.amount).toFixed(2)}</td>
+                                        <td className="py-4 font-bold text-slate-800">৳{parseFloat(inv.amount).toLocaleString()}</td>
                                         <td className="py-4">
                                             <Badge
                                                 className={`${inv.status === 'Paid' ? 'bg-emerald-100 text-emerald-700' : (inv.status === 'Overdue' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700')}`}
@@ -134,6 +136,16 @@ const BillingTab = ({ student }) => {
                     </table>
                 </div>
             </Card>
+            {/* Payment Modal */}
+            <PaymentModal
+                isOpen={isPaymentModalOpen}
+                onClose={() => setIsPaymentModalOpen(false)}
+                amount={outstandingBalance}
+                onComplete={() => {
+                    // Logic to update UI after payment
+                    setInvoices(prev => prev.map(inv => inv.status === 'Pending' ? { ...inv, status: 'Paid' } : inv));
+                }}
+            />
         </div>
     );
 };

@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, Calendar, Shield, CreditCard, XCircle } from 'lucide-react';
 import Modal from '../ui/Modal';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
 import Select from '../ui/Select';
-import api from '../../services/api';
+import { studentService } from '../../services/studentService';
 import { useToast } from '../../context/ToastContext';
 
-const AddStudentModal = ({ isOpen, onClose, onStudentAdded }) => {
+const AddStudentModal = ({ isOpen, onClose, onStudentAdded, studentToEdit }) => {
     const { addToast } = useToast();
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
     const [formData, setFormData] = useState({
-        name: '',
-        dob: '',
+        fullName: '',
+        dateOfBirth: '',
         gender: 'Male',
         plan: 'Growth Scholar',
         parentId: '',
@@ -20,40 +21,51 @@ const AddStudentModal = ({ isOpen, onClose, onStudentAdded }) => {
         emergencyContact: ''
     });
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!formData.name || !formData.dob) {
-            return addToast("Please fill in basic details", "error");
-        }
-
-        setLoading(true);
-        try {
-            await api.addStudent({
-                ...formData,
-                childData: {
-                    address: formData.homeAddress,
-                    emergency: formData.emergencyContact
-                }
-            });
-            addToast(`Successfully enrolled ${formData.name}!`, "success");
-            if (onStudentAdded) onStudentAdded();
-            onClose();
-            // Reset form
+    useEffect(() => {
+        if (studentToEdit) {
             setFormData({
-                name: '',
-                dob: '',
+                fullName: studentToEdit.fullName || studentToEdit.name || '',
+                dateOfBirth: studentToEdit.dateOfBirth || '',
+                gender: studentToEdit.gender || 'Male',
+                plan: studentToEdit.plan || 'Growth Scholar',
+                parentId: studentToEdit.parentId || '',
+                homeAddress: studentToEdit.homeAddress || '',
+                emergencyContact: studentToEdit.emergencyContact || ''
+            });
+        } else {
+            setFormData({
+                fullName: '',
+                dateOfBirth: '',
                 gender: 'Male',
                 plan: 'Growth Scholar',
                 parentId: '',
                 homeAddress: '',
                 emergencyContact: ''
             });
-        } catch (err) {
-            console.error(err);
-            addToast(err.response?.data?.message || "Failed to enroll student", "error");
-        } finally {
-            setLoading(false);
         }
+    }, [studentToEdit, isOpen]);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setError(null);
+
+        let result;
+        if (studentToEdit) {
+            result = await studentService.updateStudent(studentToEdit.id, formData);
+        } else {
+            result = await studentService.addStudent(formData);
+        }
+
+        if (result.success) {
+            addToast(`Student ${studentToEdit ? 'updated' : 'added'} successfully!`, 'success');
+            if (onStudentAdded) onStudentAdded();
+            onClose();
+        } else {
+            addToast(result.error || 'Operation failed', 'error');
+            setError(result.error);
+        }
+        setLoading(false);
     };
 
     return (
@@ -70,16 +82,16 @@ const AddStudentModal = ({ isOpen, onClose, onStudentAdded }) => {
                     <Input
                         label="Student Full Name"
                         placeholder="John Doe"
-                        value={formData.name}
-                        onChange={e => setFormData({ ...formData, name: e.target.value })}
+                        value={formData.fullName}
+                        onChange={e => setFormData({ ...formData, fullName: e.target.value })}
                         icon={User}
                         required
                     />
                     <Input
                         label="Date of Birth"
                         type="date"
-                        value={formData.dob}
-                        onChange={e => setFormData({ ...formData, dob: e.target.value })}
+                        value={formData.dateOfBirth}
+                        onChange={e => setFormData({ ...formData, dateOfBirth: e.target.value })}
                         icon={Calendar}
                         required
                     />

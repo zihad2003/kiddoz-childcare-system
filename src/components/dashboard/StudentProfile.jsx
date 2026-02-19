@@ -17,7 +17,7 @@ const StudentProfile = () => {
             if (!id) return;
             try {
                 setLoading(true);
-                const data = await api.get(`/ students / ${id} `);
+                const data = await api.get(`/students/${id}`);
                 setStudent(data);
             } catch (e) {
                 console.error("Student Loading Error:", e);

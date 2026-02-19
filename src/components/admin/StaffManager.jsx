@@ -1,29 +1,34 @@
 import React, { useState, useEffect } from 'react';
+import { Edit2, Trash2, Plus, Search, Filter, X, Save, User, Phone, Mail, Star, Award } from 'lucide-react';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
-import Input from '../ui/Input';
-import Select from '../ui/Select';
-import { MOCK_NANNIES } from '../../data/mockData';
-import api from '../../services/api';
-import { UserCheck, Star, Trash2, Edit2, Plus, CheckCircle, XCircle, Search, Filter } from 'lucide-react';
+import Badge from '../ui/Badge';
+import { staffService } from '../../services/staffService';
+import { useToast } from '../../context/ToastContext';
+import Skeleton from '../ui/Skeleton';
 
 const StaffManager = () => {
-    // Local state to simulate database (in real app, this would be Firestore collection 'staff')
-    // We start with MOCK_NANNIES and pretend they are staff. Ideally, this list has a 'role' field.
-    // For demo, we will add 'role' to the existing mock data logic.
+    const { addToast } = useToast();
     const [staff, setStaff] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [currentStaff, setCurrentStaff] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterRole, setFilterRole] = useState('All');
 
     useEffect(() => {
-        api.getStaff().then(setStaff).catch(console.error);
+        setLoading(true);
+        const unsubscribe = staffService.subscribeToStaff((data) => {
+            setStaff(data);
+            setLoading(false);
+        });
+        return () => unsubscribe();
     }, []);
 
     // Form State
     const [formData, setFormData] = useState({
-        name: '',
+        fullName: '',
         role: 'Nanny',
         rate: '',
         experience: '',
@@ -35,7 +40,7 @@ const StaffManager = () => {
 
     const openAddModal = () => {
         setFormData({
-            name: '',
+            fullName: '',
             role: 'Nanny',
             rate: '',
             experience: '',
@@ -57,38 +62,51 @@ const StaffManager = () => {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to remove this staff member?')) {
             try {
-                await api.deleteStaff(id);
-                setStaff(val => val.filter(n => n.id !== id));
+                const result = await staffService.deleteStaff(id);
+                if (result.success) {
+                    addToast('Staff member removed.', 'success');
+                } else {
+                    addToast(result.error, 'error');
+                }
             } catch (err) {
                 console.error(err);
-                alert('Failed to delete staff');
+                addToast('Failed to delete staff', 'error');
             }
         }
     };
 
     const handleSave = async (e) => {
         e.preventDefault();
+        setIsSubmitting(true);
 
         try {
             if (currentStaff) {
-                // Edit Mode
-                await api.updateStaff(currentStaff.id, formData);
-                setStaff(val => val.map(n => n.id === currentStaff.id ? { ...formData, id: currentStaff.id } : n));
+                const result = await staffService.updateStaff(currentStaff.id, formData);
+                if (result.success) {
+                    addToast('Staff profile updated!', 'success');
+                } else {
+                    addToast(result.error, 'error');
+                }
             } else {
-                // Add Mode
-                const newStaff = await api.addStaff(formData);
-                setStaff(val => [...val, newStaff]);
+                const result = await staffService.addStaff(formData);
+                if (result.success) {
+                    addToast('Staff member added!', 'success');
+                } else {
+                    addToast(result.error, 'error');
+                }
             }
             setIsEditing(false);
         } catch (err) {
             console.error(err);
-            alert('Failed to save staff member');
+            addToast('Failed to save staff member', 'error');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
     // Filter and Search Logic
     const filteredStaff = staff.filter(member => {
-        const matchesSearch = member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        const matchesSearch = (member.fullName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
             (member.specialty && member.specialty.toLowerCase().includes(searchTerm.toLowerCase()));
         const matchesRole = filterRole === 'All' || member.role === filterRole;
         return matchesSearch && matchesRole;
@@ -137,53 +155,69 @@ const StaffManager = () => {
 
             {/* List View */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredStaff.length === 0 && (
+                {loading ? (
+                    Array.from({ length: 6 }).map((_, i) => (
+                        <div key={i} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                            <div className="flex gap-4">
+                                <Skeleton variant="circular" width="64px" height="64px" />
+                                <div className="flex-1 space-y-2 pt-2">
+                                    <Skeleton width="60%" height="20px" />
+                                    <Skeleton width="40%" height="16px" />
+                                </div>
+                            </div>
+                            <div className="space-y-2 pt-4 border-t border-slate-50">
+                                <Skeleton width="100%" height="16px" />
+                                <Skeleton width="100%" height="16px" />
+                                <Skeleton width="70%" height="16px" />
+                            </div>
+                        </div>
+                    ))
+                ) : filteredStaff.length === 0 ? (
                     <div className="col-span-full text-center py-10 text-slate-400">
                         No staff members found matching your criteria.
                     </div>
-                )}
+                ) : (
+                    filteredStaff.map(member => (
+                        <Card key={member.id} className="relative group hover:shadow-lg transition-all">
+                            <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                                <button onClick={() => openEditModal(member)} className="p-2 bg-slate-100 hover:bg-slate-200 rounded-full text-slate-600"><Edit2 size={16} /></button>
+                                <button onClick={() => handleDelete(member.id)} className="p-2 bg-red-50 hover:bg-red-100 rounded-full text-red-600"><Trash2 size={16} /></button>
+                            </div>
 
-                {filteredStaff.map(member => (
-                    <Card key={member.id} className="relative group hover:shadow-lg transition-all">
-                        <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                            <button onClick={() => openEditModal(member)} className="p-2 bg-slate-100 hover:bg-slate-200 rounded-full text-slate-600"><Edit2 size={16} /></button>
-                            <button onClick={() => handleDelete(member.id)} className="p-2 bg-red-50 hover:bg-red-100 rounded-full text-red-600"><Trash2 size={16} /></button>
-                        </div>
+                            <div className="flex items-center gap-4 mb-4">
+                                <img src={member.img} alt={member.fullName} className="w-16 h-16 rounded-full bg-slate-100 border-2 border-slate-50" />
+                                <div>
+                                    <h3 className="font-bold text-lg text-slate-800">{member.fullName}</h3>
+                                    <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${member.role === 'Nurse' ? 'bg-teal-100 text-teal-700' :
+                                        (member.role === 'Teacher' ? 'bg-orange-100 text-orange-700' : 'bg-pink-100 text-pink-700')
+                                        }`}>
+                                        {member.role || 'Nanny'}
+                                    </span>
+                                </div>
+                            </div>
 
-                        <div className="flex items-center gap-4 mb-4">
-                            <img src={member.img} alt={member.name} className="w-16 h-16 rounded-full bg-slate-100 border-2 border-slate-50" />
-                            <div>
-                                <h3 className="font-bold text-lg text-slate-800">{member.name}</h3>
-                                <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${member.role === 'Nurse' ? 'bg-teal-100 text-teal-700' :
-                                    (member.role === 'Teacher' ? 'bg-orange-100 text-orange-700' : 'bg-pink-100 text-pink-700')
-                                    }`}>
-                                    {member.role || 'Nanny'}
-                                </span>
-                            </div>
-                        </div>
+                            <div className="space-y-2 text-sm text-slate-600 border-t border-slate-50 pt-4">
+                                <p className="text-slate-500 italic text-xs mb-2 line-clamp-2">{member.specialty}</p>
 
-                        <div className="space-y-2 text-sm text-slate-600 border-t border-slate-50 pt-4">
-                            <p className="text-slate-500 italic text-xs mb-2 line-clamp-2">{member.specialty}</p>
-
-                            <div className="flex justify-between">
-                                <span>Area:</span>
-                                <span className="font-semibold">{member.area || 'N/A'}</span>
+                                <div className="flex justify-between">
+                                    <span>Area:</span>
+                                    <span className="font-semibold">{member.area || 'N/A'}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span>Rate/Salary:</span>
+                                    <span className="font-semibold">${member.rate}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span>Experience:</span>
+                                    <span className="font-semibold">{member.experience}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span>Status:</span>
+                                    <span className="font-semibold text-green-600">{member.availability}</span>
+                                </div>
                             </div>
-                            <div className="flex justify-between">
-                                <span>Rate/Salary:</span>
-                                <span className="font-semibold">${member.rate}</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span>Experience:</span>
-                                <span className="font-semibold">{member.experience}</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span>Status:</span>
-                                <span className="font-semibold text-green-600">{member.availability}</span>
-                            </div>
-                        </div>
-                    </Card>
-                ))}
+                        </Card>
+                    )))}
             </div>
 
             {/* Edit/Add Modal Overlay */}
@@ -214,8 +248,8 @@ const StaffManager = () => {
 
                             <Input
                                 label="Full Name"
-                                value={formData.name}
-                                onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                value={formData.fullName}
+                                onChange={e => setFormData({ ...formData, fullName: e.target.value })}
                                 required
                             />
 

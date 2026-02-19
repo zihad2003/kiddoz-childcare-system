@@ -1,80 +1,95 @@
 # KiddoZ Relational Database Schema (MySQL)
 
-This project has been migrated to **MySQL** to satisfy DBMS Lab requirements. The schema follows relational best practices, including normalization, primary keys, and foreign key constraints.
+This project has been migrated to **MySQL** to satisfy DBMS Lab requirements. The schema follows relational best practices, including 3NF normalization, primary keys, and foreign key constraints.
 
-## ER Diagram (Conceptual)
-```mermaid
-erDiagram
-    USERS ||--o{ STUDENTS : "parent of"
-    STUDENTS ||--o{ CARE_TASKS : "has"
-    STUDENTS ||--o{ INCIDENTS : "recorded"
-    STUDENTS ||--o{ HEALTH_RECORDS : "has"
-    STUDENTS ||--o{ MILESTONES : "achieved"
-    USERS ||--o{ AUDIT_LOGS : "performed"
-    USERS ||--o{ FEEDBACK : "submits"
-```
+## Entity Relationship Overview
+The system is designed around a central `Users` table with role-based extensions.
 
-## Primary Tables
+- **One-to-Many**: `Users` (Parent) -> `Students`
+- **One-to-Many**: `Students` -> `DailyActivities` (Attendance/Meals)
+- **One-to-Many**: `Students` -> `HealthRecords`
+- **One-to-Many**: `Users` (Staff) -> `Payrolls`
+- **One-to-Many**: `Centers` -> `Students` & `Staff`
 
-### 1. `Users`
-Stores authentication and profile data for parents, staff, and admins.
-- `id` (UUID/Int, PK)
-- `name`, `email`, `password` (Hashed)
-- `role` (ENUM: 'admin', 'staff', 'parent', 'nurse', 'nanny')
+## Primary Entities (3NF Normalized)
 
-### 2. `Students`
-Core entity representing children enrolled in the system.
-- `id` (PK)
-- `parentId` (FK -> Users.id)
+### 1. `Users` (Identity & RBAC)
+Primary authentication table. Role-based access control (RBAC) is applied via the `role` enum.
+- `id`: UUID (PK)
+- `email`: VARCHAR(255) (Unique)
+- `password`: VARCHAR(255) (Bcrypt hashed)
+- `role`: ENUM ('superadmin', 'admin', 'staff', 'parent', 'nurse', 'nanny')
+
+### 2. `Students` (Core Business Object)
+Successfully normalized by separating parent/center links into foreign keys.
+- `id`: INT (PK)
+- `parentId`: UUID (FK -> Users.id)
+- `centerId`: INT (FK -> Centers.id)
 - `name`, `dob`, `gender`
-- `plan` (FK -> Plans)
-- `attendance` (Status)
+- `plan`: VARCHAR(50) (Referencing Pricing Plans)
 
-### 3. `CareTasks`
-Scheduled daily activities for students (Relational replacement for NoSQL tasks).
-- `id` (PK)
-- `studentId` (FK -> Students.id)
-- `type`, `scheduledTime`, `priority`
-- `status` (Pending/Completed)
+### 3. `Staff` (Human Resources)
+Separated from `Users` to store specific HR/Nanny data.
+- `id`: INT (PK)
+- `userId`: UUID (FK -> Users.id)
+- `specialization`, `experience_years`, `base_salary`
+- `status`: ENUM ('active', 'on_leave', 'terminated')
 
-### 4. `HealthRecords`
-Medical history and document logs.
-- `id` (PK)
-- `studentId` (FK -> Students.id)
-- `fileName`, `fileSize`, `type`
-- `uploadedBy` (Staff Email)
+### 4. `DailyActivities` (Attendance & Activity)
+Stores time-series data for child monitoring.
+- `id`: BIGINT (PK)
+- `studentId`: INT (FK -> Students.id)
+- `activityType`: VARCHAR(50) (Attendance, Meal, Nap, Mood)
+- `value`: VARCHAR(100)
+- `timestamp`: DATETIME
 
-## Example SQL Queries (For Lab Report)
+### 5. `Payrolls` (Financials)
+Handles salary disbursements and expense tracking.
+- `id`: INT (PK)
+- `staffId`: INT (FK -> Staff.id)
+- `amount`: DECIMAL(10,2)
+- `status`: ENUM ('pending', 'paid', 'overdue')
+- `payDate`: DATE
 
-### 1. Complex JOIN: Get all pending tasks for a specific parent's children
+### 6. `Centers` (Infrastructure)
+Allows the platform to scale to multiple childcare locations.
+- `id`: INT (PK)
+- `name`, `address`, `contactEmail`
+- `capacity`: INT
+
+## Normalization Rational (DBMS Lab)
+1. **First Normal Form (1NF)**: All tables have primary keys, and all columns contain atomic values. Repeated contact info for multiple children of the same parent is moved to a single `Users` entry.
+2. **Second Normal Form (2NF)**: All non-key attributes are fully functional dependent on the primary key. `DailyActivities` depends solely on the `activity_id`, not partially on the student.
+3. **Third Normal Form (3NF)**: Transitive dependencies are removed. For example, student `Plan` details (price, duration) are stored in separate configuration or referenced via the API to prevent data redundancy in the `Students` table.
+
+## Complex SQL Queries (For Lab Report)
+
+### 1. Multi-Join: Revenue by Center
 ```sql
-SELECT s.name AS child_name, ct.type, ct.scheduledTime
-FROM Students s
-JOIN CareTasks ct ON s.id = ct.studentId
-WHERE s.parentId = 'user-123' AND ct.status = 'Pending'
-ORDER BY ct.scheduledTime ASC;
+SELECT c.name AS center_name, SUM(p.amount) AS total_revenue
+FROM Centers c
+JOIN Students s ON c.id = s.centerId
+JOIN Billings p ON s.id = p.studentId
+WHERE p.status = 'Paid'
+GROUP BY c.id;
 ```
 
-### 2. Aggregate Function: Count students by enrollment plan
+### 2. Subquery: Find High-Performing Staff
 ```sql
-SELECT plan, COUNT(*) as student_count
-FROM Students
-GROUP BY plan;
-```
-
-### 3. Subquery: Find parents who have more than 2 children enrolled
-```sql
-SELECT name, email 
-FROM Users 
-WHERE id IN (
-    SELECT parentId 
-    FROM Students 
-    GROUP BY parentId 
-    HAVING COUNT(*) > 2
+SELECT name FROM Users WHERE id IN (
+    SELECT userId FROM Staff WHERE experience_years > 5 AND status = 'active'
 );
 ```
 
+### 3. Aggregation: Daily Attendance Report
+```sql
+SELECT activityType, value, COUNT(*) as count
+FROM DailyActivities
+WHERE DATE(timestamp) = CURDATE() AND activityType = 'attendance'
+GROUP BY value;
+```
+
 ## DBMS Features Utilized
-1. **Relational Constraints**: Use of `ON DELETE CASCADE` for child records when a parent or student is removed.
-2. **ACID Transactions**: Implemented via Sequelize transactions for critical operations like enrollment (creating User + Student + Initial Billing).
-3. **Normalization**: Data is split across 23 tables to ensure 3NF compliance (e.g., separating authentication from student data and activity logs).
+1. **Relational Constraints**: Use of `ON DELETE CASCADE` for child records (e.g., deleting a student removes their health records).
+2. **ACID Transactions**: Implemented via Sequelize transactions for enrollment (creating User + Student + Billing entry).
+3. **Optimized Indexing**: Indexes added to `parentId`, `studentId`, and `email` for O(log n) lookup performance.

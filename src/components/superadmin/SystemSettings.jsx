@@ -175,16 +175,75 @@ const SystemSettings = () => {
                 <Card className="p-8 border-none shadow-xl bg-white">
                     <div className="flex items-center gap-3 mb-8">
                         <div className="p-3 bg-amber-50 text-amber-600 rounded-2xl"><Server size={20} /></div>
-                        <h3 className="text-xl font-black text-slate-900">Technical Limits</h3>
+                        <h3 className="text-xl font-black text-slate-900">Infrastructure & AI</h3>
                     </div>
-                    <div className="max-w-md space-y-2">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Maximum Payload Size (MB)</label>
-                        <input
-                            type="number"
-                            value={settings.maxUploadSize}
-                            onChange={(e) => setSettings({ ...settings, maxUploadSize: e.target.value })}
-                            className="w-full p-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-amber-500 focus:bg-white outline-none transition-all font-bold text-slate-700"
-                        />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        <div className="space-y-4">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Maximum Payload Size (MB)</label>
+                            <input
+                                type="number"
+                                value={settings.maxUploadSize}
+                                onChange={(e) => setSettings({ ...settings, maxUploadSize: e.target.value })}
+                                className="w-full p-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-amber-500 focus:bg-white outline-none transition-all font-bold text-slate-700"
+                            />
+                        </div>
+
+                        {/* YOLO Config */}
+                        <div className="space-y-4 p-6 bg-slate-900 rounded-3xl text-white">
+                            <div className="flex items-center justify-between mb-2">
+                                <div className="flex items-center gap-2">
+                                    <Activity className="text-purple-400" size={18} />
+                                    <h4 className="font-black text-sm italic">Live Broadcast Matrix</h4>
+                                </div>
+                                <div
+                                    onClick={() => setSettings({
+                                        ...settings,
+                                        'yolo.liveStream': { ...settings['yolo.liveStream'], active: !settings['yolo.liveStream']?.active }
+                                    })}
+                                    className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-all ${settings['yolo.liveStream']?.active ? 'bg-purple-500' : 'bg-slate-700'}`}
+                                >
+                                    <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${settings['yolo.liveStream']?.active ? 'translate-x-6' : 'translate-x-0'}`}></div>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-2 mb-4">
+                                {['demo', 'ip-cam'].map(mode => (
+                                    <button
+                                        key={mode}
+                                        onClick={() => setSettings({
+                                            ...settings,
+                                            'yolo.liveStream': { ...settings['yolo.liveStream'], type: mode }
+                                        })}
+                                        className={`py-2 rounded-xl text-[10px] font-black uppercase tracking-tighter transition-all ${settings['yolo.liveStream']?.type === mode
+                                            ? 'bg-purple-600 border border-purple-400 text-white'
+                                            : 'bg-slate-800 border border-slate-700 text-slate-500'}`}
+                                    >
+                                        {mode}
+                                    </button>
+                                ))}
+                            </div>
+
+                            {settings['yolo.liveStream']?.type === 'ip-cam' && (
+                                <div className="space-y-3 animate-in fade-in zoom-in-95 duration-300">
+                                    <div>
+                                        <label className="text-[9px] font-bold text-slate-500 uppercase ml-1">IP Camera URL</label>
+                                        <input
+                                            type="text"
+                                            value={settings['yolo.liveStream']?.url || ''}
+                                            onChange={(e) => setSettings({
+                                                ...settings,
+                                                'yolo.liveStream': { ...settings['yolo.liveStream'], url: e.target.value }
+                                            })}
+                                            placeholder="http://192.168.1.100:8080"
+                                            className="w-full p-3 bg-slate-800 border border-slate-700 rounded-xl font-mono text-xs text-purple-300 outline-none focus:border-purple-500"
+                                        />
+                                    </div>
+                                    <p className="text-[9px] text-slate-500 leading-tight italic">
+                                        Streams are proxied via 5001 to avoid mixed-content blocking.
+                                    </p>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </Card>
             </div>

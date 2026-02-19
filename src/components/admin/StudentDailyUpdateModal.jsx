@@ -6,8 +6,9 @@ import Select from '../ui/Select';
 import Modal from '../ui/Modal';
 import HealthLogs from './HealthLogs';
 import DoctorUpload from './DoctorUpload';
-import api from '../../services/api';
-import { useToast } from '../../context/ToastContext';
+import { studentService } from '../../services/studentService';
+import { healthService } from '../../services/healthService';
+import { notificationService } from '../../services/notificationService';
 
 const StudentDailyUpdateModal = ({
     isOpen,
@@ -63,41 +64,49 @@ const StudentDailyUpdateModal = ({
         if (!student) return;
         setLoading(true);
         try {
-            // Prepare the update object, filtering out undefined or UI-only fields if necessary
             const { activeModalTab, ...dataToSave } = statsForm;
 
-            // Update student record
-            await api.updateStudent(student.id, dataToSave);
+            // Update student record in SQL-ready Firestore
+            await studentService.updateStudent(student.id, dataToSave);
+
+            // Log to health records if vitals changed
+            if (activeModalTab === 'vitals') {
+                await healthService.logHealth({
+                    studentId: student.id,
+                    studentName: student.fullName || student.name,
+                    temp: statsForm.temp,
+                    mood: statsForm.mood,
+                    isParentVisible: true,
+                    updatedBy: user?.uid
+                });
+            }
 
             // Add notification for parent
-            await api.addNotification({
+            await notificationService.addNotification({
                 studentId: student.id,
-                recipientId: student.parentId, // Correct field
-                title: `${currentRole === 'nurse' ? 'Medical Update' : 'Daily Activity Update'}`,
-                message: `${student.name}'s status updated by ${currentRole}.`,
-                details: {
-                    ...dataToSave,
-                    updatedBy: `${currentRole} (${user?.email || 'Staff'})`
-                },
+                recipientId: student.parentId || 'parent_uid',
+                title: `${currentRole.toUpperCase()} Update`,
+                message: `${student.fullName || student.name}'s daily log was updated.`,
                 type: 'health',
-                targetRole: 'parent' // Target parents specifically
+                targetRole: 'parent'
             });
 
-            addToast(`Updated stats for ${student.name}`, 'success');
-            if (onUpdate) onUpdate(); // Notify parent component
+            addToast(`Updated stats for ${student.fullName || student.name}`, 'success');
+            if (onUpdate) onUpdate();
             onClose();
         } catch (e) {
             console.error(e);
             addToast("Update failed. Please try again.", 'error');
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     return (
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title={`Student Management: ${student?.name}`}
+            title={`Student Management: ${student?.fullName || student?.name}`}
             maxWidth="max-w-4xl"
         >
             <div className="flex gap-4 mb-6 border-b border-slate-100">

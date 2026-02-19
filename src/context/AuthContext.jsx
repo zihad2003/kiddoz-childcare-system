@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { onAuthStateChanged, signInAnonymously, signOut } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
-import { auth, db } from '../config/firebase';
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { auth, db } from '../firebase';
 import api from '../services/api';
 import { useToast } from './ToastContext';
 
@@ -136,8 +136,32 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const loginAsDemo = async (role = 'parent') => {
+        try {
+            setLoading(true);
+            const { user: firebaseUser } = await signInAnonymously(auth);
+            const profile = {
+                role: role,
+                fullName: role === 'admin' ? 'Demo Administrator' : role === 'superadmin' ? 'Super Admin Demo' : 'Demo Parent Account',
+                email: `demo-${role}@kiddoz.com`,
+                createdAt: serverTimestamp(),
+                isDemo: true
+            };
+            await setDoc(doc(db, 'users', firebaseUser.uid), profile);
+            setUser({ id: firebaseUser.uid, ...profile });
+            addToast(`Logged in as Demo ${role}!`, 'success');
+            return { success: true, role };
+        } catch (error) {
+            console.error('Demo Login Error:', error);
+            addToast('Demo login failed. Please try again.', 'error');
+            return { success: false, error: error.message };
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
-        <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+        <AuthContext.Provider value={{ user, loading, login, register, logout, loginAsDemo }}>
             {children}
         </AuthContext.Provider>
     );

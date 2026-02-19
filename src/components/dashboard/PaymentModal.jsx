@@ -78,31 +78,31 @@ const PaymentModal = ({ isOpen, onClose, amount, onComplete }) => {
                 {/* Left Side: Summary */}
                 <div className="bg-slate-50 p-6 rounded-2xl h-full flex flex-col justify-between">
                     <div>
-                        <p className="text-slate-500 font-medium text-sm uppercase tracking-wider mb-4">Order Summary</p>
+                        <p className="text-slate-500 font-medium text-sm uppercase tracking-wider mb-4">Payment Summary</p>
                         <div className="flex justify-between items-center mb-2">
                             <span className="font-bold text-slate-700">Tuition Fee</span>
-                            <span className="font-bold text-slate-900">${amount.toFixed(2)}</span>
+                            <span className="font-bold text-slate-900">৳{amount.toLocaleString()}</span>
                         </div>
                         <div className="flex justify-between items-center mb-6 text-sm text-slate-500">
-                            <span>Platform Fee</span>
-                            <span>$0.00</span>
+                            <span>Convenience Fee</span>
+                            <span>৳0.00</span>
                         </div>
                         <div className="border-t border-slate-200 pt-4 flex justify-between items-center">
                             <span className="font-black text-xl text-slate-800">Total</span>
-                            <span className="font-black text-2xl text-purple-700">${amount.toFixed(2)}</span>
+                            <span className="font-black text-2xl text-purple-700">৳{amount.toLocaleString()}</span>
                         </div>
                     </div>
 
                     <div className="mt-8 flex items-center gap-2 text-xs text-slate-400 justify-center">
                         <ShieldCheck size={14} className="text-green-500" />
-                        <span>SSL Encrypted Payment</span>
+                        <span>Trusted Payment Gateway</span>
                     </div>
                 </div>
 
                 {/* Right Side: Flow */}
                 <div className="flex flex-col justify-center">
                     {step === 'method' && (
-                        <div className="space-y-4 animate-in slide-in-from-right-8 duration-300">
+                        <div className="space-y-3 animate-in slide-in-from-right-8 duration-300">
                             <p className="font-bold text-slate-900 mb-2">Select Payment Method</p>
 
                             <button
@@ -112,17 +112,23 @@ const PaymentModal = ({ isOpen, onClose, amount, onComplete }) => {
                                 <div className="w-10 h-10 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
                                     <CreditCard size={20} />
                                 </div>
-                                <span className="font-bold text-slate-700">Credit / Debit Card</span>
+                                <div className="text-left">
+                                    <p className="font-bold text-slate-700">Credit / Debit Card</p>
+                                    <p className="text-[10px] text-slate-400">Visa, Mastercard, DBBL</p>
+                                </div>
                             </button>
 
-                            <button className="w-full p-4 border-2 border-slate-100 hover:border-black hover:bg-slate-50 rounded-xl flex items-center gap-4 transition-all group opacity-50 cursor-not-allowed" title="Coming Soon">
-                                <div className="w-10 h-10 bg-slate-100 text-slate-800 rounded-full flex items-center justify-center">
+                            <button onClick={() => setStep('mfs')} className="w-full p-4 border-2 border-slate-100 hover:border-pink-500 hover:bg-pink-50 rounded-xl flex items-center gap-4 transition-all group">
+                                <div className="w-10 h-10 bg-pink-100 text-pink-600 rounded-full flex items-center justify-center">
                                     <Smartphone size={20} />
                                 </div>
-                                <span className="font-bold text-slate-700">Apple Pay</span>
+                                <div className="text-left">
+                                    <p className="font-bold text-slate-700">Mobile Banking</p>
+                                    <p className="text-[10px] text-slate-400 text-pink-500 font-bold">bKash, Nagad, Rocket</p>
+                                </div>
                             </button>
 
-                            <button className="w-full p-4 border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50 rounded-xl flex items-center gap-4 transition-all group opacity-50 cursor-not-allowed" title="Coming Soon">
+                            <button className="w-full p-4 border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50 rounded-xl flex items-center gap-4 transition-all group opacity-50 cursor-not-allowed">
                                 <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">
                                     <Building size={20} />
                                 </div>
@@ -133,11 +139,7 @@ const PaymentModal = ({ isOpen, onClose, amount, onComplete }) => {
 
                     {step === 'card' && (
                         <div className="animate-in slide-in-from-right-8 duration-300">
-                            <div className="mb-[-10px]">
-                                {/* Compact Card Visual */}
-                                <CardPreview />
-                            </div>
-
+                            <CardPreview />
                             <form onSubmit={(e) => { e.preventDefault(); handleProcessPayment(); }} className="space-y-3">
                                 <Input
                                     placeholder="Card Number"
@@ -174,16 +176,34 @@ const PaymentModal = ({ isOpen, onClose, amount, onComplete }) => {
                                 />
 
                                 <Button type="submit" size="lg" className="w-full mt-2" icon={Lock}>
-                                    Pay ${amount.toFixed(2)}
+                                    Pay ৳{amount.toLocaleString()}
                                 </Button>
-                                <button
-                                    type="button"
-                                    onClick={() => setStep('method')}
-                                    className="w-full text-center text-xs text-slate-400 hover:text-purple-600 mt-2"
-                                >
-                                    Change Method
-                                </button>
+                                <button type="button" onClick={() => setStep('method')} className="w-full text-center text-xs text-slate-400 hover:text-purple-600 mt-2">Change Method</button>
                             </form>
+                        </div>
+                    )}
+
+                    {step === 'mfs' && (
+                        <div className="animate-in slide-in-from-right-8 duration-300 text-center">
+                            <div className="flex justify-center gap-4 mb-6">
+                                <button className="p-3 border-2 border-slate-100 rounded-xl hover:border-pink-500 transition-all">
+                                    <img src="https://logowik.com/content/uploads/images/bkash-payment-method5359.logowik.com.webp" className="h-10" alt="bKash" />
+                                </button>
+                                <button className="p-3 border-2 border-slate-100 rounded-xl hover:border-orange-500 transition-all">
+                                    <img src="https://logowik.com/content/uploads/images/nagad-mobile-banking7291.logowik.com.webp" className="h-10" alt="Nagad" />
+                                </button>
+                            </div>
+                            <p className="text-sm font-bold text-slate-700 mb-4">Merchant: KiddoZ Childcare</p>
+                            <Input
+                                label="Mobile Number"
+                                placeholder="017xxxxxxxx"
+                                className="text-center font-bold text-lg mb-4"
+                                maxLength={11}
+                            />
+                            <Button onClick={handleProcessPayment} className="w-full bg-pink-600 hover:bg-pink-700">
+                                Confirm Payment
+                            </Button>
+                            <button type="button" onClick={() => setStep('method')} className="w-full text-center text-xs text-slate-400 hover:text-purple-600 mt-4">Go Back</button>
                         </div>
                     )}
 

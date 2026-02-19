@@ -5,6 +5,7 @@ import Button from '../ui/Button';
 import Input from '../ui/Input';
 import api from '../../services/api';
 import { useToast } from '../../context/ToastContext';
+import Skeleton from '../ui/Skeleton';
 
 const IncidentReportManager = ({ students = [] }) => {
     const { addToast } = useToast();
@@ -165,7 +166,19 @@ const IncidentReportManager = ({ students = [] }) => {
                     {loading ? (
                         <div className="grid grid-cols-1 gap-6">
                             {[1, 2, 3].map(i => (
-                                <div key={i} className="h-48 rounded-[2.5rem] bg-slate-100 animate-pulse" />
+                                <div key={i} className="h-48 rounded-[2.5rem] bg-white border border-slate-100 p-8 shadow-sm flex flex-col justify-between">
+                                    <div className="flex justify-between">
+                                        <div className="flex gap-4">
+                                            <Skeleton width="64px" height="64px" variant="rounded" />
+                                            <div className="space-y-2">
+                                                <Skeleton width="150px" height="24px" />
+                                                <Skeleton width="100px" height="16px" />
+                                            </div>
+                                        </div>
+                                        <Skeleton width="80px" height="20px" />
+                                    </div>
+                                    <Skeleton width="100%" height="40px" variant="rounded" />
+                                </div>
                             ))}
                         </div>
                     ) : filteredIncidents.length > 0 ? (

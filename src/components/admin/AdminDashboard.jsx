@@ -8,17 +8,22 @@ import { useToast } from '../../context/ToastContext';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
 import Badge from '../ui/Badge';
+import Skeleton from '../ui/Skeleton';
 import StaffManager from './StaffManager';
 import PayrollManager from './PayrollManagerClean';
 import LiveStreamManager from './LiveStreamManager';
+import YoloView from '../ai/YoloView';
 import NurseDashboard from './NurseDashboard';
 import TeacherDashboard from './TeacherDashboard';
 import ChildCareTaskManager from './ChildCareTaskManager';
 import NannyDashboard from './NannyDashboard';
 import StudentDailyUpdateModal from './StudentDailyUpdateModal';
 import IncidentReportManager from './IncidentReportManager';
+import AppSettings from './AppSettings';
 import AddStudentModal from './AddStudentModal';
+import ParentManager from './ParentManager';
 import api from '../../services/api';
+import { studentService } from '../../services/studentService';
 
 const AdminDashboard = ({ user, handleLogout }) => {
   const { addToast } = useToast();
@@ -54,30 +59,17 @@ const AdminDashboard = ({ user, handleLogout }) => {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isAddingStudent, setIsAddingStudent] = useState(false);
-
-  // Role based access control
-  const canAccess = (feature) => {
-    if (currentRole === 'admin') return true;
-    if (currentRole === 'teacher' && ['roster', 'alerts', 'live', 'care', 'incidents'].includes(feature)) return true;
-    if (currentRole === 'nurse' && ['roster', 'alerts', 'care', 'incidents'].includes(feature)) return true;
-    if (currentRole === 'nanny') return false; // Nanny has their own full dashboard, uses AdminDashboard as wrapper but hides standard tabs
-    return false;
-  };
-
-  const fetchStudents = async () => {
-    try {
-      const data = await api.getStudents();
-      setStudents(data);
-    } catch (err) {
-      console.error("Failed to fetch students", err);
-      addToast("Failed to load students", "error");
-    }
-  };
+  const [showVitalsModal, setShowVitalsModal] = useState(false);
 
   useEffect(() => {
-    fetchStudents();
+    setLoading(true);
+    const unsubscribe = studentService.subscribeToStudents((data) => {
+      setStudents(data);
+      setLoading(false);
+    });
+    return () => unsubscribe();
   }, []);
 
   const openEditModal = (student) => {
@@ -86,7 +78,7 @@ const AdminDashboard = ({ user, handleLogout }) => {
   };
 
   const [filterConfig, setFilterConfig] = useState({ status: 'All', payment: 'All', grade: 'All', minAge: '', maxAge: '' });
-  const [sortConfig, setSortConfig] = useState({ field: 'name', direction: 'asc' });
+  const [sortConfig, setSortConfig] = useState({ field: 'fullName', direction: 'asc' });
   const [settings, setSettings] = useState({ notifications: true, maintenance: false });
 
   const toggleSetting = (key) => {
@@ -94,24 +86,25 @@ const AdminDashboard = ({ user, handleLogout }) => {
     addToast(`${key === 'notifications' ? 'Notifications' : 'Maintenance Mode'} ${!settings[key] ? 'Enabled' : 'Disabled'}`, 'success');
   };
 
-
   const enrollBangladeshiData = async () => {
     if (loading) return;
     setLoading(true);
     addToast('Initializing Bangladeshi student data synchronization...', 'info');
     try {
       const randomStudent = BANGLADESHI_STUDENTS[Math.floor(Math.random() * BANGLADESHI_STUDENTS.length)];
-      await api.addStudent({
-        ...randomStudent,
-        plan: { name: randomStudent.plan },
-        childData: { ...randomStudent, enrollmentDate: new Date() }
+      await studentService.addStudent({
+        fullName: randomStudent.name,
+        dateOfBirth: randomStudent.dob,
+        gender: randomStudent.gender || 'Other',
+        plan: randomStudent.plan || 'Growth Scholar',
+        attendance: 'Present',
+        ...randomStudent
       });
 
       addToast(`Successfully enrolled ${randomStudent.name} into the system.`, 'success');
-      await fetchStudents();
     } catch (e) {
       console.error(e);
-      addToast(e.response?.data?.message || 'Failed to sync data with the server. Please check your connection.', 'error');
+      addToast('Failed to sync data with the server.', 'error');
     } finally {
       setLoading(false);
     }
@@ -123,8 +116,8 @@ const AdminDashboard = ({ user, handleLogout }) => {
     // Search
     if (searchTerm) {
       result = result.filter(s =>
-        s.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        s.id?.toLowerCase().includes(searchTerm.toLowerCase())
+        (s.fullName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (s.id || '').toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -166,7 +159,7 @@ const AdminDashboard = ({ user, handleLogout }) => {
       try {
         await api.deleteStudent(id);
         addToast(`${name} removed from roster.`, 'success');
-        fetchStudents();
+        // No need to refetch - real-time subscription handles updates automatically
       } catch (err) {
         console.error(err);
         addToast("Failed to delete student", "error");
@@ -214,6 +207,13 @@ const AdminDashboard = ({ user, handleLogout }) => {
             className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'nannies' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-purple-100 hover:text-white'}`}
           >
             <UserCheck size={20} /> Manage Staff
+          </button>
+
+          <button
+            onClick={() => setTab('parents')}
+            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${adminTab === 'parents' ? 'bg-white/20 shadow-lg translate-x-1' : 'hover:bg-white/10 text-purple-100 hover:text-white'}`}
+          >
+            <Users size={20} /> Parent Directory
           </button>
 
           <button
@@ -286,6 +286,7 @@ const AdminDashboard = ({ user, handleLogout }) => {
             {adminTab === 'care' && <><Clock className="text-purple-600" /> Daily Care Management</>}
             {adminTab === 'live' && <><ScanFace className="text-purple-600" /> AI Surveillance</>}
             {adminTab === 'nannies' && <><UserCheck className="text-purple-600" /> Staff Directory</>}
+            {adminTab === 'parents' && <><Users className="text-purple-600" /> Parent Directory</>}
             {adminTab === 'alerts' && <><Bell className="text-purple-600" /> Notifications</>}
             {adminTab === 'incidents' && <><FileText className="text-purple-600" /> Incident Reports</>}
             {adminTab === 'financials' && <><DollarSign className="text-purple-600" /> Financial Overview</>}
@@ -322,16 +323,8 @@ const AdminDashboard = ({ user, handleLogout }) => {
                       >
                         <PlusCircle size={16} className="mr-2" /> New Enrollment
                       </Button>
-                      <Button
-                        onClick={enrollBangladeshiData}
-                        variant="outline"
-                        size="sm"
-                        className="border-green-200 bg-green-50 text-green-700 hover:bg-green-100"
-                        disabled={loading}
-                      >
-                        {loading ? <Loader2 size={16} className="mr-2 animate-spin" /> : <Database size={16} className="mr-2" />}
-                        {loading ? 'Processing...' : 'Load BD Data'}
-                      </Button>
+                    </div>
+                    <div className="flex gap-2">
                       <Badge color="bg-purple-100 text-purple-700">{students.length} Total Students</Badge>
                       <Badge color="bg-green-100 text-green-700">{students.filter(s => s.attendance === 'Present').length} Present</Badge>
                     </div>
@@ -341,40 +334,82 @@ const AdminDashboard = ({ user, handleLogout }) => {
                     onFilterChange={setFilterConfig}
                     onSortChange={setSortConfig}
                   />
-
                   <AddStudentModal
-                    isOpen={isAddingStudent}
-                    onClose={() => setIsAddingStudent(false)}
-                    onStudentAdded={fetchStudents}
+                    isOpen={isAddingStudent || (isEditing && selectedStudent)}
+                    studentToEdit={isEditing ? selectedStudent : null}
+                    onClose={() => { setIsAddingStudent(false); setIsEditing(false); setSelectedStudent(null); }}
                   />
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {filteredStudents.map(student => (
-                      <Card key={student.id} className="group hover:border-purple-300 relative overflow-hidden">
-                        <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
-                          <button onClick={() => openEditModal(student)} className="p-2 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-lg transition" title="Edit/Update"><Edit2 size={16} /></button>
-                          <button onClick={() => handleDeleteStudent(student.id, student.name)} className="p-2 bg-red-100 hover:bg-red-200 text-red-600 rounded-lg transition" title="Remove"><Trash2 size={16} /></button>
-                        </div>
-                        <div className="mb-4">
-                          <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg mb-3">
-                            {student.name.charAt(0)}
+                    {loading ? (
+                      Array.from({ length: 8 }).map((_, i) => (
+                        <div key={i} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                          <div className="flex gap-4 mb-4">
+                            <Skeleton variant="circular" width="48px" height="48px" />
+                            <div className="flex-1 space-y-2">
+                              <Skeleton width="70%" height="20px" />
+                              <Skeleton width="40%" height="14px" />
+                            </div>
                           </div>
-                          <h3 className="font-bold text-lg text-slate-800 truncate">{student.name}</h3>
-                          <p className="text-xs font-mono text-slate-400">ID: {student.id}</p>
+                          <div className="space-y-3">
+                            <Skeleton width="100%" height="16px" />
+                            <Skeleton width="100%" height="16px" />
+                            <Skeleton width="60%" height="16px" />
+                          </div>
+                          <div className="flex gap-2 mt-4">
+                            <Skeleton width="50%" height="32px" />
+                            <Skeleton width="50%" height="32px" />
+                          </div>
                         </div>
-
-                        <div className="space-y-2 text-sm text-slate-600 mb-6">
-                          <div className="flex justify-between"><span className="text-slate-400">Temp</span> <span className="font-semibold">{student.temp || '--'}°F</span></div>
-                          <div className="flex justify-between"><span className="text-slate-400">Status</span> <span className={`font-semibold ${student.attendance === 'Present' ? 'text-green-600' : 'text-slate-600'}`}>{student.attendance || '--'}</span></div>
-                          <div className="flex justify-between"><span className="text-slate-400">Plan</span> <span className="font-semibold text-purple-600">{student.plan}</span></div>
+                      ))
+                    ) : filteredStudents.length === 0 ? (
+                      <div className="md:col-span-2 lg:col-span-3 xl:col-span-4 flex flex-col items-center justify-center py-24 bg-white rounded-3xl border-2 border-dashed border-slate-100 animate-in fade-in duration-700">
+                        <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+                          <Users size={40} className="text-slate-200" />
                         </div>
-
-                        <Button onClick={() => openEditModal(student)} variant="outline" size="sm" className="w-full">
-                          Update Vitals
+                        <h3 className="text-lg font-bold text-slate-400">No Students Found</h3>
+                        <p className="text-slate-300 text-sm max-w-xs text-center mt-1">Try adjusting your search filters or start a new enrollment to populate the registry.</p>
+                        <Button
+                          onClick={() => { setSearchTerm(''); setFilterConfig({ status: 'All', grade: 'All' }); }}
+                          variant="ghost"
+                          className="mt-6 text-purple-600 font-black text-xs uppercase tracking-widest"
+                        >
+                          Clear All Filters
                         </Button>
-                        <p className="text-[10px] text-center text-slate-400 mt-2 font-medium">IoT Auto-sync coming soon</p>
-                      </Card>
-                    ))}
+                      </div>
+                    ) : (
+                      filteredStudents.map(student => (
+                        <Card key={student.id} className="group hover:border-purple-300 relative overflow-hidden">
+                          <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                            <button onClick={() => { setSelectedStudent(student); setIsEditing(true); }} className="p-2 bg-white/90 hover:bg-purple-100 text-purple-700 rounded-lg shadow-sm transition" title="Edit Profile"><Edit2 size={16} /></button>
+                            <button onClick={() => handleDeleteStudent(student.id, student.fullName || student.name)} className="p-2 bg-white/90 hover:bg-red-100 text-red-600 rounded-lg shadow-sm transition" title="Remove"><Trash2 size={16} /></button>
+                          </div>
+                          <div className="mb-4">
+                            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg mb-3">
+                              {(student.fullName || student.name || '?').charAt(0)}
+                            </div>
+                            <h3 className="font-bold text-lg text-slate-800 truncate">{student.fullName || student.name}</h3>
+                            <p className="text-xs font-mono text-slate-400">ID: {student.id}</p>
+                          </div>
+
+                          <div className="space-y-2 text-sm text-slate-600 mb-6">
+                            <div className="flex justify-between"><span className="text-slate-400">Temp</span> <span className="font-semibold">{student.temp || '--'}°F</span></div>
+                            <div className="flex justify-between"><span className="text-slate-400">Status</span> <span className={`font-semibold ${student.attendance === 'Present' ? 'text-green-600' : 'text-slate-600'}`}>{student.attendance || '--'}</span></div>
+                            <div className="flex justify-between"><span className="text-slate-400">Plan</span> <span className="font-semibold text-purple-600">{student.plan}</span></div>
+                          </div>
+
+                          <div className="flex gap-2">
+                            <Button onClick={() => { setSelectedStudent(student); setShowVitalsModal(true); }} variant="outline" size="sm" className="flex-1">
+                              Vitals
+                            </Button>
+                            <Button onClick={() => { setSelectedStudent(student); setIsEditing(true); }} variant="ghost" size="sm" className="flex-1 text-purple-600">
+                              Edit
+                            </Button>
+                          </div>
+                          <p className="text-[10px] text-center text-slate-400 mt-2 font-medium">IoT Auto-sync coming soon</p>
+                        </Card>
+                      ))
+                    )}
                   </div>
                 </div>
               )}
@@ -384,13 +419,20 @@ const AdminDashboard = ({ user, handleLogout }) => {
               )}
 
               {adminTab === 'live' && (
-                <div className="animate-in fade-in duration-500">
-                  <LiveStreamManager />
+                <div className="animate-in fade-in duration-500 space-y-8">
+                  <YoloView />
+                  <div className="mt-12 opacity-50">
+                    <LiveStreamManager />
+                  </div>
                 </div>
               )}
 
               {adminTab === 'nannies' && (
                 <StaffManager />
+              )}
+
+              {adminTab === 'parents' && (
+                <ParentManager />
               )}
 
               {adminTab === 'alerts' && (
@@ -419,8 +461,8 @@ const AdminDashboard = ({ user, handleLogout }) => {
 
               {/* Centralized Modal */}
               <StudentDailyUpdateModal
-                isOpen={isEditing}
-                onClose={() => setIsEditing(false)}
+                isOpen={showVitalsModal}
+                onClose={() => setShowVitalsModal(false)}
                 student={selectedStudent}
                 user={user}
                 currentRole={currentRole}
@@ -483,8 +525,16 @@ const AlertsFeed = () => {
   };
 
   if (loading) return (
-    <div className="flex items-center justify-center py-16">
-      <Loader2 className="animate-spin text-purple-600" size={32} />
+    <div className="space-y-4">
+      {[1, 2, 3].map(i => (
+        <div key={i} className="flex gap-4 p-4 bg-white border border-slate-100 rounded-xl shadow-sm">
+          <Skeleton variant="circular" width="40px" height="40px" />
+          <div className="flex-1 space-y-2">
+            <Skeleton width="40%" height="20px" />
+            <Skeleton width="90%" height="14px" />
+          </div>
+        </div>
+      ))}
     </div>
   );
 

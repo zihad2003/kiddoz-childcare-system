@@ -10,6 +10,7 @@ import ProgressCharts from './ProgressCharts';
 import Card from '../ui/Card';
 import Badge from '../ui/Badge';
 import Button from '../ui/Button';
+import Skeleton from '../ui/Skeleton';
 
 const ParentDashboard = ({ user, setView, db, appId }) => {
   const location = useLocation();
@@ -193,7 +194,35 @@ const ParentDashboard = ({ user, setView, db, appId }) => {
         </div>
 
         <div className="animate-in fade-in slide-in-from-bottom-8 duration-500">
-          {!currentChild ? (
+          {loading ? (
+            <div className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[1, 2, 3, 4].map(i => (
+                  <div key={i} className="bg-white p-6 rounded-2xl shadow-lg border-0 h-32 relative overflow-hidden">
+                    <Skeleton width="48px" height="48px" variant="rounded" className="mb-4" />
+                    <Skeleton width="40%" height="24px" className="mb-2" />
+                    <Skeleton width="60%" height="16px" />
+                  </div>
+                ))}
+              </div>
+              <div className="grid md:grid-cols-3 gap-8">
+                <div className="md:col-span-2 bg-white rounded-3xl p-6 shadow-sm border border-slate-100 h-96">
+                  <Skeleton width="100%" height="100%" variant="rounded" />
+                </div>
+                <div className="space-y-6">
+                  <div className="bg-white p-6 rounded-3xl h-full shadow-sm border border-slate-100">
+                    <div className="flex gap-4 mb-6">
+                      <Skeleton variant="circular" width="64px" height="64px" />
+                      <div className="space-y-2 pt-2">
+                        <Skeleton width="120px" height="20px" />
+                        <Skeleton width="80px" height="14px" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : !currentChild ? (
             <div className="text-center py-24 text-slate-400 bg-white rounded-3xl shadow-sm border border-slate-100">
               <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Users size={40} className="text-slate-300" />
