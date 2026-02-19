@@ -33,58 +33,73 @@ apiClient.interceptors.response.use(
             console.warn('Backend connection failed. Serving MOCK DATA for demo.');
 
             const url = error.config.url;
+            const requestData = error.config.data ? JSON.parse(error.config.data) : {};
 
-            // Mock Responses based on URL
+            // ─── AUTH MOCK ──────────────────────────────────────────────────
             if (url.includes('/auth/login')) {
-                const role = url.includes('admin') ? 'admin' : url.includes('superadmin') ? 'superadmin' : 'parent';
+                const email = requestData.email?.toLowerCase() || '';
+                let role = 'parent';
+                if (email.includes('super')) role = 'superadmin';
+                else if (email.includes('admin')) role = 'admin';
+
+                console.log(`[Mock Auth] Logging in as ${role} for email: ${email}`);
+
                 return Promise.resolve({
                     data: {
                         token: 'mock-token',
-                        user: { id: 'mock-id', email: 'mock@example.com', role: role, fullName: 'Mock User' }
+                        user: {
+                            id: 'mock-id',
+                            email: email || 'parent@kiddoz.com',
+                            role: role,
+                            fullName: role.charAt(0).toUpperCase() + role.slice(1) + ' User'
+                        }
                     }
                 });
             }
-            if (url.includes('/parent/students')) {
-                return Promise.resolve({ data: BANGLADESHI_STUDENTS.slice(0, 2) });
-            }
-            if (url.includes('/students')) {
+
+            // ─── DATA MOCK ──────────────────────────────────────────────────
+            if (url.includes('/parent/students') || url.includes('/students')) {
                 return Promise.resolve({ data: BANGLADESHI_STUDENTS });
             }
+
             if (url.includes('/notifications')) {
                 return Promise.resolve({
                     data: [
-                        { id: 1, title: 'Tuition Due', message: 'Monthly fee for February is due.', type: 'admin', createdAt: (new Date()).toISOString() },
-                        { id: 2, title: 'Health Update', message: 'Temperature check completed: Normal.', type: 'nurse', createdAt: (new Date()).toISOString() }
+                        { id: 1, title: 'Welcome to KiddoZ', message: 'Thank you for choosing us for your child\'s care.', type: 'admin', createdAt: new Date().toISOString() },
+                        { id: 2, title: 'Health Update', message: 'Routine temperature checks completed.', type: 'nurse', createdAt: new Date().toISOString() }
                     ]
                 });
             }
+
             if (url.includes('/activities')) {
                 return Promise.resolve({
                     data: [
-                        { id: 1, activityType: 'meal', details: 'Healthy Lunch', value: 'Finished', timestamp: new Date(), recordedBy: 'Staff' },
-                        { id: 2, activityType: 'nap', details: 'Afternoon Nap', value: '1h 30m', timestamp: new Date(), recordedBy: 'Staff' },
-                        { id: 3, activityType: 'mood', details: 'Playtime', value: 'Happy', timestamp: new Date(), recordedBy: 'Staff' }
+                        { id: 1, activityType: 'meal', details: 'Healthy Lunch', value: 'Full Portion', timestamp: new Date(), recordedBy: 'Staff' },
+                        { id: 2, activityType: 'nap', details: 'Midday Rest', value: '1h 45m', timestamp: new Date(), recordedBy: 'Staff' },
+                        { id: 3, activityType: 'mood', details: 'Group Activity', value: 'Excited', timestamp: new Date(), recordedBy: 'Staff' }
                     ]
                 });
             }
-            if (url.includes('/health')) {
-                return Promise.resolve({ data: [] });
-            }
+
             if (url.includes('/staff')) {
                 return Promise.resolve({
                     data: [
-                        { id: 1, name: 'Fatima Begum', role: 'Nanny', area: 'Dhaka', rate: 15, rating: 4.8, experience: '5 Years', availability: 'Available', img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100' },
-                        { id: 2, name: 'Rohima Khatun', role: 'Nanny', area: 'Uttara', rate: 12, rating: 4.5, experience: '3 Years', availability: 'Busy', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100' }
+                        { id: 1, name: 'Fatima Begum', role: 'Senior Nanny', area: 'Dhaka', rate: 15, rating: 4.8, experience: '5 Years', availability: 'Available', img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100' },
+                        { id: 2, name: 'Rohima Khatun', role: 'Toddler Teacher', area: 'Uttara', rate: 12, rating: 4.5, experience: '3 Years', availability: 'Available', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100' },
+                        { id: 3, name: 'Zayed Khan', role: 'Music Instructor', area: 'Gulshan', rate: 20, rating: 4.9, experience: '7 Years', availability: 'Available', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100' }
                     ]
                 });
             }
-            if (url.includes('/billing')) {
+
+            if (url.includes('/billing') || url.includes('/financials')) {
                 return Promise.resolve({
                     data: {
                         invoices: [
-                            { id: 'INV-001', month: 'January', amount: 5000, status: 'Paid', date: new Date().toISOString() },
-                            { id: 'INV-002', month: 'February', amount: 5000, status: 'Unpaid', date: new Date().toISOString() }
-                        ]
+                            { id: 'INV-001', month: 'January', amount: 15000, status: 'Paid', date: new Date().toISOString() },
+                            { id: 'INV-002', month: 'February', amount: 15000, status: 'Unpaid', date: new Date().toISOString() }
+                        ],
+                        totalRevenue: 450000,
+                        monthlyTarget: 500000
                     }
                 });
             }
@@ -92,12 +107,25 @@ apiClient.interceptors.response.use(
             if (url.includes('/incidents')) {
                 return Promise.resolve({
                     data: [
-                        { id: 'mock-1', studentId: 'mock-s1', type: 'Injury', severity: 'Low', description: 'Minor scrape during playtime', location: 'Playground', actionTaken: 'Cleaned and bandaged', reportedBy: 'teacher@kiddoz.com', status: 'Resolved', student: { name: 'Aryan Rahman' }, createdAt: new Date().toISOString() },
+                        { id: 'mock-1', studentId: 'mock-s1', type: 'Scrape', severity: 'Low', description: 'Minor scrape during playground time', location: 'Playground', actionTaken: 'First aid applied', reportedBy: 'teacher@kiddoz.com', status: 'Resolved', student: { name: 'Aryan Rahman' }, createdAt: new Date().toISOString() },
                     ]
                 });
             }
 
-            // Default empty array for list endpoints, empty object for others
+            if (url.includes('/settings')) {
+                return Promise.resolve({
+                    data: {
+                        centerName: 'KiddoZ Childcare Dhaka',
+                        contactEmail: 'contact@kiddoz.com',
+                        phone: '+880-1234-5678',
+                        address: 'Dhaka, Bangladesh',
+                        currency: 'BDT',
+                        taxRate: 5
+                    }
+                });
+            }
+
+            // Default fallback for any other endpoint
             return Promise.resolve({ data: [] });
         }
 
