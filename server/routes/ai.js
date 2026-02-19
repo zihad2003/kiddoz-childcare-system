@@ -3,141 +3,71 @@ const router = express.Router();
 const axios = require('axios');
 const http = require('http');
 const https = require('https');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+
+// Configure multer for video upload
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const uploadDir = path.join(__dirname, '../uploads');
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        cb(null, uploadDir);
+    },
+    filename: (req, file, cb) => {
+        // Overwrite or use unique? User asked "to add demo video by admin", plural/singular?
+        // Let's use a standard name for the primary demo.
+        cb(null, 'demo_yolo.mp4');
+    }
+});
+
+const upload = multer({
+    storage,
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype.startsWith('video/')) {
+            cb(null, true);
+        } else {
+            cb(new Error('Only video files are allowed!'), false);
+        }
+    }
+});
 
 // OpenAI/Gemini Chat Proxy
 const { Student, DailyActivity, HealthRecord, Milestone } = require('../models');
+const { findManualAnswer } = require('../utils/manualQA');
 
-// OpenAI/Gemini Chat Proxy
+// ─── Chatbot Logic (Static/Manual Mode) ──────────────────────────────────────
 router.post('/chat', async (req, res) => {
     try {
-        const { message, mode, childId, contextTimestamp } = req.body; // childId needed for health mode
-        const apiKey = process.env.GEMINI_API_KEY;
+        const { message, mode, childId } = req.body;
+        console.log(`[Chatbot] Request received: "${message}" (Mode: ${mode})`);
 
-        console.log('DEBUG: Chat Request Received. API Key defined:', !!apiKey, 'Length:', apiKey?.length);
-
-        if (!apiKey) {
-            return res.status(500).json({ message: 'GEMINI_API_KEY is not configured on the server.' });
+        // 1. Check for manual Q&A matches (Center Info, Enrollment, etc.)
+        const manualMatch = findManualAnswer(message);
+        if (manualMatch && mode !== 'health') {
+            console.log(`[Chatbot] Manual match found for: "${message}"`);
+            return res.json({ text: manualMatch });
         }
 
-        let systemPrompt = "";
-        let contextData = "No specific data context available.";
+        console.log(`[Chatbot] No specific manual match for: "${message}". Providing fallback.`);
 
-        if (mode === 'health' && childId) {
-            // --- Fetch Health/Activity Context ---
-            try {
-                const student = await Student.findByPk(childId);
-                const activities = await DailyActivity.findAll({
-                    where: { studentId: childId },
-                    limit: 15,
-                    order: [['timestamp', 'DESC']]
-                });
-                const healthRecords = await HealthRecord.findAll({
-                    where: { studentId: childId },
-                    limit: 5,
-                    order: [['uploadedAt', 'DESC']]
-                });
-                const milestones = await Milestone.findAll({
-                    where: { studentId: childId },
-                    order: [['achievedDate', 'DESC']]
-                });
-
-                if (student) {
-                    contextData = `
-                        CHILD PROFILE:
-                        Name: ${student.name}
-                        Age: ${student.age}
-                        Class: ${student.plan || 'N/A'}
-                        Allergies/Info: ${JSON.stringify(student.healthInfo || {})}
-                        Current Status: Mood=${student.mood || 'N/A'}, Meal=${student.meal || 'N/A'}
-
-                        RECENT ACTIVITIES (Past 15):
-                        ${activities.map(a => `- [${new Date(a.timestamp).toLocaleString()}] ${a.activityType}: ${a.value} (${a.details || ''})`).join('\n')}
-
-                        HEALTH RECORDS (Recent):
-                        ${healthRecords.map(h => `- [${new Date(h.uploadedAt).toLocaleDateString()}] ${h.recordType}: ${h.description}`).join('\n')}
-
-                        MILESTONES ACHIEVED:
-                        ${milestones.length > 0
-                            ? milestones.map(m => `- [${m.achievedDate}] ${m.title}: ${m.description || 'No details'}`).join('\n')
-                            : 'No specific milestones recorded yet.'}
-                    `;
-                }
-            } catch (dbError) {
-                console.error("Error fetching context:", dbError);
-                contextData = "Error retrieving child data from database.";
-            }
-
-            systemPrompt = `You are a specialist Health & Development AI for KiddoZ. 
-            Your role is to analyze the provided data and answer the parent's question about their child.
-            
-            STRICT RULES:
-            1. ONLY answer based on the provided context data.
-            2. If the data doesn't answer the question, say "I don't have that specific record yet."
-            3. Be warm, reassuring, and professional.
-            4. Do NOT give medical advice. Encourage consulting a doctor for illness.
-            5. Use formatting (bullet points) and emojis to be friendly.
-            
-            CONTEXT DATA:
-            ${contextData}`;
-
-        } else {
-            // General Info Mode
-            systemPrompt = `You are the friendly AI assistant for KiddoZ Childcare Center. 
-            Answer questions about our services based on this info:
-            - Hours: Mon-Fri 7AM-6PM.
-            - Ages: 6 months to 5 years.
-            - Infants (1:3 ratio), Toddlers (1:4), Preschool (1:6).
-            - Services: Full day care, nutritious meals (included), YOLO safety tracking, AI health monitoring.
-            - Pricing: Infants $1200/mo, Toddlers $1000/mo, Preschool $900/mo.
-            - Tuition includes meals. 10% sibling discount.
-            - Location: 123 Main Street.
-            
-            Tone: Enthusiastic, helpful, and polite. Use emojis.`;
+        // 2. Specialized Fallback for Health Mode
+        if (mode === 'health') {
+            return res.json({
+                text: "I'm currently focused on providing general center information. 🏥 For detailed health insights or recent activity logs for your child, please check the **Daily Reports** or **Health Records** tabs in your dashboard.\n\nIs there anything else I can help you with?"
+            });
         }
 
-        const response = await axios.post(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-            {
-                contents: [{
-                    role: "user",
-                    parts: [{ text: `Context: ${contextData}\n\nUser Question: ${message}` }]
-                }],
-                systemInstruction: { parts: [{ text: systemPrompt }] }
-            },
-            {
-                headers: { 'Content-Type': 'application/json' }
-            }
-        );
+        // 3. Catch-all for General Mode (if manualMatch failed)
+        return res.json({
+            text: manualMatch || "Assalamu Alaikum! I'm the KiddoZ Assistant. 🤖 I'm specialized in helping parents with info on enrollment, fees, meals, and more. \n\nHow can I help you today?"
+        });
 
-        const botText = response.data.candidates?.[0]?.content?.parts?.[0]?.text || "I'm having trouble analyzing that right now.";
-        res.json({ text: botText });
     } catch (err) {
-        console.error('Gemini API Error (Falling back to Mock):', err.response?.data || err.message);
-
-        // --- Mock Fallback Logic ---
-        // If the real AI fails (e.g. invalid key), return a simulated response so the demo works.
-        await new Promise(r => setTimeout(r, 1000)); // Simulate think time
-
-        const { message: reqMessage, mode: reqMode } = req.body || {}; // Safety check
-        let mockResponse = "";
-
-        if (reqMode === 'health') {
-            mockResponse = "Based on the recent logs, everything looks normal! 🌟 \n\n- **Activity**: Consistent play patterns detected.\n- **Health**: No fever or issues recorded recently.\n\nKeep up the great work, super parent! 🛡️";
-            if (reqMessage && (reqMessage.toLowerCase().includes('eat') || reqMessage.toLowerCase().includes('food'))) {
-                mockResponse = "Dietary records show healthy appetite today! 🍎 Ate full portions at lunch. Hydration levels are good too.";
-            } else if (reqMessage && (reqMessage.toLowerCase().includes('mood') || reqMessage.toLowerCase().includes('happy'))) {
-                mockResponse = "Mood analysis indicates a very happy day! 😊 Plenty of smiles recorded during morning playtime.";
-            }
-        } else {
-            mockResponse = "Hello! I'm the KiddoZ automated assistant. 🤖 \n\nSince our advanced AI brain is momentarily offline (API Key Limit), here is some quick info:\n\n- **Hours**: 7AM - 6PM\n- **Location**: 123 Main St\n- **Enrollment**: Open for 2024!\n\nHow else can I help? (Note: Contextual AI is currently limited).";
-            if (reqMessage && (reqMessage.toLowerCase().includes('price') || reqMessage.toLowerCase().includes('cost'))) {
-                mockResponse = "Our plans start at **$450/month**. \n\n- **Little Explorer**: $450 (Day Care)\n- **Growth Scholar**: $750 (Pre-School)\n- **VIP Guardian**: $1200 (All-inclusive)\n\nSibling discounts available! 🏷️";
-            } else if (reqMessage && (reqMessage.toLowerCase().includes('enroll') || reqMessage.toLowerCase().includes('join') || reqMessage.toLowerCase().includes('register'))) {
-                mockResponse = "We are currently accepting new enrollments! 📝\n\n1. **Visit us** for a tour (Mon-Fri 10AM).\n2. **Fill out** the registration form online.\n3. **Meet** our directors.\n\nSpots are filling up fast for the Fall semester! 🏃‍♂️";
-            }
-        }
-
-        res.json({ text: mockResponse });
+        console.error('Chat Error:', err);
+        res.status(500).json({ message: 'Internal assistant error' });
     }
 });
 
@@ -233,6 +163,50 @@ router.get('/proxy-snapshot', (req, res) => {
     request.on('timeout', () => { request.destroy(); if (!res.headersSent) res.status(504).end(); });
     request.on('error', (err) => { if (!res.headersSent) res.status(502).json({ error: err.message }); });
     res.on('close', () => request.destroy());
+});
+
+// ─── Demo Video Management ────────────────────────────────────────────────────
+// Upload Demo Video
+router.post('/demo-video', upload.single('video'), async (req, res) => {
+    try {
+        if (!req.file) return res.status(400).json({ message: 'No video file provided' });
+
+        const { AppSettings } = require('../models');
+        const videoUrl = `/uploads/${req.file.filename}`;
+
+        await AppSettings.upsert({
+            settingKey: 'yolo.demoVideo',
+            settingValue: JSON.stringify({ url: videoUrl, updatedAt: new Date() }),
+            category: 'yolo',
+            description: 'Path to the demo YOLO video'
+        });
+
+        res.json({ message: 'Demo video uploaded successfully', url: videoUrl });
+    } catch (err) {
+        console.error('Video Upload Error:', err);
+        res.status(500).json({ message: 'Failed to process video upload' });
+    }
+});
+
+// Get Demo Video Info
+router.get('/demo-video', async (req, res) => {
+    try {
+        const { AppSettings } = require('../models');
+        const setting = await AppSettings.findOne({ where: { settingKey: 'yolo.demoVideo' } });
+        if (setting) {
+            res.json(JSON.parse(setting.settingValue));
+        } else {
+            // Check if file actually exists in uploads
+            const filePath = path.join(__dirname, '../uploads/demo_yolo.mp4');
+            if (fs.existsSync(filePath)) {
+                res.json({ url: '/uploads/demo_yolo.mp4' });
+            } else {
+                res.json({ url: null });
+            }
+        }
+    } catch (err) {
+        res.status(500).json({ message: 'Failed to fetch demo video info' });
+    }
 });
 
 module.exports = router;

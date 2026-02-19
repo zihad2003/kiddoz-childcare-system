@@ -6,6 +6,9 @@ import Badge from '../ui/Badge';
 import { staffService } from '../../services/staffService';
 import { useToast } from '../../context/ToastContext';
 import Skeleton from '../ui/Skeleton';
+import Input from '../ui/Input';
+import Select from '../ui/Select';
+import { XCircle } from 'lucide-react';
 
 const StaffManager = () => {
     const { addToast } = useToast();
@@ -185,9 +188,9 @@ const StaffManager = () => {
                             </div>
 
                             <div className="flex items-center gap-4 mb-4">
-                                <img src={member.img} alt={member.fullName} className="w-16 h-16 rounded-full bg-slate-100 border-2 border-slate-50" />
+                                <img src={member.img} alt={member.name || member.fullName} className="w-16 h-16 rounded-full bg-slate-100 border-2 border-slate-50" />
                                 <div>
-                                    <h3 className="font-bold text-lg text-slate-800">{member.fullName}</h3>
+                                    <h3 className="font-bold text-lg text-slate-800">{member.name || member.fullName}</h3>
                                     <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${member.role === 'Nurse' ? 'bg-teal-100 text-teal-700' :
                                         (member.role === 'Teacher' ? 'bg-secondary-100 text-orange-700' : 'bg-secondary-100 text-secondary-700')
                                         }`}>

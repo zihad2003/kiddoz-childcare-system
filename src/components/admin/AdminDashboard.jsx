@@ -178,7 +178,7 @@ const AdminDashboard = ({ user, handleLogout }) => {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row font-sans">
       {/* Sidebar */}
-      <div className="w-full md:w-72 bg-primary-900 text-white p-6 flex flex-col shadow-2xl z-10 transition-colors duration-500"
+      <div className="w-full md:w-72 bg-primary-900 text-white p-6 flex flex-col shadow-2xl z-10 transition-colors duration-500 md:sticky md:top-0 md:h-screen overflow-y-auto custom-scrollbar-dark"
         style={{ backgroundColor: currentRole === 'nurse' ? '#0f766e' : (currentRole === 'teacher' ? '#a05f5a' : (currentRole === 'nanny' ? '#be185d' : '')) }}>
 
         {/* Role Switcher (Simulation) */}

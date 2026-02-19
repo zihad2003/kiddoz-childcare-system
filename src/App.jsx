@@ -198,8 +198,10 @@ function AppContent() {
       {/* Hide footer on Admin pages */}
       {!location.pathname.startsWith('/admin') && !location.pathname.startsWith('/superadmin') && <Footer />}
 
-      {/* Persistent AI Assistant */}
-      <Chatbot user={user} />
+      {/* Persistent AI Assistant - Hidden on Admin/SuperAdmin pages */}
+      {!location.pathname.startsWith('/admin') && !location.pathname.startsWith('/superadmin') && (
+        <Chatbot user={user} />
+      )}
     </div>
   );
 }

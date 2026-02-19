@@ -10,7 +10,11 @@ const GENERAL_QUICK_REPLIES = [
   "How much does it cost?",
   "How do I enroll my child?",
   "What food do you serve?",
-  "Tell me about safety measures"
+  "Tell me about safety measures",
+  "How to book a tour?",
+  "Nanny services available?",
+  "What is the curriculum?",
+  "Emergency protocols?"
 ];
 
 const HEALTH_QUICK_REPLIES = [
@@ -34,7 +38,7 @@ const Chatbot = ({ user }) => {
 
   // Chat State
   const [messages, setMessages] = useState({
-    general: [{ role: 'assistant', text: "Hi! I'm the KiddoZ Assistant. 🏫 I can answer questions about our center, services, and enrollment. How can I help?" }],
+    general: [{ role: 'assistant', text: "Assalamu Alaikum! I'm your KiddoZ Assistant. 😊 I'd be absolutely delighted to help you with any questions about our childcare, enrollment, or daily programs. What's on your mind?" }],
     health: [] // Will depend on child selection
   });
   const [input, setInput] = useState('');
@@ -91,7 +95,7 @@ const Chatbot = ({ user }) => {
         ...prev,
         health: [{
           role: 'assistant',
-          text: `Hi ${user?.name || 'Parent'}! I'm ready to analyze health data for ${child.name}. 🏥 What would you like to know?`,
+          text: `Hello ${user?.name || 'Parent'}! I'm here and ready to help you with anything regarding ${child.name}'s day. 🏥 What can I look up for you?`,
           relatedQuestions: HEALTH_QUICK_REPLIES
         }]
       }));
@@ -240,7 +244,7 @@ const Chatbot = ({ user }) => {
             </button>
             <span className="text-xs font-bold text-green-800 uppercase tracking-wider flex items-center gap-1">
               <Heart size={12} className="fill-green-600 text-green-600" />
-              Analyzing: {selectedChild.name}
+              Reviewing records for: {selectedChild.name}
             </span>
           </div>
         )}
@@ -327,7 +331,7 @@ const Chatbot = ({ user }) => {
         className="fixed bottom-6 right-6 z-50 cursor-pointer group"
       >
         <span className="absolute -top-10 right-0 bg-white text-slate-800 text-xs font-bold py-1 px-3 rounded-xl shadow-lg border border-slate-100 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-          Ask AI about KiddoZ! 👋
+          How can I help you today? 👋
         </span>
         <div className="bg-gradient-to-br from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white p-4 rounded-full shadow-2xl transition-all transform group-hover:scale-110 flex items-center justify-center border-4 border-white/20">
           <MessageCircle size={28} />
@@ -348,11 +352,11 @@ const Chatbot = ({ user }) => {
           <div className="flex justify-between items-start mb-4">
             <div>
               <h3 className="font-bold text-lg flex items-center gap-2">
-                KiddoZ AI {activeTab === 'health' && <span className="text-green-200 text-xs px-2 py-0.5 bg-white/20 rounded-full">Secure</span>}
+                KiddoZ Assistant {activeTab === 'health' && <span className="text-green-200 text-xs px-2 py-0.5 bg-white/20 rounded-full">Secure</span>}
               </h3>
               <div className="flex items-center gap-2 text-xs opacity-90 mt-1">
                 <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
-                {activeTab === 'health' ? 'Health Analysis Active' : 'General Assistant Online'}
+                {activeTab === 'health' ? 'Care Support Active' : 'Helpful Staff Online'}
               </div>
             </div>
             <button onClick={() => setIsOpen(false)} className="bg-white/10 hover:bg-white/20 p-1.5 rounded-full transition">
@@ -381,7 +385,7 @@ const Chatbot = ({ user }) => {
             >
               {/* Lock Icon Logic */}
               {!user ? <Lock size={12} className="opacity-70" /> : <Activity size={14} />}
-              Health Data AI
+              Care & Health Info
             </button>
           </div>
         </div>
@@ -393,7 +397,7 @@ const Chatbot = ({ user }) => {
 
         {/* Footer Credit */}
         <div className="bg-slate-50 py-2 text-center text-[10px] text-slate-400 border-t border-slate-100">
-          Powered by KiddoZ AI Engine
+          Dedicated Care Support Assistant
         </div>
 
       </div>

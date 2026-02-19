@@ -130,6 +130,13 @@ const api = {
     addMilestone: (id, data) => apiClient.post(`/students/${id}/milestones`, data).then(res => res.data),
     addHealthRecord: (studentId, data) => apiClient.post(`/students/${studentId}/health`, data).then(res => res.data),
 
+    // AI/YOLO Methods
+    aiChat: (data) => apiClient.post('/ai/chat', data).then(res => res.data),
+    getDemoVideo: () => apiClient.get('/ai/demo-video').then(res => res.data),
+    uploadDemoVideo: (formData) => apiClient.post('/ai/demo-video', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    }).then(res => res.data),
+
     getTasks: () => apiClient.get('/tasks').then(res => res.data),
     addTask: (data) => apiClient.post('/tasks', data).then(res => res.data),
     updateTask: (id, data) => apiClient.patch(`/tasks/${id}`, data).then(res => res.data),
@@ -164,6 +171,12 @@ const api = {
     createNannyBooking: (data) => apiClient.post('/parent/nanny-booking', data).then(res => res.data),
     getParentBookings: () => apiClient.get('/parent/nanny-booking').then(res => res.data),
     getParentNotifications: () => apiClient.get('/parent/notifications').then(res => res.data),
+
+    // Parent Management (Admin)
+    getParents: (params) => apiClient.get('/parents', { params }).then(res => res.data),
+    addParent: (data) => apiClient.post('/parents', data).then(res => res.data),
+    updateParent: (id, data) => apiClient.put(`/parents/${id}`, data).then(res => res.data),
+    deleteParent: (id) => apiClient.delete(`/parents/${id}`).then(res => res.data),
 
     // Settings Methods
     getSettings: () => apiClient.get('/settings').then(res => res.data),

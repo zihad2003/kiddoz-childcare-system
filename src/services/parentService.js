@@ -1,21 +1,13 @@
-import {
-    collection, doc, addDoc, updateDoc, deleteDoc,
-    getDocs, getDoc, query, where, orderBy, onSnapshot,
-    serverTimestamp
-} from 'firebase/firestore';
-import { db } from '../firebase';
-
-const COLLECTION = 'parents';
+import api from './api';
 
 export const parentService = {
     async addParent(data) {
         try {
-            const docRef = await addDoc(collection(db, COLLECTION), {
-                ...data,
-                createdAt: serverTimestamp(),
-                isActive: true,
-            });
-            return { success: true, id: docRef.id };
+            const payload = { ...data };
+            if (payload.fullName && !payload.name) payload.name = payload.fullName;
+
+            const response = await api.addParent(payload);
+            return { success: true, id: response.id };
         } catch (error) {
             console.error('addParent error:', error);
             return { success: false, error: error.message };
@@ -24,13 +16,7 @@ export const parentService = {
 
     async getParents() {
         try {
-            const q = query(
-                collection(db, COLLECTION),
-                where('isActive', '==', true),
-                orderBy('fullName', 'asc')
-            );
-            const snapshot = await getDocs(q);
-            return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            return await api.getParents();
         } catch (error) {
             console.error('getParents error:', error);
             return [];
@@ -39,8 +25,8 @@ export const parentService = {
 
     async getParent(id) {
         try {
-            const docSnap = await getDoc(doc(db, COLLECTION, id));
-            return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
+            const parents = await this.getParents();
+            return parents.find(p => p.id === id) || null;
         } catch (error) {
             return null;
         }
@@ -48,7 +34,9 @@ export const parentService = {
 
     async updateParent(id, data) {
         try {
-            await updateDoc(doc(db, COLLECTION, id), { ...data, updatedAt: serverTimestamp() });
+            const payload = { ...data };
+            if (payload.fullName && !payload.name) payload.name = payload.fullName;
+            await api.updateParent(id, payload);
             return { success: true };
         } catch (error) {
             return { success: false, error: error.message };
@@ -57,7 +45,7 @@ export const parentService = {
 
     async deleteParent(id) {
         try {
-            await updateDoc(doc(db, COLLECTION, id), { isActive: false, deletedAt: serverTimestamp() });
+            await api.deleteParent(id);
             return { success: true };
         } catch (error) {
             return { success: false, error: error.message };
@@ -65,7 +53,7 @@ export const parentService = {
     },
 
     subscribeToParents(callback) {
-        const q = query(collection(db, COLLECTION), where('isActive', '==', true), orderBy('fullName', 'asc'));
-        return onSnapshot(q, (sn) => callback(sn.docs.map(d => ({ id: d.id, ...d.data() }))));
+        this.getParents().then(callback);
+        return () => { };
     }
 };

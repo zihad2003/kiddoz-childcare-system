@@ -1,4 +1,4 @@
-const { sequelize, User, Staff, Student, Payroll, Task, Notification, HealthRecord, DailyActivity, Billing, NannyBooking, Center, Bulletin } = require('./models');
+const { sequelize, User, Staff, Student, Payroll, Task, Notification, HealthRecord, DailyActivity, Billing, NannyBooking, Center, Bulletin, Incident, AppSettings } = require('./models');
 const bcrypt = require('bcryptjs');
 
 const seed = async () => {
@@ -462,7 +462,44 @@ const seed = async () => {
         await Bulletin.bulkCreate(bulletinsData);
         console.log(`Seeded ${bulletinsData.length} bulletins`);
 
-        // --- 12. More Financial Data for Richer Charts ---
+        // --- 12. Seed Incidents ---
+        console.log('Seeding Incidents...');
+        const incidentData = [
+            {
+                studentId: studentsData[0].id,
+                type: 'Minor Injury',
+                severity: 'Low',
+                description: 'Scraped knee during outdoor playtime.',
+                location: 'Playground Area B',
+                actionTaken: 'First aid applied (cleaning and bandage). Parent notified.',
+                reportedBy: 'teacher@kiddoz.com',
+                status: 'Resolved'
+            },
+            {
+                studentId: studentsData[1].id,
+                type: 'Behavioral',
+                severity: 'Medium',
+                description: 'Refusal to participate in group activities and minor conflict with another student.',
+                location: 'Classroom 2A',
+                actionTaken: 'Quiet time and discussion with teacher. Counseling suggested.',
+                reportedBy: 'teacher@kiddoz.com',
+                status: 'Parent_Pending'
+            }
+        ];
+        await sequelize.models.Incident.bulkCreate(incidentData);
+        console.log(`Seeded ${incidentData.length} incidents`);
+
+        // --- 13. Seed App Settings ---
+        console.log('Seeding App Settings...');
+        const settingsData = [
+            { settingKey: 'general_notifications', settingValue: JSON.stringify({ email: true, push: true, sms: false }), category: 'general' },
+            { settingKey: 'security_2fa', settingValue: JSON.stringify({ enabled: false }), category: 'security' },
+            { settingKey: 'theme_mode', settingValue: JSON.stringify({ dartMode: false, brandColor: '#4f46e5' }), category: 'display' }
+        ];
+        await AppSettings.bulkCreate(settingsData);
+        console.log(`Seeded ${settingsData.length} app settings`);
+
+        // --- 14. More Financial Data for Richer Charts ---
         console.log('Seeding more financial records...');
         const moreBilling = [];
         for (let i = 2; i <= 6; i++) { // Previous 5 months

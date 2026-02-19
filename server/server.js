@@ -109,6 +109,7 @@ app.use('/api/settings', require('./routes/settings'));
 app.use('/api/superadmin', require('./routes/superadmin'));
 app.use('/api/ai', require('./routes/ai'));
 app.use('/api/incidents', require('./routes/incidents'));
+app.use('/api/parents', require('./routes/parents'));
 
 // Catch-all for React SPA
 app.get('/*splat', (req, res) => {

@@ -1,21 +1,12 @@
-import {
-    collection, doc, addDoc, updateDoc,
-    getDocs, getDoc, query, where, orderBy, onSnapshot,
-    serverTimestamp
-} from 'firebase/firestore';
-import { db } from '../firebase';
-
-const COLLECTION = 'staff';
+import api from './api';
 
 export const staffService = {
     async addStaff(data) {
         try {
-            const docRef = await addDoc(collection(db, COLLECTION), {
-                ...data,
-                createdAt: serverTimestamp(),
-                isActive: true,
-            });
-            return { success: true, id: docRef.id };
+            const payload = { ...data };
+            if (payload.fullName && !payload.name) payload.name = payload.fullName;
+            const response = await api.addStaff(payload);
+            return { success: true, id: response.id };
         } catch (error) {
             return { success: false, error: error.message };
         }
@@ -23,17 +14,18 @@ export const staffService = {
 
     async getStaff() {
         try {
-            const q = query(collection(db, COLLECTION), where('isActive', '==', true), orderBy('fullName', 'asc'));
-            const snapshot = await getDocs(q);
-            return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            return await api.getStaff();
         } catch (error) {
+            console.error('getStaff error:', error);
             return [];
         }
     },
 
     async updateStaff(id, data) {
         try {
-            await updateDoc(doc(db, COLLECTION, id), { ...data, updatedAt: serverTimestamp() });
+            const payload = { ...data };
+            if (payload.fullName && !payload.name) payload.name = payload.fullName;
+            await api.updateStaff(id, payload);
             return { success: true };
         } catch (error) {
             return { success: false, error: error.message };
@@ -42,7 +34,7 @@ export const staffService = {
 
     async deleteStaff(id) {
         try {
-            await updateDoc(doc(db, COLLECTION, id), { isActive: false, deletedAt: serverTimestamp() });
+            await api.deleteStaff(id);
             return { success: true };
         } catch (error) {
             return { success: false, error: error.message };
@@ -50,7 +42,7 @@ export const staffService = {
     },
 
     subscribeToStaff(callback) {
-        const q = query(collection(db, COLLECTION), where('isActive', '==', true), orderBy('fullName', 'asc'));
-        return onSnapshot(q, (sn) => callback(sn.docs.map(d => ({ id: d.id, ...d.data() }))));
+        this.getStaff().then(callback);
+        return () => { };
     }
 };

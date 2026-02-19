@@ -126,3 +126,19 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   @apply bg-slate-300;
 }
+
+.custom-scrollbar-dark::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar-dark::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar-dark::-webkit-scrollbar-thumb {
+  @apply bg-white/20 rounded-full;
+}
+
+.custom-scrollbar-dark::-webkit-scrollbar-thumb:hover {
+  @apply bg-white/40;
+}

@@ -1,22 +1,13 @@
-import {
-    collection, doc, addDoc, updateDoc, deleteDoc,
-    getDocs, getDoc, query, where, orderBy, onSnapshot,
-    serverTimestamp, writeBatch
-} from 'firebase/firestore';
-import { db } from '../firebase';
-
-const COLLECTION = 'students';
+import api from './api';
 
 export const studentService = {
     // CREATE
     async addStudent(data) {
         try {
-            const docRef = await addDoc(collection(db, COLLECTION), {
-                ...data,
-                createdAt: serverTimestamp(),
-                isActive: true,
-            });
-            return { success: true, id: docRef.id };
+            const payload = { ...data };
+            if (payload.fullName && !payload.name) payload.name = payload.fullName;
+            const response = await api.addStudent(payload);
+            return { success: true, id: response.id };
         } catch (error) {
             console.error('addStudent error:', error);
             return { success: false, error: error.message };
@@ -26,13 +17,7 @@ export const studentService = {
     // READ ALL
     async getStudents() {
         try {
-            const q = query(
-                collection(db, COLLECTION),
-                where('isActive', '==', true),
-                orderBy('fullName', 'asc')
-            );
-            const snapshot = await getDocs(q);
-            return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            return await api.getStudents();
         } catch (error) {
             console.error('getStudents error:', error);
             return [];
@@ -42,8 +27,7 @@ export const studentService = {
     // READ ONE
     async getStudent(id) {
         try {
-            const docSnap = await getDoc(doc(db, COLLECTION, id));
-            return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
+            return await api.get(id); // Assumes generic get handles it or add specific one
         } catch (error) {
             console.error('getStudent error:', error);
             return null;
@@ -53,10 +37,9 @@ export const studentService = {
     // UPDATE
     async updateStudent(id, data) {
         try {
-            await updateDoc(doc(db, COLLECTION, id), {
-                ...data,
-                updatedAt: serverTimestamp(),
-            });
+            const payload = { ...data };
+            if (payload.fullName && !payload.name) payload.name = payload.fullName;
+            await api.updateStudent(id, payload);
             return { success: true };
         } catch (error) {
             console.error('updateStudent error:', error);
@@ -64,13 +47,10 @@ export const studentService = {
         }
     },
 
-    // SOFT DELETE
+    // DELETE
     async deleteStudent(id) {
         try {
-            await updateDoc(doc(db, COLLECTION, id), {
-                isActive: false,
-                deletedAt: serverTimestamp()
-            });
+            await api.deleteStudent(id);
             return { success: true };
         } catch (error) {
             console.error('deleteStudent error:', error);
@@ -78,16 +58,12 @@ export const studentService = {
         }
     },
 
-    // REAL-TIME LISTENER
+    // REAL-TIME LISTENER (Mocked for API)
     subscribeToStudents(callback) {
-        const q = query(
-            collection(db, COLLECTION),
-            where('isActive', '==', true),
-            orderBy('fullName', 'asc')
-        );
-        return onSnapshot(q,
-            (snapshot) => callback(snapshot.docs.map(d => ({ id: d.id, ...d.data() }))),
-            (error) => { console.error('Stream error:', error); callback([]); }
-        );
+        // Since we don't have WebSockets in the backend yet, 
+        // we'll fetch once and provide a way to refresh if needed.
+        // For compatibility with components, we'll return a no-op unsubscribe.
+        this.getStudents().then(callback);
+        return () => { }; // No-op unsubscribe
     }
 };

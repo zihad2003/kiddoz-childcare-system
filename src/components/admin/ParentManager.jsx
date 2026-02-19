@@ -74,10 +74,11 @@ const ParentManager = () => {
         setIsSubmitting(false);
     };
 
-    const filteredParents = parents.filter(p =>
-        p.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.email.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredParents = parents.filter(p => {
+        const name = (p.fullName || p.name || '').toLowerCase();
+        const email = (p.email || '').toLowerCase();
+        return name.includes(searchTerm.toLowerCase()) || email.includes(searchTerm.toLowerCase());
+    });
 
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
@@ -123,11 +124,11 @@ const ParentManager = () => {
                                 <button onClick={() => openEditModal(parent)} className="p-2 text-slate-400 hover:text-primary-600 transition"><Edit2 size={16} /></button>
                                 <button onClick={() => handleDelete(parent.id)} className="p-2 text-slate-400 hover:text-red-600 transition"><Trash2 size={16} /></button>
                             </div>
-                            <h3 className="font-bold text-lg text-slate-800 mb-4">{parent.fullName}</h3>
+                            <h3 className="font-bold text-lg text-slate-800 mb-2">{parent.fullName || parent.name}</h3>
                             <div className="space-y-2 text-sm text-slate-600">
-                                <div className="flex items-center gap-2"><Mail size={14} className="text-slate-400" /> {parent.email}</div>
-                                <div className="flex items-center gap-2"><Phone size={14} className="text-slate-400" /> {parent.phone}</div>
-                                {parent.address && <div className="mt-2 text-xs text-slate-400 border-t pt-2">{parent.address}</div>}
+                                <div className="flex items-center gap-2"><Mail size={14} className="text-slate-400" /> {parent.email || 'N/A'}</div>
+                                <div className="flex items-center gap-2"><Phone size={14} className="text-slate-400" /> {parent.phone || 'N/A'}</div>
+                                {(parent.address || parent.area) && <div className="mt-2 text-xs text-slate-400 border-t pt-2">{parent.address || parent.area}</div>}
                             </div>
                         </Card>
                     ))}
