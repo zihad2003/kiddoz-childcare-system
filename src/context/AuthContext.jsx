@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
             const token = localStorage.getItem('token');
             const storedUser = localStorage.getItem('user');
 
-            // 1. Check if we have a valid JWT first (MySQL priority)
+            // 1. JWT priority: verify with backend
             if (token) {
                 try {
                     const userData = await api.get('/auth/me');
@@ -30,29 +30,51 @@ export const AuthProvider = ({ children }) => {
                     }
                 } catch (error) {
                     console.warn('Auth: Backend JWT verification failed', error.message);
+                    // Backend is down — use the localStorage snapshot if it has a valid role
+                    if (storedUser) {
+                        try {
+                            const cached = JSON.parse(storedUser);
+                            if (cached?.role) {
+                                console.warn('Auth: Offline mode — using cached user from localStorage');
+                                setUser(cached);
+                                setLoading(false);
+                                return;
+                            }
+                        } catch (_) { /* JSON parse failed, continue */ }
+                    }
+                    // Token is unusable
                     localStorage.removeItem('token');
                     localStorage.removeItem('user');
                 }
             }
 
-            // 2. Handle Firebase Identity
+            // 2. Handle Firebase Identity (anonymous / demo mode)
             if (fbUser) {
                 if (fbUser.isAnonymous) {
-                    // Anonymous Demo/Guest Mode
                     try {
                         const userDoc = await getDoc(doc(db, 'users', fbUser.uid));
                         if (userDoc.exists()) {
-                            setUser({ id: fbUser.uid, ...userDoc.data(), isAnonymous: true });
+                            const data = userDoc.data();
+                            setUser({
+                                id: fbUser.uid,
+                                fullName: "Demo Guest",
+                                email: "guest@kiddoz.com",
+                                isAnonymous: true,
+                                ...data,
+                                // Always guarantee a valid role
+                                role: data?.role || "parent",
+                            });
                         } else {
                             setUser({
                                 id: fbUser.uid,
                                 fullName: "Demo Guest",
                                 email: "guest@kiddoz.com",
-                                role: "parent", // Default to parent for exploration
+                                role: "parent",
                                 isAnonymous: true
                             });
                         }
                     } catch (e) {
+                        // Firestore unreachable — safe default
                         setUser({
                             id: fbUser.uid,
                             fullName: "Demo Guest",
@@ -61,17 +83,15 @@ export const AuthProvider = ({ children }) => {
                         });
                     }
                 } else {
-                    // Regular Firebase User (if implemented)
                     setUser({
                         id: fbUser.uid,
                         fullName: fbUser.displayName || fbUser.email?.split('@')[0] || 'Member',
                         email: fbUser.email,
-                        role: 'parent' // Default
+                        role: 'parent'
                     });
                 }
             } else {
-                // 3. Auto-trigger Anonymous Login for the "Demo Mode" requirement
-                // Only if no JWT exists
+                // 3. No user at all — trigger anonymous login for demo mode
                 try {
                     await signInAnonymously(auth);
                 } catch (err) {
