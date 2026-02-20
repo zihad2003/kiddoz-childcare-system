@@ -32,8 +32,15 @@ apiClient.interceptors.response.use(
         if (isConnectionError) {
             console.warn('Backend connection failed. Serving MOCK DATA for demo.');
 
-            const url = error.config.url.toLowerCase();
-            const requestData = error.config.data ? JSON.parse(error.config.data) : {};
+            const url = error.config?.url?.toLowerCase() || '';
+            let requestData = {};
+            try {
+                if (error.config?.data) {
+                    requestData = typeof error.config.data === 'string' ? JSON.parse(error.config.data) : error.config.data;
+                }
+            } catch (e) {
+                console.warn('Failed to parse request data for mock', e);
+            }
 
             // ─── AUTH MOCK ──────────────────────────────────────────────────
             if (url.includes('/auth/login')) {
@@ -55,6 +62,17 @@ apiClient.interceptors.response.use(
                         }
                     }
                 });
+            }
+
+            if (url.includes('/auth/me')) {
+                const storedUser = localStorage.getItem('user');
+                const user = storedUser ? JSON.parse(storedUser) : {
+                    id: 'mock-id',
+                    email: 'superadmin@kiddoz.com',
+                    role: 'superadmin',
+                    fullName: 'Demo SuperAdmin'
+                };
+                return Promise.resolve({ data: user });
             }
 
             // ─── DATA MOCK ──────────────────────────────────────────────────
@@ -206,6 +224,20 @@ apiClient.interceptors.response.use(
                 });
             }
 
+            if (url.includes('/superadmin/settings')) {
+                return Promise.resolve({
+                    data: [
+                        { settingKey: 'systemName', settingValue: JSON.stringify('KiddoZ Platform') },
+                        { settingKey: 'supportEmail', settingValue: JSON.stringify('support@kiddoz.com') },
+                        { settingKey: 'maintenanceMode', settingValue: JSON.stringify(false) },
+                        { settingKey: 'allowRegistration', settingValue: JSON.stringify(true) },
+                        { settingKey: 'emailNotifications', settingValue: JSON.stringify(true) },
+                        { settingKey: 'maxUploadSize', settingValue: JSON.stringify('10') },
+                        { settingKey: 'yolo.liveStream', settingValue: JSON.stringify({ active: true, type: 'demo' }) }
+                    ]
+                });
+            }
+
             if (url.includes('/settings')) {
                 return Promise.resolve({
                     data: {
@@ -220,7 +252,7 @@ apiClient.interceptors.response.use(
             }
 
             // Default fallback for any other endpoint
-            return Promise.resolve({ data: [] });
+            return Promise.resolve({ data: null });
         }
 
         return Promise.reject(error);
