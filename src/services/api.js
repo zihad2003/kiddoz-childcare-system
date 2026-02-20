@@ -2,7 +2,7 @@ import axios from 'axios';
 import { BANGLADESHI_STUDENTS } from '../data/bangladeshiData';
 
 const apiClient = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5001/api',
+    baseURL: import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api',
     headers: {
         'Content-Type': 'application/json'
     }
@@ -32,7 +32,7 @@ apiClient.interceptors.response.use(
         if (isConnectionError) {
             console.warn('Backend connection failed. Serving MOCK DATA for demo.');
 
-            const url = error.config.url;
+            const url = error.config.url.toLowerCase();
             const requestData = error.config.data ? JSON.parse(error.config.data) : {};
 
             // ─── AUTH MOCK ──────────────────────────────────────────────────
@@ -91,7 +91,58 @@ apiClient.interceptors.response.use(
                 });
             }
 
-            if (url.includes('/billing') || url.includes('/financials')) {
+            // ─── FINANCIALS MOCK ─────────────────────────────────────────────
+            if (url.includes('/financials/payroll')) {
+                return Promise.resolve({
+                    data: [
+                        { id: 1, name: 'Fatima Begum', role: 'Nanny', amount: 15000, status: 'Paid', type: 'Salary', date: '2026-01-20' },
+                        { id: 2, name: 'Rohima Khatun', role: 'Teacher', amount: 18000, status: 'Pending', type: 'Salary', date: '2026-02-15' },
+                        { id: 3, name: 'CleanCo Inc.', role: 'Vendor', amount: 5000, status: 'Pending', type: 'Maintenance', date: '2026-02-18' }
+                    ]
+                });
+            }
+
+            if (url.includes('/financials/revenue')) {
+                return Promise.resolve({
+                    data: {
+                        total: 450000,
+                        count: 44,
+                        byPlan: {
+                            'Little Explorer': 120000,
+                            'Growth Scholar': 180000,
+                            'VIP Guardian': 150000
+                        }
+                    }
+                });
+            }
+
+            if (url.includes('/financials/overview') || url.includes('/superadmin/financials/overview')) {
+                return Promise.resolve({
+                    data: {
+                        summary: {
+                            totalRevenue: 1250000,
+                            totalExpenses: 840000,
+                            netProfit: 410000,
+                            outstandingInvoices: 12
+                        },
+                        revenueByPlan: [
+                            { plan: 'Growth Scholar', total: 450000 },
+                            { plan: 'Little Explorer', total: 320000 },
+                            { plan: 'VIP Guardian', total: 480000 }
+                        ],
+                        monthlyRevenue: [
+                            { month: 'Sep', revenue: 850000, expenses: 620000 },
+                            { month: 'Oct', revenue: 920000, expenses: 650000 },
+                            { month: 'Nov', revenue: 980000, expenses: 680000 },
+                            { month: 'Dec', revenue: 1100000, expenses: 720000 },
+                            { month: 'Jan', revenue: 1150000, expenses: 780000 },
+                            { month: 'Feb', revenue: 1250000, expenses: 840000 }
+                        ]
+                    }
+                });
+            }
+
+            if (url.includes('/billing')) {
                 return Promise.resolve({
                     data: {
                         invoices: [
@@ -104,6 +155,49 @@ apiClient.interceptors.response.use(
                 });
             }
 
+            // ─── SUPER ADMIN MOCK ───────────────────────────────────────────
+            if (url.includes('/superadmin/overview')) {
+                return Promise.resolve({
+                    data: {
+                        totalUsers: 156,
+                        activeCenters: 8,
+                        totalStudents: 342,
+                        revenue: 1250000
+                    }
+                });
+            }
+
+            if (url.includes('/superadmin/analytics/revenue')) {
+                return Promise.resolve({
+                    data: {
+                        labels: ['Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'],
+                        data: [850000, 920000, 980000, 1100000, 1150000, 1250000]
+                    }
+                });
+            }
+
+            if (url.includes('/superadmin/users')) {
+                return Promise.resolve({
+                    data: [
+                        { id: 'u1', fullName: 'Zihad Hussain', email: 'zihad@kiddoz.com', role: 'superadmin', status: 'active', phone: '+8801712345678' },
+                        { id: 'u2', fullName: 'Karim Ahmed', email: 'karim@center.com', role: 'admin', status: 'active', phone: '+8801812345678' },
+                        { id: 'u3', fullName: 'Fatima Begum', email: 'fatima@nanny.com', role: 'nanny', status: 'active', phone: '+8801912345678' },
+                        { id: 'u4', fullName: 'Rahima Khatun', email: 'rahima@parent.com', role: 'parent', status: 'active', phone: '+8801612345678' }
+                    ]
+                });
+            }
+
+            if (url.includes('/superadmin/centers')) {
+                return Promise.resolve({
+                    data: [
+                        { id: 'c1', name: 'KiddoZ Gulshan Branch', address: 'Gulshan, Dhaka', status: 'active', capacity: 120, current: 104 },
+                        { id: 'c2', name: 'KiddoZ Uttara Node', address: 'Uttara, Dhaka', status: 'active', capacity: 80, current: 72 },
+                        { id: 'c3', name: 'KiddoZ Dhanmondi Hub', address: 'Dhanmondi, Dhaka', status: 'active', capacity: 100, current: 85 }
+                    ]
+                });
+            }
+
+            // ─── OTHER MOCKS ───────────────────────────────────────────────
             if (url.includes('/incidents')) {
                 return Promise.resolve({
                     data: [

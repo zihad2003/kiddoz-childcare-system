@@ -24,7 +24,7 @@ const SystemSettings = () => {
 
     const fetchSettings = async () => {
         try {
-            const data = await api.get('/superadmin/settings').then(res => res.data);
+            const data = await api.get('/superadmin/settings');
             if (data && data.length > 0) {
                 const combinedSettings = {};
                 data.forEach(s => {

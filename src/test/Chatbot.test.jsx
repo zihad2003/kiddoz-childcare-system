@@ -35,8 +35,8 @@ describe('Chatbot Component', () => {
                 <Chatbot user={null} />
             </BrowserRouter>
         );
-        // Look for the "Ask AI about KiddoZ!" text or icon
-        expect(screen.getByText(/Ask AI about KiddoZ/i)).toBeInTheDocument();
+        // Look for the "How can I help you today?" text
+        expect(screen.getByText(/How can I help you today/i)).toBeInTheDocument();
     });
 
     it('opens the chat window when clicked', () => {
@@ -46,11 +46,11 @@ describe('Chatbot Component', () => {
             </BrowserRouter>
         );
 
-        const button = screen.getByText(/Ask AI about KiddoZ/i).closest('div');
+        const button = screen.getByText(/How can I help you today/i).closest('div');
         fireEvent.click(button);
 
-        // Check for "General Assistant Online"
-        expect(screen.getByText('General Assistant Online')).toBeInTheDocument();
+        // Check for "Helpful Staff Online"
+        expect(screen.getByText('Helpful Staff Online')).toBeInTheDocument();
     });
 
     it('sends a message and displays response', async () => {
@@ -64,7 +64,7 @@ describe('Chatbot Component', () => {
         );
 
         // Open chat
-        const button = screen.getByText(/Ask AI about KiddoZ/i).closest('div');
+        const button = screen.getByText(/How can I help you today/i).closest('div');
         fireEvent.click(button);
 
         // Find input
