@@ -220,6 +220,16 @@ apiClient.interceptors.response.use(
                 });
             }
 
+            if (url.includes('/superadmin/bulletins')) {
+                return Promise.resolve({
+                    data: [
+                        { id: 1, title: 'Annual Healthcare Symposium', content: 'Join us for a discussion on pediatric wellness and new safety protocols.', category: 'Event', priority: 'High', createdAt: new Date().toISOString() },
+                        { id: 2, title: 'Server Upgrade Scheduled', content: 'The platform will undergo maintenance this Sunday at 2:00 AM BDT.', category: 'Maintenance', priority: 'Medium', createdAt: new Date().toISOString() },
+                        { id: 3, title: 'New Vaccination Policy', content: 'Please review the updated requirements for the upcoming academic session.', category: 'Policy', priority: 'Critical', createdAt: new Date().toISOString() }
+                    ]
+                });
+            }
+
             if (url.includes('/superadmin/centers')) {
                 return Promise.resolve({
                     data: [
