@@ -195,6 +195,20 @@ apiClient.interceptors.response.use(
                 });
             }
 
+            if (url.includes('/superadmin/analytics/users')) {
+                return Promise.resolve({
+                    data: {
+                        total: 156,
+                        byRole: [
+                            { role: 'parent', count: 98 },
+                            { role: 'staff', count: 42 },
+                            { role: 'admin', count: 12 },
+                            { role: 'superadmin', count: 4 }
+                        ]
+                    }
+                });
+            }
+
             if (url.includes('/superadmin/users')) {
                 return Promise.resolve({
                     data: [

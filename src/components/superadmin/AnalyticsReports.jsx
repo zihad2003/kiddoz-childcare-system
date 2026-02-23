@@ -18,14 +18,14 @@ const AnalyticsReports = () => {
                     api.getAnalyticsUsers()
                 ]);
 
-                const formattedRev = revenue.labels.map((l, i) => ({
+                const formattedRev = (revenue?.labels || []).map((l, i) => ({
                     name: l,
-                    revenue: revenue.data[i],
-                    activeUsers: Math.floor(revenue.data[i] / 80),
-                    newSignups: Math.floor(revenue.data[i] / 400) + Math.floor(Math.random() * 10)
+                    revenue: revenue?.data?.[i] || 0,
+                    activeUsers: Math.floor((revenue?.data?.[i] || 0) / 80),
+                    newSignups: Math.floor((revenue?.data?.[i] || 0) / 400) + Math.floor(Math.random() * 10)
                 }));
                 setRevenueData(formattedRev);
-                setUserStats(users);
+                setUserStats(users || { total: 0, byRole: [] });
                 setLoading(false);
             } catch (err) {
                 console.error(err);
@@ -141,7 +141,7 @@ const AnalyticsReports = () => {
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
                                     <Pie
-                                        data={userStats.byRole}
+                                        data={userStats?.byRole || []}
                                         cx="50%"
                                         cy="50%"
                                         innerRadius={70}
@@ -149,7 +149,7 @@ const AnalyticsReports = () => {
                                         paddingAngle={8}
                                         dataKey="count"
                                     >
-                                        {userStats.byRole.map((entry, index) => (
+                                        {(userStats?.byRole || []).map((entry, index) => (
                                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                         ))}
                                     </Pie>
@@ -157,12 +157,12 @@ const AnalyticsReports = () => {
                                 </PieChart>
                             </ResponsiveContainer>
                             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                <span className="text-3xl font-black text-slate-900">{userStats.total}</span>
+                                <span className="text-3xl font-black text-slate-900">{userStats?.total || 0}</span>
                                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Users</span>
                             </div>
                         </div>
                         <div className="flex flex-col gap-4 w-full md:w-48">
-                            {userStats.byRole.map((item, index) => (
+                            {(userStats?.byRole || []).map((item, index) => (
                                 <div key={item.role} className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                         <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }}></div>
