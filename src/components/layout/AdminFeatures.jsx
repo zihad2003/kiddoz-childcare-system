@@ -2,16 +2,22 @@ import React, { useEffect } from 'react';
 import {
     Shield, Globe, Zap, BarChart3, Users, Key,
     ArrowRight, CheckCircle2, Building2, Cpu,
-    Activity, Box, Lock, Database, LayoutGrid,
-    Calendar, Bell, Heart, Star, Sparkles,
-    MousePointer2, Fingerprint, Network, Layers
+    Activity, Lock, Database, Layers,
+    Calendar, Bell, Heart, Sparkles,
+    MousePointer2, Fingerprint, Network
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useToast } from '../../context/ToastContext';
 
 const AdminFeatures = () => {
+    const { addToast } = useToast();
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
+
+    const handleDemoRequest = () => {
+        addToast('System Demo Request Transmitted to High Command', 'info');
+    };
 
     const features = [
         {
@@ -111,9 +117,9 @@ const AdminFeatures = () => {
                         <Link to="/login" className="group px-14 py-8 bg-[#0f172a] text-white rounded-[2.5rem] font-black text-[10px] uppercase tracking-[0.4em] italic hover:bg-black hover:shadow-[0_40px_80px_-15px_rgba(15,23,42,0.3)] transition-all duration-700 hover:-translate-y-2 active:scale-95 shadow-2xl shadow-indigo-200 flex items-center gap-4">
                             Initialize Protocol <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform duration-500" />
                         </Link>
-                        <Link to="/tour" className="px-14 py-8 bg-white border-2 border-slate-100 text-slate-900 rounded-[2.5rem] font-black text-[10px] uppercase tracking-[0.4em] italic hover:border-primary-500 hover:text-primary-600 transition-all duration-700 hover:-translate-y-2 active:scale-95 shadow-lg shadow-slate-100/50">
-                            Request Physical Audit
-                        </Link>
+                        <button onClick={handleDemoRequest} className="px-14 py-8 bg-white border-2 border-slate-100 text-slate-900 rounded-[2.5rem] font-black text-[10px] uppercase tracking-[0.4em] italic hover:border-primary-500 hover:text-primary-600 transition-all duration-700 hover:-translate-y-2 active:scale-95 shadow-lg shadow-slate-100/50">
+                            Initialize System Demo
+                        </button>
                     </div>
 
                     {/* Scroll Indicator */}
@@ -392,8 +398,8 @@ const AdminFeatures = () => {
             {/* --- CUSTOM FOOTER FOR ADMIN FEATURES --- */}
             <footer className="bg-slate-50 border-t border-slate-100 py-20 overflow-hidden relative">
                 <div className="absolute top-0 right-0 p-20 opacity-[0.01] pointer-events-none scale-[3] rotate-12"><Shield size={200} /></div>
-                <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-20">
-                    <div className="col-span-1 md:col-span-2 space-y-10">
+                <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:col-span-1 lg:grid-cols-4 gap-20">
+                    <div className="md:col-span-2 space-y-10">
                         <Link to="/" className="flex items-center cursor-pointer gap-4">
                             <div className="w-12 h-12 bg-primary-600 rounded-[1.25rem] flex items-center justify-center text-white font-black text-2xl shadow-xl shadow-primary-900/20 transform rotate-3 italic">K</div>
                             <span className="text-3xl font-black tracking-tighter text-slate-900 italic">Kiddo<span className="text-primary-600">Z</span> Protocol</span>

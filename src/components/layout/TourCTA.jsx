@@ -1,12 +1,18 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, Shield, MapPin, ArrowRight } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 import Section from '../ui/Section';
 import Button from '../ui/Button';
 import Card from '../ui/Card';
 
 const TourCTA = () => {
     const navigate = useNavigate();
+    const { user } = useAuth();
+    const isStaff = user && ['superadmin', 'admin', 'teacher', 'nurse', 'nanny'].includes(user.role);
+
+    if (isStaff) return null;
+
     return (
         <Section className="bg-slate-50 py-24 relative overflow-hidden">
             {/* Decorative Background Elements */}
