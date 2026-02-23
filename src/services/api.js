@@ -240,6 +240,23 @@ apiClient.interceptors.response.use(
                 });
             }
 
+            if (url.includes('/superadmin/developer/api-keys')) {
+                return Promise.resolve({
+                    data: [
+                        { id: 'ak1', name: 'Main Website Production', key: 'kz_live_8f7h2s90j1l', createdAt: new Date().toISOString(), status: 'active' },
+                        { id: 'ak2', name: 'Mobile App Test', key: 'kz_test_1m9n4v5k2p3', createdAt: new Date().toISOString(), status: 'active' }
+                    ]
+                });
+            }
+
+            if (url.includes('/superadmin/developer/webhooks')) {
+                return Promise.resolve({
+                    data: [
+                        { id: 'wh1', url: 'https://api.crm-partner.com/webhooks/kiddoz', events: ['enrollment.created', 'payment.success'], status: 'active' }
+                    ]
+                });
+            }
+
             // ─── OTHER MOCKS ───────────────────────────────────────────────
             if (url.includes('/incidents')) {
                 return Promise.resolve({
