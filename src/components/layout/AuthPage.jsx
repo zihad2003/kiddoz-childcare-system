@@ -38,8 +38,9 @@ const AuthPage = () => {
         navigate('/dashboard');
       } else {
         const user = await login(email, password);
+        const adminRoles = ['superadmin', 'admin', 'teacher', 'nurse', 'nanny'];
         if (user.role === 'superadmin') navigate('/superadmin');
-        else if (user.role === 'admin') navigate('/admin');
+        else if (adminRoles.includes(user.role)) navigate('/admin');
         else navigate('/dashboard');
       }
     } catch (err) {

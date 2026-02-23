@@ -87,8 +87,8 @@ const Navbar = ({ user, handleLogout }) => {
               <button
                 onClick={() => setProgramsOpen(!programsOpen)}
                 className={`flex items-center gap-1.5 px-4 py-2 rounded-xl transition font-medium ${isProgramActive
-                    ? 'bg-primary-100 text-primary-800'
-                    : 'text-slate-600 hover:text-primary-600 hover:bg-primary-50'
+                  ? 'bg-primary-100 text-primary-800'
+                  : 'text-slate-600 hover:text-primary-600 hover:bg-primary-50'
                   }`}
               >
                 Programs
@@ -140,8 +140,10 @@ const Navbar = ({ user, handleLogout }) => {
           <div className="hidden md:flex items-center gap-4">
             {user ? (
               <>
-                {user.role === 'admin' ? (
-                  <Link to="/admin" className="flex items-center gap-2 bg-slate-800 text-white px-6 py-2.5 rounded-full hover:bg-slate-900 transition shadow-lg font-semibold"><User size={18} /> Admin Panel</Link>
+                {['admin', 'teacher', 'nurse', 'nanny'].includes(user.role) ? (
+                  <Link to="/admin" className="flex items-center gap-2 bg-slate-800 text-white px-6 py-2.5 rounded-full hover:bg-slate-900 transition shadow-lg font-semibold"><User size={18} /> Staff Portal</Link>
+                ) : user.role === 'superadmin' ? (
+                  <Link to="/superadmin" className="flex items-center gap-2 bg-red-600 text-white px-6 py-2.5 rounded-full hover:bg-red-700 transition shadow-lg font-semibold"><User size={18} /> Admin Panel</Link>
                 ) : (
                   <Link to="/dashboard" className="flex items-center gap-2 bg-primary-600 text-white px-6 py-2.5 rounded-full hover:bg-primary-700 transition shadow-lg font-semibold"><User size={18} /> Parent Portal</Link>
                 )}
@@ -181,8 +183,8 @@ const Navbar = ({ user, handleLogout }) => {
                   to={`/programs/${program.id}`}
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition ${location.pathname === `/programs/${program.id}`
-                      ? 'bg-primary-50 text-primary-700 font-bold'
-                      : 'text-slate-500 hover:text-primary-600 hover:bg-slate-50'
+                    ? 'bg-primary-50 text-primary-700 font-bold'
+                    : 'text-slate-500 hover:text-primary-600 hover:bg-slate-50'
                     }`}
                 >
                   <img src={program.img} alt={program.title} className="w-8 h-8 rounded-lg object-cover" />
@@ -194,7 +196,14 @@ const Navbar = ({ user, handleLogout }) => {
 
           <NavItem to="/enroll" label="Enroll" />
           {user ? (
-            <Link to={user.role === 'admin' ? '/admin' : '/dashboard'} onClick={() => setMobileMenuOpen(false)} className="w-full text-left px-4 py-3 bg-primary-600 text-white rounded-xl font-bold flex items-center gap-2"><User size={18} /> {user.role === 'admin' ? 'Admin Panel' : 'Parent Portal'}</Link>
+            <Link
+              to={['admin', 'teacher', 'nurse', 'nanny'].includes(user.role) ? '/admin' : user.role === 'superadmin' ? '/superadmin' : '/dashboard'}
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full text-left px-4 py-3 bg-primary-600 text-white rounded-xl font-bold flex items-center gap-2"
+            >
+              <User size={18} />
+              {['admin', 'teacher', 'nurse', 'nanny'].includes(user.role) ? 'Staff Portal' : user.role === 'superadmin' ? 'Admin Panel' : 'Parent Portal'}
+            </Link>
           ) : (<NavItem to="/login" label="Login" />)}
         </div>
       )}
