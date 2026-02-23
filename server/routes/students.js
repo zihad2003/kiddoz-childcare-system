@@ -95,7 +95,14 @@ router.put('/:id', auth, async (req, res) => {
             return res.status(403).json({ message: 'Access denied' });
         }
 
-        const updatedStudent = await student.update(req.body);
+        // Filter out fields that are now handled via DailyActivity for 3NF compliance
+        const studentFields = ['name', 'age', 'gender', 'dob', 'plan', 'photoUrl', 'healthInfo', 'notes', 'observations'];
+        const studentUpdateData = {};
+        Object.keys(req.body).forEach(key => {
+            if (studentFields.includes(key)) studentUpdateData[key] = req.body[key];
+        });
+
+        const updatedStudent = await student.update(studentUpdateData);
 
         // --- Automatically Log to DailyActivity for History & AI Analysis ---
         const { DailyActivity } = require('../models');

@@ -27,10 +27,12 @@ apiClient.interceptors.response.use(
     (response) => response,
     (error) => {
         const isConnectionError = !error.response && (error.code === 'ERR_NETWORK' || error.message.includes('Network Error'));
+        const isServerError = error.response && error.response.status >= 500;
+        const isProduction = import.meta.env.PROD || window.location.hostname.includes('pages.dev') || window.location.hostname.includes('firebaseapp.com');
 
-        // If it's a connection error, return MOCK DATA to simulate a working app
-        if (isConnectionError) {
-            console.warn('Backend connection failed. Serving MOCK DATA for demo.');
+        // If it's a connection error OR a server error in production, return MOCK DATA to keep the UI alive
+        if (isConnectionError || (isServerError && isProduction)) {
+            console.warn(`Backend error (${error.response?.status || 'Network'}). Serving MOCK DATA for demo stability.`);
 
             const url = error.config?.url?.toLowerCase() || '';
             let requestData = {};

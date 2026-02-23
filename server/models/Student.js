@@ -36,49 +36,10 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: DataTypes.NOW
         },
         healthInfo: {
-            type: DataTypes.JSON // Store allergies, blood type, etc.
+            type: DataTypes.JSON // Store allergies, blood type, medical history summary
         },
         photoUrl: {
             type: DataTypes.STRING
-        },
-        // Current status fields (for dashboard)
-        attendance: {
-            type: DataTypes.STRING,
-            defaultValue: 'Absent'
-        },
-        temp: {
-            type: DataTypes.STRING
-        },
-        mood: {
-            type: DataTypes.STRING
-        },
-        meal: {
-            type: DataTypes.STRING
-        },
-        mealType: {
-            type: DataTypes.STRING
-        },
-        mealAmount: {
-            type: DataTypes.STRING
-        },
-        foodDetails: {
-            type: DataTypes.TEXT
-        },
-        medName: {
-            type: DataTypes.STRING
-        },
-        medDosage: {
-            type: DataTypes.STRING
-        },
-        medGiven: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
-        activityType: {
-            type: DataTypes.STRING
-        },
-        activityDetails: {
-            type: DataTypes.TEXT
         },
         notes: {
             type: DataTypes.TEXT

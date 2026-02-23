@@ -77,11 +77,8 @@ const seed = async () => {
                 centerId: centers[i % centers.length].id,
                 name: `${firstName} ${lastName}`,
                 age: Math.floor(Math.random() * 4) + 2, // 2-5 years old
-                plan: plans[Math.floor(Math.random() * plans.length)],
-                attendance: status,
-                temp: status === 'Absent' ? '-' : (98 + Math.random()).toFixed(1),
-                mood: status === 'Absent' ? '-' : moods[Math.floor(Math.random() * moods.length)],
-                meal: status === 'Absent' ? '-' : (Math.random() > 0.2 ? 'Finished' : 'Half Eaten')
+                plan: plans[Math.floor(Math.random() * plans.length)]
+                // attendance, temp, mood, meal removed for 3NF compliance
             });
         }
 

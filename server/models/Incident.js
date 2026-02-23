@@ -33,10 +33,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING, // Email or Name
             allowNull: false
         },
-        witnesses: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
         parentNotified: {
             type: DataTypes.BOOLEAN,
             defaultValue: false
