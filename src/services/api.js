@@ -68,13 +68,12 @@ apiClient.interceptors.response.use(
 
             if (url.includes('/auth/me')) {
                 const storedUser = localStorage.getItem('user');
-                const user = storedUser ? JSON.parse(storedUser) : {
-                    id: 'mock-id',
-                    email: 'superadmin@kiddoz.com',
-                    role: 'superadmin',
-                    fullName: 'Demo SuperAdmin'
-                };
-                return Promise.resolve({ data: user });
+                if (!storedUser) return Promise.resolve({ data: null });
+                try {
+                    return Promise.resolve({ data: JSON.parse(storedUser) });
+                } catch (e) {
+                    return Promise.resolve({ data: null });
+                }
             }
 
             // ─── DATA MOCK ──────────────────────────────────────────────────

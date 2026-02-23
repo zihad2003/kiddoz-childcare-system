@@ -30,21 +30,10 @@ export const AuthProvider = ({ children }) => {
                     }
                 } catch (error) {
                     console.warn('Auth: Backend JWT verification failed', error.message);
-                    // Backend is down — use the localStorage snapshot if it has a valid role
-                    if (storedUser) {
-                        try {
-                            const cached = JSON.parse(storedUser);
-                            if (cached?.role) {
-                                console.warn('Auth: Offline mode — using cached user from localStorage');
-                                setUser(cached);
-                                setLoading(false);
-                                return;
-                            }
-                        } catch (_) { /* JSON parse failed, continue */ }
-                    }
-                    // Token is unusable
+                    // Proactively clear stale auth data if verification fails
                     localStorage.removeItem('token');
                     localStorage.removeItem('user');
+                    setUser(null);
                 }
             }
 
