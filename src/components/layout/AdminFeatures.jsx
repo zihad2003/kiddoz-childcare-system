@@ -131,13 +131,31 @@ const AdminFeatures = () => {
             </div>
 
             {/* --- PARTNERS ROW --- */}
-            <div className="bg-slate-50/50 border-y border-slate-100 py-12">
+            <div className="bg-slate-50/50 border-y border-slate-100 py-20">
                 <div className="max-w-7xl mx-auto px-6 overflow-hidden">
-                    <p className="text-center text-[9px] font-black text-slate-400 uppercase tracking-[0.5em] mb-10 italic">Nodes Currently Secured via KiddoZ Protocol</p>
-                    <div className="flex flex-wrap justify-center gap-10 md:gap-20 opacity-30 grayscale hover:grayscale-0 transition-all duration-1000">
-                        {['NORDIC CHILDCARE', 'Pinnacle Academia', 'GALAXY KIDS', 'MIRPUR PRIMARY', 'Little Hearts Node'].map((name, i) => (
-                            <span key={i} className="text-xl font-black italic tracking-tighter text-slate-900">{name}</span>
-                        ))}
+                    <p className="text-center text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] mb-12 italic">Nodes Currently Secured via KiddoZ Protocol</p>
+                    <div className="flex flex-wrap justify-center gap-12 md:gap-24 items-center opacity-40 grayscale hover:grayscale-0 transition-all duration-1000">
+                        {/* Mock Logos with Icons */}
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-black italic">N</div>
+                            <span className="text-xl font-black italic tracking-tighter text-slate-900">NORDIC_CHILD</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-black italic">P</div>
+                            <span className="text-xl font-black italic tracking-tighter text-slate-900">PINNACLE_AC</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center text-white font-black italic">G</div>
+                            <span className="text-xl font-black italic tracking-tighter text-slate-900">GALAXY_KIDS</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-black italic">M</div>
+                            <span className="text-xl font-black italic tracking-tighter text-slate-900">MIRPUR_PRIM</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-rose-600 rounded-lg flex items-center justify-center text-white font-black italic">L</div>
+                            <span className="text-xl font-black italic tracking-tighter text-slate-900">LITTLE_NODE</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -145,59 +163,54 @@ const AdminFeatures = () => {
             {/* --- DASHBOARD PREVIEW SECTION --- */}
             <div className="max-w-7xl mx-auto px-6 py-40">
                 <div className="relative group/preview">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary-500/20 to-indigo-500/20 rounded-[4rem] blur-[120px] group-hover:scale-110 transition-transform duration-1000"></div>
+                    {/* Background glow */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary-500/30 to-indigo-500/30 rounded-[4rem] blur-[120px] group-hover:scale-110 transition-transform duration-1000 opacity-60"></div>
 
-                    <div className="relative bg-white border border-slate-200/80 rounded-[4rem] p-4 shadow-2xl overflow-hidden min-h-[500px] flex flex-col md:flex-row">
-                        {/* Sidebar */}
-                        <div className="md:w-72 bg-slate-50/50 p-10 border-r border-slate-100 hidden md:flex flex-col gap-10">
-                            <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 bg-[#0f172a] rounded-lg"></div>
-                                <span className="text-xs font-black italic">COMMAND_HUB</span>
-                            </div>
-                            <div className="space-y-4">
-                                {[1, 2, 3, 4].map(i => (
-                                    <div key={i} className="h-2 w-full bg-slate-200 rounded-full"></div>
-                                ))}
-                            </div>
+                    <div className="relative bg-[#0f172a] border border-white/10 rounded-[4rem] p-4 shadow-[0_80px_160px_-40px_rgba(15,23,42,0.4)] overflow-hidden">
+                        {/* Chrome bar */}
+                        <div className="flex items-center gap-2 px-8 py-4 border-b border-white/5 mb-4">
+                            <div className="w-3 h-3 rounded-full bg-rose-500/50"></div>
+                            <div className="w-3 h-3 rounded-full bg-amber-500/50"></div>
+                            <div className="w-3 h-3 rounded-full bg-emerald-500/50"></div>
+                            <div className="ml-4 px-4 py-1.5 bg-white/5 rounded-full text-[9px] font-black text-white/30 tracking-widest italic">HTTPS://COMMAND.KIDDOZ.IO/STRAT_OS</div>
                         </div>
 
-                        {/* Content area */}
-                        <div className="flex-1 p-12 bg-slate-50/20">
-                            <div className="flex flex-col lg:flex-row justify-between items-start gap-10 mb-16">
+                        {/* Main Image Replacement for CSS Mock */}
+                        <div className="relative rounded-[3rem] overflow-hidden">
+                            <img
+                                src="https://images.unsplash.com/photo-1551288049-bbbda546697a?auto=format&fit=crop&q=80&w=1600"
+                                alt="KiddoZ Admin Dashboard Preview"
+                                className="w-full h-auto object-cover aspect-[21/9] opacity-90 group-hover:scale-105 transition-transform duration-[2000ms] ease-out"
+                            />
+
+                            {/* Overlay UI elements to blend with design */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a]/80 via-transparent to-transparent"></div>
+
+                            {/* Static overlay components */}
+                            <div className="absolute top-10 left-10 p-6 bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl hidden lg:block animate-in fade-in slide-in-from-left-4 duration-1000">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <Activity className="text-emerald-400" size={16} />
+                                    <span className="text-[9px] font-black uppercase text-white tracking-widest italic leading-none">Real-Time Telemetry</span>
+                                </div>
                                 <div className="space-y-3">
-                                    <div className="h-2 w-24 bg-primary-100 rounded-full"></div>
-                                    <div className="h-10 w-64 bg-slate-900 rounded-2xl group-hover:bg-primary-600 transition-colors duration-700"></div>
-                                </div>
-                                <div className="flex gap-4">
-                                    <div className="w-16 h-16 bg-white border border-slate-200 rounded-2xl shadow-sm"></div>
-                                    <div className="w-16 h-16 bg-white border border-slate-200 rounded-2xl shadow-sm"></div>
-                                    <div className="w-16 h-16 bg-[#0f172a] rounded-2xl shadow-lg"></div>
+                                    <div className="h-1.5 w-32 bg-white/10 rounded-full overflow-hidden">
+                                        <div className="h-full w-3/4 bg-emerald-500"></div>
+                                    </div>
+                                    <div className="h-1.5 w-24 bg-white/10 rounded-full overflow-hidden">
+                                        <div className="h-full w-1/2 bg-blue-500"></div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                <div className="h-48 bg-white border border-slate-100 rounded-[2.5rem] shadow-sm p-8 flex flex-col justify-between">
-                                    <Activity className="text-primary-600" size={24} />
-                                    <div className="h-8 w-1/2 bg-slate-50 rounded-lg"></div>
+                            {/* Floating Cursor/Tooltip Overlay */}
+                            <div className="absolute bottom-10 right-10 bg-[#0f172a] text-white p-8 rounded-[2.5rem] shadow-2xl border border-white/20 hidden lg:block animate-in zoom-in-50 duration-1000 backdrop-blur-3xl bg-opacity-80">
+                                <div className="flex items-center gap-4 mb-4">
+                                    <Sparkles className="text-primary-400" size={16} />
+                                    <span className="text-[9px] font-black uppercase tracking-widest italic leading-none text-primary-300">AI Forge Insight</span>
                                 </div>
-                                <div className="h-48 bg-slate-900 rounded-[2.5rem] shadow-xl p-8 flex flex-col justify-between">
-                                    <Zap className="text-primary-400" size={24} />
-                                    <div className="h-8 w-1/2 bg-white/5 rounded-lg"></div>
-                                </div>
-                                <div className="h-48 bg-white border border-slate-100 rounded-[2.5rem] shadow-sm p-8 flex flex-col justify-between hidden lg:flex">
-                                    <Network className="text-indigo-600" size={24} />
-                                    <div className="h-8 w-1/2 bg-slate-50 rounded-lg"></div>
-                                </div>
+                                <p className="text-sm font-bold italic leading-relaxed text-slate-100 mb-2">"Operational load optimized."</p>
+                                <p className="text-[11px] font-bold italic leading-relaxed text-slate-400">Predicted capacity boost: <span className="text-emerald-400">+18%</span></p>
                             </div>
-                        </div>
-
-                        {/* Floating Cursor/Tooltip Overlay */}
-                        <div className="absolute bottom-20 right-20 bg-[#0f172a] text-white p-6 rounded-3xl shadow-2xl border border-white/10 hidden lg:block animate-in zoom-in-50 duration-1000">
-                            <div className="flex items-center gap-4 mb-4">
-                                <Sparkles className="text-primary-400" size={16} />
-                                <span className="text-[9px] font-black uppercase tracking-widest italic leading-none">AI Insight Prompt</span>
-                            </div>
-                            <p className="text-[11px] font-bold italic leading-relaxed text-slate-400">"Occupancy trend predicted to hit saturation <br /> in MIRPUR-NODE-03. Balance payloads?"</p>
                         </div>
                     </div>
                 </div>
@@ -233,12 +246,18 @@ const AdminFeatures = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
                     {features.map((feature, idx) => (
-                        <div key={idx} className="group p-12 bg-white border border-slate-100/80 rounded-[4rem] hover:shadow-[0_60px_120px_-20px_rgba(15,23,42,0.1)] hover:border-primary-200 hover:-translate-y-3 transition-all duration-1000 relative overflow-hidden">
+                        <div key={idx} className="group p-12 bg-white border border-slate-100/80 rounded-[4rem] hover:shadow-[0_80px_160px_-20px_rgba(15,23,42,0.12)] hover:border-primary-200 hover:-translate-y-3 transition-all duration-1000 relative overflow-hidden">
+                            {/* Visual Backdrops */}
+                            <div className="absolute inset-0 bg-gradient-to-br from-slate-50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+
+                            {/* Tech Texture Overlay */}
+                            <div className="absolute inset-0 opacity-0 group-hover:opacity-[0.03] transition-opacity duration-1000 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #000 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
+
                             <div className="absolute -bottom-10 -right-10 opacity-[0.03] group-hover:opacity-[0.12] group-hover:scale-150 transition-all duration-1000 grayscale group-hover:grayscale-0 pointer-events-none">
                                 <feature.icon size={220} />
                             </div>
 
-                            <div className="flex justify-between items-start mb-12">
+                            <div className="flex justify-between items-start mb-12 relative z-10">
                                 <div className={`w-20 h-20 ${feature.bg} ${feature.color} rounded-[2rem] flex items-center justify-center shadow-inner group-hover:rotate-[15deg] group-hover:scale-110 transition-all duration-700 ease-out`}>
                                     <feature.icon size={32} />
                                 </div>
@@ -254,7 +273,7 @@ const AdminFeatures = () => {
                                 <p className="text-slate-500 font-bold text-sm leading-relaxed uppercase tracking-tight opacity-70 group-hover:opacity-100 transition-opacity duration-700 italic">{feature.desc}</p>
                             </div>
 
-                            <div className="mt-10 flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.4em] text-primary-600 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-700 italic">
+                            <div className="mt-10 flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.4em] text-primary-600 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-700 italic relative z-10">
                                 Access Protocol <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform h-3 w-3" />
                             </div>
                         </div>
