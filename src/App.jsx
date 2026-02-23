@@ -30,6 +30,7 @@ import InfoPage from './components/layout/InfoPage';
 import TourBookingPage from './components/layout/TourBookingPage';
 import ScrollToTop from './components/utils/ScrollToTop';
 import TourCTA from './components/layout/TourCTA';
+import AdminFeatures from './components/layout/AdminFeatures';
 
 import Preloader from './components/ui/Preloader';
 import InteractivePreloader from './components/ui/InteractivePreloader';
@@ -142,6 +143,7 @@ function AppContent() {
             } />
 
             <Route path="/programs" element={<Programs />} />
+            <Route path="/admin-features" element={<AdminFeatures />} />
             <Route path="/nanny-service" element={<NannyServiceDetails />} />
             <Route path="/book-nanny" element={<NannyBookingPage />} />
             <Route path="/programs/:programId" element={<ProgramDetails />} />

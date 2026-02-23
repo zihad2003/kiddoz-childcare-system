@@ -134,6 +134,7 @@ const Navbar = ({ user, handleLogout }) => {
             </div>
 
             <NavItem to="/enroll" label="Pricing & Enroll" />
+            <NavItem to="/admin-features" label="Admin Solutions" />
           </div>
 
           {/* Right Side CTA */}
