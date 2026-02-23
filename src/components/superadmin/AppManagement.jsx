@@ -21,7 +21,7 @@ const AppManagement = () => {
     const fetchVersions = async () => {
         try {
             const data = await api.getAppVersions();
-            setVersions(data);
+            setVersions(Array.isArray(data) ? data : []);
             setLoading(false);
         } catch (error) {
             setLoading(false);

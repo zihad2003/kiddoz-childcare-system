@@ -257,6 +257,15 @@ apiClient.interceptors.response.use(
                 });
             }
 
+            if (url.includes('/superadmin/app/versions')) {
+                return Promise.resolve({
+                    data: [
+                        { id: 1, version: '2.0.0', changes: 'Initial release of the AI-powered portal.', releasedAt: new Date().toISOString(), forceUpdate: false },
+                        { id: 2, version: '1.9.5', changes: 'Stability improvements for real-time monitoring.', releasedAt: new Date(Date.now() - 604800000).toISOString(), forceUpdate: true }
+                    ]
+                });
+            }
+
             // ─── OTHER MOCKS ───────────────────────────────────────────────
             if (url.includes('/incidents')) {
                 return Promise.resolve({
