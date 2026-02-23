@@ -217,7 +217,7 @@ const AdminFeatures = () => {
             </div>
 
             {/* --- FEATURE MATRIX --- */}
-            <div className="max-w-7xl mx-auto px-6 py-40">
+            <div id="feature-matrix" className="max-w-7xl mx-auto px-6 py-40">
                 <div className="flex flex-col md:flex-row justify-between items-end gap-10 mb-24">
                     <div className="flex-1">
                         <div className="flex items-center gap-4 mb-8">
@@ -428,17 +428,23 @@ const AdminFeatures = () => {
                     <div className="space-y-8">
                         <h5 className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-900 italic">Governance</h5>
                         <ul className="space-y-4">
-                            {['Terms of Service', 'Privacy Matrix', 'Security Audit', 'Compliance'].map((l, i) => (
-                                <li key={i}><Link to="#" className="text-sm font-bold text-slate-400 hover:text-primary-600 transition-colors uppercase italic tracking-tight">{l}</Link></li>
+                            {[
+                                { name: 'Terms of Service', path: '/info/terms' },
+                                { name: 'Privacy Matrix', path: '/info/privacy' },
+                                { name: 'Security Audit', path: '/info/safety' },
+                                { name: 'Compliance', path: '/info/safety' }
+                            ].map((l, i) => (
+                                <li key={i}><Link to={l.path} className="text-sm font-bold text-slate-400 hover:text-primary-600 transition-colors uppercase italic tracking-tight">{l.name}</Link></li>
                             ))}
                         </ul>
                     </div>
                     <div className="space-y-8">
                         <h5 className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-900 italic">Navigation</h5>
                         <ul className="space-y-4">
-                            {['Initialize Login', 'Request Audit', 'Feature Matrix', 'Support Vector'].map((l, i) => (
-                                <li key={i}><Link to="#" className="text-sm font-bold text-slate-400 hover:text-primary-600 transition-colors uppercase italic tracking-tight">{l}</Link></li>
-                            ))}
+                            <li><Link to="/login" className="text-sm font-bold text-slate-400 hover:text-primary-600 transition-colors uppercase italic tracking-tight">Initialize Login</Link></li>
+                            <li><button onClick={handleDemoRequest} className="text-sm font-bold text-slate-400 hover:text-primary-600 transition-colors uppercase italic tracking-tight text-left">Request Audit</button></li>
+                            <li><button onClick={() => document.getElementById('feature-matrix')?.scrollIntoView({ behavior: 'smooth' })} className="text-sm font-bold text-slate-400 hover:text-primary-600 transition-colors uppercase italic tracking-tight text-left">Feature Matrix</button></li>
+                            <li><Link to="/info/help" className="text-sm font-bold text-slate-400 hover:text-primary-600 transition-colors uppercase italic tracking-tight">Support Vector</Link></li>
                         </ul>
                     </div>
                 </div>
