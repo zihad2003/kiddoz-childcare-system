@@ -8,6 +8,7 @@ import Modal from '../ui/Modal';
 import Input from '../ui/Input';
 import Card from '../ui/Card';
 import Badge from '../ui/Badge';
+import Select from '../ui/Select';
 
 const CenterManagement = () => {
     const [centers, setCenters] = useState([]);
