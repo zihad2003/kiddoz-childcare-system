@@ -1,95 +1,69 @@
-# KiddoZ Relational Database Schema (MySQL)
+# KiddoZ Relational Database Schema (3NF Optimized)
 
-This project has been migrated to **MySQL** to satisfy DBMS Lab requirements. The schema follows relational best practices, including 3NF normalization, primary keys, and foreign key constraints.
+This project uses a **PostgreSQL** schema designed for the DBMS Lab, strictly adhering to **Third Normal Form (3NF)** to ensure data integrity and remove redundancy.
 
 ## Entity Relationship Overview
-The system is designed around a central `Users` table with role-based extensions.
+The system is designed around a central `Users` concept, split into `Parents` and `Staff`.
 
-- **One-to-Many**: `Users` (Parent) -> `Students`
-- **One-to-Many**: `Students` -> `DailyActivities` (Attendance/Meals)
+- **One-to-Many**: `Programs` -> `Students` & `Staff`
+- **One-to-Many**: `Parents` -> `Students`
+- **One-to-Many**: `Students` -> `Attendance` (Time-series)
 - **One-to-Many**: `Students` -> `HealthRecords`
-- **One-to-Many**: `Users` (Staff) -> `Payrolls`
-- **One-to-Many**: `Centers` -> `Students` & `Staff`
+- **One-to-Many**: `Staff` (Teacher/Nurse) -> `HealthRecords` (Recorded By)
+- **One-to-Many**: `Incidents` -> `IncidentWitnesses` (Normalized list)
 
 ## Primary Entities (3NF Normalized)
 
-### 1. `Users` (Identity & RBAC)
-Primary authentication table. Role-based access control (RBAC) is applied via the `role` enum.
-- `id`: UUID (PK)
-- `email`: VARCHAR(255) (Unique)
-- `password`: VARCHAR(255) (Bcrypt hashed)
-- `role`: ENUM ('superadmin', 'admin', 'staff', 'parent', 'nurse', 'nanny')
+### 1. `Students`
+Basic profiles. Redundant fields like `current_status` or `last_temp` have been removed to satisfy 3NF. These are now derived via joins with the latest timestamped records in `health_records` or `attendance`.
+- `student_id`: SERIAL (PK)
+- `program_id`: INT (FK -> programs.program_id)
+- `primary_parent_id`: INT (FK -> parents.parent_id)
 
-### 2. `Students` (Core Business Object)
-Successfully normalized by separating parent/center links into foreign keys.
-- `id`: INT (PK)
-- `parentId`: UUID (FK -> Users.id)
-- `centerId`: INT (FK -> Centers.id)
-- `name`, `dob`, `gender`
-- `plan`: VARCHAR(50) (Referencing Pricing Plans)
+### 2. `Payments` (Refined for 3NF)
+Normalized to handle multiple payment types (Tuition, Salary, Expense) without name redundancy.
+- `parent_id`: FK to Parents (Tuition source)
+- `staff_id`: FK to Staff (Payroll recipient)
+- `type`: ENUM ('Tuition', 'Salary', 'Expense')
 
-### 3. `Staff` (Human Resources)
-Separated from `Users` to store specific HR/Nanny data.
-- `id`: INT (PK)
-- `userId`: UUID (FK -> Users.id)
-- `specialization`, `experience_years`, `base_salary`
-- `status`: ENUM ('active', 'on_leave', 'terminated')
+### 3. `Incidents` & `IncidentWitnesses`
+Normalized to 1NF/3NF by moving the multi-valued `witnesses` attribute into a separate table.
+- `incident_id`: SERIAL (PK)
+- `witness_name`: Part of composite PK in `incident_witnesses`.
 
-### 4. `DailyActivities` (Attendance & Activity)
-Stores time-series data for child monitoring.
-- `id`: BIGINT (PK)
-- `studentId`: INT (FK -> Students.id)
-- `activityType`: VARCHAR(50) (Attendance, Meal, Nap, Mood)
-- `value`: VARCHAR(100)
-- `timestamp`: DATETIME
+## Normalization Rationale (3NF Compliance)
 
-### 5. `Payrolls` (Financials)
-Handles salary disbursements and expense tracking.
-- `id`: INT (PK)
-- `staffId`: INT (FK -> Staff.id)
-- `amount`: DECIMAL(10,2)
-- `status`: ENUM ('pending', 'paid', 'overdue')
-- `payDate`: DATE
+1.  **First Normal Form (1NF)**:
+    *   All tables have a Primary Key.
+    *   **Fix**: Multi-valued "witnesses" in incidents moved to `incident_witnesses` table.
+2.  **Second Normal Form (2NF)**:
+    *   1NF + No partial functional dependencies.
+    *   In tables with single-column PKs (SERIAL), 2NF is automatically satisfied.
+3.  **Third Normal Form (3NF)**:
+    *   2NF + No transitive dependencies.
+    *   **Fix**: Removed `current_temp`, `current_mood`, and `attendance_status` from the `students` table. These fields were dependent on the *latest* health/attendance record, not the student ID itself. Storing them in `students` violated 3NF as it created a transitive dependency on the state of another table.
 
-### 6. `Centers` (Infrastructure)
-Allows the platform to scale to multiple childcare locations.
-- `id`: INT (PK)
-- `name`, `address`, `contactEmail`
-- `capacity`: INT
+## Complex SQL Queries (3NF Joins)
 
-## Normalization Rational (DBMS Lab)
-1. **First Normal Form (1NF)**: All tables have primary keys, and all columns contain atomic values. Repeated contact info for multiple children of the same parent is moved to a single `Users` entry.
-2. **Second Normal Form (2NF)**: All non-key attributes are fully functional dependent on the primary key. `DailyActivities` depends solely on the `activity_id`, not partially on the student.
-3. **Third Normal Form (3NF)**: Transitive dependencies are removed. For example, student `Plan` details (price, duration) are stored in separate configuration or referenced via the API to prevent data redundancy in the `Students` table.
-
-## Complex SQL Queries (For Lab Report)
-
-### 1. Multi-Join: Revenue by Center
+### 1. Fetching Current Student Status (Replaces Denormalized Fields)
 ```sql
-SELECT c.name AS center_name, SUM(p.amount) AS total_revenue
-FROM Centers c
-JOIN Students s ON c.id = s.centerId
-JOIN Billings p ON s.id = p.studentId
-WHERE p.status = 'Paid'
-GROUP BY c.id;
+SELECT s.full_name, h.temperature, a.status
+FROM students s
+LEFT JOIN health_records h ON h.student_id = s.student_id
+LEFT JOIN attendance a ON a.student_id = s.student_id
+WHERE h.timestamp = (SELECT MAX(timestamp) FROM health_records WHERE student_id = s.student_id)
+  AND a.date = CURRENT_DATE;
 ```
 
-### 2. Subquery: Find High-Performing Staff
+### 2. Revenue vs Payroll Analysis
 ```sql
-SELECT name FROM Users WHERE id IN (
-    SELECT userId FROM Staff WHERE experience_years > 5 AND status = 'active'
-);
-```
-
-### 3. Aggregation: Daily Attendance Report
-```sql
-SELECT activityType, value, COUNT(*) as count
-FROM DailyActivities
-WHERE DATE(timestamp) = CURDATE() AND activityType = 'attendance'
-GROUP BY value;
+SELECT 
+    (SELECT SUM(amount) FROM payments WHERE type = 'Tuition' AND status = 'Paid') as total_revenue,
+    (SELECT SUM(amount) FROM payments WHERE type = 'Salary' AND status = 'Paid') as total_payroll;
 ```
 
 ## DBMS Features Utilized
-1. **Relational Constraints**: Use of `ON DELETE CASCADE` for child records (e.g., deleting a student removes their health records).
-2. **ACID Transactions**: Implemented via Sequelize transactions for enrollment (creating User + Student + Billing entry).
-3. **Optimized Indexing**: Indexes added to `parentId`, `studentId`, and `email` for O(log n) lookup performance.
+1. **Relational Constraints**: `REFERENCES` ensuring referential integrity.
+2. **Atomic Operations**: PostgreSQL transactions for dual-entity updates.
+3. **Check Constraints**: Role and Status enums enforced at the database level.
+

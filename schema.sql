@@ -34,12 +34,9 @@ CREATE TABLE students (
   medical_notes TEXT,
   allergies TEXT,
   enrollment_date DATE DEFAULT CURRENT_DATE,
-  is_active BOOLEAN DEFAULT TRUE,
-  -- Real-time tracking fields matching Firestore
-  current_temp DECIMAL(4,1),
-  current_mood VARCHAR(50),
-  last_meal VARCHAR(100),
-  attendance_status VARCHAR(20) DEFAULT 'Absent'
+  is_active BOOLEAN DEFAULT TRUE
+  -- Redundant/Derived fields (current_temp, current_mood, etc.) removed for 3NF compliance.
+  -- These should be fetched by joining with health_records and attendance tables.
 );
 
 CREATE TABLE staff (
@@ -82,10 +79,10 @@ CREATE TABLE health_records (
 
 CREATE TABLE payments (
   payment_id SERIAL PRIMARY KEY,
-  recipient_name VARCHAR(200), -- For Payroll
-  parent_id INT REFERENCES parents(parent_id), -- For Tuition
+  parent_id INT REFERENCES parents(parent_id), -- For Tuition payments from parents
+  staff_id INT REFERENCES staff(staff_id),     -- For Payroll payments to staff (New for 3NF)
   amount DECIMAL(10,2) NOT NULL,
-  type VARCHAR(50), -- 'Tuition', 'Salary', 'Expense'
+  type VARCHAR(50) CHECK (type IN ('Tuition', 'Salary', 'Expense')),
   status VARCHAR(20) CHECK (status IN ('Paid', 'Pending', 'Overdue', 'Failed')),
   payment_date DATE,
   due_date DATE,
@@ -112,14 +109,20 @@ CREATE TABLE incidents (
   type VARCHAR(50) NOT NULL, -- 'Injury', 'Behavioral', etc.
   severity VARCHAR(20) CHECK (severity IN ('Low', 'Medium', 'High', 'Critical')),
   description TEXT NOT NULL,
-  location VARCHAR(100), -- 'Playground', 'Classroom'
+  location VARCHAR(100),
   action_taken TEXT,
-  witnesses TEXT,
   status VARCHAR(20) DEFAULT 'Open', -- 'Open', 'Investigating', 'Resolved'
   reported_by INT REFERENCES staff(staff_id),
-  teacher_signature VARCHAR(100), -- For compliance
+  teacher_signature VARCHAR(100),
   reported_at TIMESTAMP DEFAULT NOW(),
   resolved_at TIMESTAMP
+);
+
+-- Normalized table for Incident Witnesses (New for 3NF/1NF)
+CREATE TABLE incident_witnesses (
+  incident_id INT REFERENCES incidents(incident_id),
+  witness_name VARCHAR(200),
+  PRIMARY KEY (incident_id, witness_name)
 );
 
 CREATE TABLE tasks (
@@ -132,3 +135,4 @@ CREATE TABLE tasks (
   created_at TIMESTAMP DEFAULT NOW(),
   completed_at TIMESTAMP
 );
+
