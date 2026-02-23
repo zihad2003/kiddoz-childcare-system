@@ -135,28 +135,37 @@ apiClient.interceptors.response.use(
                 });
             }
 
-            if (url.includes('/financials/overview') || url.includes('/superadmin/financials/overview')) {
+            if (url.includes('/superadmin/financials/overview')) {
+                const range = error.config?.params?.range || 'ytd';
+                let monthlyRevenue = [
+                    { month: 'Sep', revenue: 850000, expenses: 620000 },
+                    { month: 'Oct', revenue: 920000, expenses: 650000 },
+                    { month: 'Nov', revenue: 980000, expenses: 680000 },
+                    { month: 'Dec', revenue: 1100000, expenses: 720000 },
+                    { month: 'Jan', revenue: 1150000, expenses: 780000 },
+                    { month: 'Feb', revenue: 1250000, expenses: 840000 }
+                ];
+
+                if (range === 'this_month') {
+                    monthlyRevenue = [{ month: 'Feb', revenue: 1250000, expenses: 840000 }];
+                } else if (range === 'quarter') {
+                    monthlyRevenue = monthlyRevenue.slice(-3);
+                }
+
                 return Promise.resolve({
                     data: {
                         summary: {
-                            totalRevenue: 1250000,
-                            totalExpenses: 840000,
-                            netProfit: 410000,
-                            outstandingInvoices: 12
+                            totalRevenue: range === 'this_month' ? 1250000 : 1250000 * 4,
+                            totalExpenses: range === 'this_month' ? 840000 : 840000 * 4,
+                            netProfit: range === 'this_month' ? 410000 : 410000 * 4,
+                            outstandingInvoices: range === 'this_month' ? 3 : 12
                         },
                         revenueByPlan: [
                             { plan: 'Growth Scholar', total: 450000 },
                             { plan: 'Little Explorer', total: 320000 },
                             { plan: 'VIP Guardian', total: 480000 }
                         ],
-                        monthlyRevenue: [
-                            { month: 'Sep', revenue: 850000, expenses: 620000 },
-                            { month: 'Oct', revenue: 920000, expenses: 650000 },
-                            { month: 'Nov', revenue: 980000, expenses: 680000 },
-                            { month: 'Dec', revenue: 1100000, expenses: 720000 },
-                            { month: 'Jan', revenue: 1150000, expenses: 780000 },
-                            { month: 'Feb', revenue: 1250000, expenses: 840000 }
-                        ]
+                        monthlyRevenue
                     }
                 });
             }
@@ -187,11 +196,20 @@ apiClient.interceptors.response.use(
             }
 
             if (url.includes('/superadmin/analytics/revenue')) {
+                const range = error.config?.params?.range || 'ytd';
+                let labels = ['Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'];
+                let data = [850000, 920000, 980000, 1100000, 1150000, 1250000];
+
+                if (range === 'this_month') {
+                    labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+                    data = [300000, 320000, 350000, 280000];
+                } else if (range === 'quarter') {
+                    labels = ['Dec', 'Jan', 'Feb'];
+                    data = [1100000, 1150000, 1250000];
+                }
+
                 return Promise.resolve({
-                    data: {
-                        labels: ['Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'],
-                        data: [850000, 920000, 980000, 1100000, 1150000, 1250000]
-                    }
+                    data: { labels, data }
                 });
             }
 
@@ -210,14 +228,31 @@ apiClient.interceptors.response.use(
             }
 
             if (url.includes('/superadmin/users')) {
-                return Promise.resolve({
-                    data: [
-                        { id: 'u1', fullName: 'Zihad Hussain', email: 'zihad@kiddoz.com', role: 'superadmin', status: 'active', phone: '+8801712345678' },
-                        { id: 'u2', fullName: 'Karim Ahmed', email: 'karim@center.com', role: 'admin', status: 'active', phone: '+8801812345678' },
-                        { id: 'u3', fullName: 'Fatima Begum', email: 'fatima@nanny.com', role: 'nanny', status: 'active', phone: '+8801912345678' },
-                        { id: 'u4', fullName: 'Rahima Khatun', email: 'rahima@parent.com', role: 'parent', status: 'active', phone: '+8801612345678' }
-                    ]
-                });
+                const search = error.config?.params?.search?.toLowerCase() || '';
+                const role = error.config?.params?.role || 'All';
+
+                let users = [
+                    { id: 'u1', fullName: 'Zihad Hussain', email: 'zihad@kiddoz.com', role: 'superadmin', status: 'active', phone: '+8801712345678' },
+                    { id: 'u2', fullName: 'Karim Ahmed', email: 'karim@center.com', role: 'admin', status: 'active', phone: '+8801812345678' },
+                    { id: 'u3', fullName: 'Fatima Begum', email: 'fatima@nanny.com', role: 'nanny', status: 'active', phone: '+8801912345678' },
+                    { id: 'u4', fullName: 'Rahima Khatun', email: 'rahima@parent.com', role: 'parent', status: 'active', phone: '+8801612345678' },
+                    { id: 'u5', fullName: 'Sumaiya Islam', email: 'sumaiya@staff.com', role: 'teacher', status: 'active', phone: '+8801512345678' },
+                    { id: 'u6', fullName: 'Arif Rahman', email: 'arif@parent.com', role: 'parent', status: 'suspended', phone: '+8801412345678' }
+                ];
+
+                if (role !== 'All') {
+                    users = users.filter(u => u.role === role);
+                }
+
+                if (search) {
+                    users = users.filter(u =>
+                        u.fullName.toLowerCase().includes(search) ||
+                        u.email.toLowerCase().includes(search) ||
+                        u.id.toLowerCase().includes(search)
+                    );
+                }
+
+                return Promise.resolve({ data: users });
             }
 
             if (url.includes('/superadmin/bulletins')) {
@@ -395,8 +430,8 @@ const api = {
 
     // Super Admin Methods
     getSuperAdminOverview: () => apiClient.get('/superadmin/overview').then(res => res.data),
-    getAnalyticsRevenue: () => apiClient.get('/superadmin/analytics/revenue').then(res => res.data),
-    getAnalyticsUsers: () => apiClient.get('/superadmin/analytics/users').then(res => res.data),
+    getAnalyticsRevenue: (params) => apiClient.get('/superadmin/analytics/revenue', { params }).then(res => res.data),
+    getAnalyticsUsers: (params) => apiClient.get('/superadmin/analytics/users', { params }).then(res => res.data),
 
     getAllUsers: (params) => apiClient.get('/superadmin/users', { params }).then(res => res.data),
     addUser: (data) => apiClient.post('/superadmin/users', data).then(res => res.data),
@@ -427,7 +462,7 @@ const api = {
     getStaffAll: () => apiClient.get('/superadmin/staff/all').then(res => res.data),
 
     getRecentActivity: () => apiClient.get('/superadmin/security/audit-logs?limit=5').then(res => res.data),
-    getFinancialOverview: () => apiClient.get('/superadmin/financials/overview').then(res => res.data),
+    getFinancialOverview: (params) => apiClient.get('/superadmin/financials/overview', { params }).then(res => res.data),
 };
 
 export default api;

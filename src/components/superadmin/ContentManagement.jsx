@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FileText, Plus, Edit, Trash, Bell, Calendar, Tag, AlertCircle, Trash2 } from 'lucide-react';
+import { FileText, Plus, Edit, Trash, Bell, Calendar, Tag, AlertCircle, Trash2, Send, Activity, ShieldAlert, Zap, Globe } from 'lucide-react';
 import api from '../../services/api';
 import { useToast } from '../../context/ToastContext';
 import Button from '../ui/Button';
@@ -63,71 +63,81 @@ const ContentManagement = () => {
         }
     };
 
-    const getPriorityColor = (p) => {
+    const getPriorityStyles = (p) => {
         switch (p) {
-            case 'Critical': return 'bg-red-100 text-red-700';
-            case 'High': return 'bg-secondary-100 text-orange-700';
-            case 'Medium': return 'bg-blue-100 text-blue-700';
-            default: return 'bg-slate-100 text-slate-700';
+            case 'Critical': return 'bg-rose-500/10 text-rose-600 border-rose-500/20 shadow-rose-100';
+            case 'High': return 'bg-amber-500/10 text-amber-600 border-amber-500/20 shadow-amber-100';
+            case 'Medium': return 'bg-indigo-500/10 text-indigo-600 border-indigo-500/20 shadow-indigo-100';
+            default: return 'bg-slate-500/10 text-slate-600 border-slate-500/20';
         }
     };
 
+    if (loading) return (
+        <div className="flex flex-col items-center justify-center py-40 animate-pulse">
+            <div className="w-20 h-20 bg-indigo-100 rounded-[2rem] flex items-center justify-center mb-6 shadow-2xl border border-indigo-200">
+                <Bell className="w-10 h-10 text-indigo-600" />
+            </div>
+            <p className="text-slate-500 font-black tracking-[0.25em] uppercase text-xs italic">Syncing Bulletin Feed...</p>
+        </div>
+    );
+
     return (
-        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Platform Content</h2>
-                    <p className="text-slate-500 mt-1">Manage global announcements and bulletin board notices</p>
+        <div className="space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-1000 fill-mode-both">
+            {/* Header Section */}
+            <div className="flex flex-col xl:flex-row justify-between items-start xl:items-end gap-10">
+                <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="h-[2px] w-12 bg-indigo-600 rounded-full"></div>
+                        <p className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.4em] italic leading-none">Global Network Communications</p>
+                    </div>
+                    <h2 className="text-5xl font-black text-slate-900 tracking-tighter leading-[0.9] italic">Platform <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-primary-600">Broadcast</span></h2>
+                    <p className="text-slate-500 font-bold mt-5 text-sm uppercase tracking-wide">Signal Status: <span className="text-emerald-500 font-black">STABLE</span> • Reach: <span className="text-primary-600 font-black">ENTIRE GRID</span></p>
                 </div>
-                <Button variant="primary" onClick={() => setIsModalOpen(true)} className="shadow-lg shadow-primary-100">
-                    <Plus size={20} className="mr-2" /> <span className="font-bold">New Announcement</span>
-                </Button>
+                <div className="flex gap-4 w-full xl:w-auto">
+                    <button onClick={() => setIsModalOpen(true)} className="flex-1 xl:flex-none flex items-center justify-center gap-3 px-10 py-5 bg-[#0f172a] text-white rounded-[1.5rem] text-[10px] font-black uppercase tracking-[0.2em] hover:bg-black hover:shadow-[0_20px_40px_-10px_rgba(15,23,42,0.3)] transition-all duration-500 active:scale-95 shadow-xl italic">
+                        <Plus size={18} /> Initialize Broadcast
+                    </button>
+                </div>
             </div>
 
-            {loading ? (
-                <div className="flex flex-col items-center justify-center py-32 bg-white rounded-3xl border-2 border-dashed border-slate-100">
-                    <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-                    <p className="text-slate-400 font-medium">Syncing bulletin board...</p>
-                </div>
-            ) : bulletins.length === 0 ? (
-                <div className="bg-white rounded-3xl shadow-xl border-none overflow-hidden">
-                    <div className="p-20 text-center text-slate-500">
-                        <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <Bell size={40} className="text-slate-200" />
-                        </div>
-                        <h3 className="text-2xl font-black text-slate-900 mb-2">The Board is Empty</h3>
-                        <p className="max-w-md mx-auto font-medium text-slate-400">Share your first announcement with the KiddoZ community by clicking the button above.</p>
+            {bulletins.length === 0 ? (
+                <Card className="p-20 text-center border-none shadow-[0_30px_100px_-20px_rgba(0,0,0,0.06)] bg-white rounded-[4rem]">
+                    <div className="w-24 h-24 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-inner border border-slate-100">
+                        <Globe size={40} className="text-slate-200" />
                     </div>
-                </div>
+                    <h3 className="text-3xl font-black text-slate-900 mb-2 italic tracking-tighter">Quiet Grid</h3>
+                    <p className="max-w-md mx-auto font-bold text-slate-400 uppercase tracking-widest text-[10px] leading-relaxed">No active signals found in the global buffer. Initialize a new broadcast to reach the node network.</p>
+                </Card>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                     {bulletins.map(item => (
-                        <Card key={item.id} className="p-0 border-none shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden group">
+                        <Card key={item.id} className="p-0 border-none shadow-[0_30px_100px_-20px_rgba(0,0,0,0.04)] bg-white relative group rounded-[3.5rem] overflow-hidden hover:-translate-y-2 transition-all duration-700">
                             <div className="flex flex-col h-full">
-                                <div className={`h-2 ${item.priority === 'Critical' ? 'bg-red-500' : item.priority === 'High' ? 'bg-secondary-500' : 'bg-primary-500'}`}></div>
-                                <div className="p-6 flex-1 flex flex-col">
-                                    <div className="flex flex-wrap items-center gap-3 mb-4">
-                                        <Badge color={getPriorityColor(item.priority)} className="font-extrabold text-[8px] uppercase tracking-widest px-2 py-0.5">
-                                            {item.priority}
-                                        </Badge>
-                                        <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                                            <Tag size={10} /> {item.category}
-                                        </div>
-                                        {item.status === 'Draft' && (
-                                            <Badge color="bg-slate-100 text-slate-500" className="text-[8px] uppercase tracking-widest px-2 py-0.5 ml-auto">Draft</Badge>
-                                        )}
+                                <div className={`h-2.5 w-full bg-gradient-to-r ${item.priority === 'Critical' ? 'from-rose-500 to-rose-600' : item.priority === 'High' ? 'from-amber-400 to-amber-500' : 'from-indigo-500 to-indigo-600'}`}></div>
+                                <div className="p-10 flex-1 flex flex-col relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity duration-1000">
+                                        <Bell size={120} />
                                     </div>
 
-                                    <h3 className="text-xl font-black text-slate-900 mb-3">{item.title}</h3>
-                                    <p className="text-slate-500 text-sm font-medium leading-relaxed mb-6 line-clamp-3">{item.content}</p>
-
-                                    <div className="mt-auto pt-4 border-t border-slate-50 flex items-center justify-between">
-                                        <div className="flex items-center gap-2 text-[10px] font-bold text-slate-330 uppercase tracking-widest">
-                                            <Calendar size={10} /> {new Date(item.createdAt).toLocaleDateString()}
+                                    <div className="flex flex-wrap items-center gap-4 mb-8 relative z-10">
+                                        <Badge color={getPriorityStyles(item.priority)} className="font-black text-[9px] uppercase tracking-[0.2em] px-4 py-2 border italic rounded-full shadow-sm">
+                                            {item.priority}
+                                        </Badge>
+                                        <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-[0.25em] italic">
+                                            <Tag size={12} className="text-indigo-500" /> {item.category}
                                         </div>
-                                        <div className="flex gap-2">
-                                            <button onClick={() => handleDelete(item.id)} className="p-2 bg-red-50 text-red-400 rounded-lg hover:bg-red-500 hover:text-white transition">
-                                                <Trash2 size={16} />
+                                    </div>
+
+                                    <h3 className="text-2xl font-black text-slate-900 mb-4 italic tracking-tighter group-hover:text-indigo-600 transition-colors">{item.title}</h3>
+                                    <p className="text-slate-500 text-sm font-bold leading-relaxed mb-8 line-clamp-3 italic opacity-80">{item.content}</p>
+
+                                    <div className="mt-auto pt-8 border-t border-slate-100/50 flex items-center justify-between relative z-10">
+                                        <div className="flex items-center gap-3 text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] italic">
+                                            <Calendar size={12} /> {new Date(item.createdAt).toLocaleDateString()}
+                                        </div>
+                                        <div className="flex gap-3">
+                                            <button onClick={() => handleDelete(item.id)} className="p-4 bg-slate-50 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-2xl transition-all active:scale-95 shadow-sm border border-slate-100/50">
+                                                <Trash2 size={18} />
                                             </button>
                                         </div>
                                     </div>
@@ -138,57 +148,65 @@ const ContentManagement = () => {
                 </div>
             )}
 
+            {/* Broadcast Terminal Modal */}
             <Modal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                title="Compose Announcement"
+                title="Initialize Identity Broadcast"
             >
-                <form onSubmit={handleCreate} className="space-y-6 p-2">
+                <form onSubmit={handleCreate} className="p-8 space-y-8">
                     <Input
-                        label="Headline"
-                        placeholder="e.g. System Maintenance This Weekend"
+                        label="Signal Headline"
+                        placeholder="e.g. Critical Kernel Sync Postponed"
                         value={formData.title}
                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                         required
+                        icon={Send}
                     />
-                    <div className="space-y-2">
-                        <label className="text-sm font-black text-slate-900 uppercase tracking-widest">Description</label>
+                    <div className="space-y-3">
+                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic ml-1">Payload Content</label>
                         <textarea
-                            className="w-full p-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-primary-500 focus:bg-white outline-none transition-all min-h-[120px] font-medium text-slate-700"
-                            placeholder="Provide detailed information..."
+                            className="w-full p-6 bg-slate-50 border border-slate-200 rounded-[2rem] focus:border-indigo-500 focus:bg-white outline-none transition-all min-h-[160px] font-bold text-slate-700 italic text-sm placeholder:text-slate-300 shadow-inner"
+                            placeholder="Describe the broadcast signal in detail..."
                             value={formData.content}
                             onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                             required
                         />
                     </div>
-                    <div className="grid grid-cols-2 gap-6">
-                        <Select
-                            label="Classification"
-                            options={[
-                                { value: 'Announcement', label: 'Announcement' },
-                                { value: 'Maintenance', label: 'Maintenance' },
-                                { value: 'Policy', label: 'Policy' },
-                                { value: 'Event', label: 'Event' }
-                            ]}
-                            value={formData.category}
-                            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                        />
-                        <Select
-                            label="Priority Level"
-                            options={[
-                                { value: 'Low', label: 'Low' },
-                                { value: 'Medium', label: 'Medium' },
-                                { value: 'High', label: 'High' },
-                                { value: 'Critical', label: 'Critical' }
-                            ]}
-                            value={formData.priority}
-                            onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
-                        />
+                    <div className="grid grid-cols-2 gap-8">
+                        <div className="space-y-3">
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic ml-1">Classification Tag</label>
+                            <select
+                                value={formData.category}
+                                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                                className="w-full p-5 bg-slate-50 border border-slate-200 rounded-2xl focus:border-indigo-500 outline-none transition-all font-black text-slate-700 uppercase italic text-[11px] tracking-widest h-14 shadow-sm"
+                            >
+                                <option value="Announcement">Global Announce</option>
+                                <option value="Maintenance">Infrastructure</option>
+                                <option value="Policy">Security Policy</option>
+                                <option value="Event">Network Event</option>
+                            </select>
+                        </div>
+                        <div className="space-y-3">
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic ml-1">Priority Protocol</label>
+                            <select
+                                value={formData.priority}
+                                onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
+                                className="w-full p-5 bg-slate-50 border border-slate-200 rounded-2xl focus:border-indigo-500 outline-none transition-all font-black text-slate-700 uppercase italic text-[11px] tracking-widest h-14 shadow-sm"
+                            >
+                                <option value="Low">Low Yield</option>
+                                <option value="Medium">Standard Flux</option>
+                                <option value="High">Priority Node</option>
+                                <option value="Critical">Critical Forge</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div className="pt-6 flex gap-4">
-                        <Button type="button" variant="secondary" className="flex-1 h-12 font-bold" onClick={() => setIsModalOpen(false)}>Discard</Button>
-                        <Button type="submit" variant="primary" className="flex-1 h-12 font-bold shadow-lg shadow-primary-100">Broadcast Now</Button>
+                    <div className="pt-8 flex gap-4">
+                        <Button type="button" variant="secondary" className="flex-1 h-16 font-black uppercase tracking-[0.25em] text-[10px] italic rounded-[1.5rem]" onClick={() => setIsModalOpen(false)}>Abort Broadcast</Button>
+                        <Button type="submit" variant="primary" className="flex-1 h-16 font-black uppercase tracking-[0.25em] text-[10px] italic rounded-[1.5rem] shadow-2xl shadow-indigo-900/20 bg-indigo-600 border-none">
+                            Transmit Signal
+                        </Button>
                     </div>
                 </form>
             </Modal>
@@ -197,4 +215,3 @@ const ContentManagement = () => {
 };
 
 export default ContentManagement;
-

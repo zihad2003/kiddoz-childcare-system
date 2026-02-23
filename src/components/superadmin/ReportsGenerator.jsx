@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
     FileBarChart, Download, Calendar, FileText, Users, Shield,
-    Building, TrendingUp, Clock, CheckCircle, ChevronRight, Sparkles
+    Building, TrendingUp, Clock, CheckCircle, ChevronRight, Sparkles, Activity, FileSpreadsheet, Globe
 } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 import Card from '../ui/Card';
@@ -15,107 +15,116 @@ const ReportsGenerator = () => {
 
     const handleDownload = (report) => {
         setGenerating(report.id);
-        addToast(`Generating "${report.title}"...`, 'info');
+        addToast(`Initializing encrypted extraction for "${report.title}"...`, 'info');
         setTimeout(() => {
             setGenerating(null);
-            addToast(`"${report.title}" is ready`, 'success');
-        }, 2000);
+            addToast(`Report "${report.title}" compiled and downloaded successfully.`, 'success');
+        }, 2500);
     };
 
     const reports = [
         {
-            id: 'financial_ytd',
-            title: 'Financial Statement (YTD)',
-            description: 'Year-to-date revenue, expenses, and net profit breakdown across all centers.',
+            id: 'financial_statement',
+            title: 'Financial Statement',
+            description: 'Revenue, expenses, and net profit breakdown across all child-nodes.',
             type: 'PDF',
             icon: TrendingUp,
             color: 'text-emerald-600',
-            bg: 'bg-emerald-50',
-            accent: 'border-l-emerald-500',
-            size: '~2.4 MB',
+            bg: 'bg-emerald-500/10',
+            accent: 'border-emerald-500/20',
+            size: '2.4 MB',
         },
         {
             id: 'user_activity',
-            title: 'User Activity Log',
-            description: 'Comprehensive log of all user logins, actions, and engagement patterns.',
+            title: 'Identity Activity Log',
+            description: 'Comprehensive log of all biometric logins, actions, and engagement patterns.',
             type: 'CSV',
             icon: Users,
-            color: 'text-blue-600',
-            bg: 'bg-blue-50',
-            accent: 'border-l-blue-500',
-            size: '~1.1 MB',
+            color: 'text-indigo-600',
+            bg: 'bg-indigo-500/10',
+            accent: 'border-indigo-500/20',
+            size: '1.1 MB',
         },
         {
             id: 'audit_log',
-            title: 'Security Audit Report',
-            description: 'Full system audit trail including security events, failed logins, and policy changes.',
-            type: 'Excel',
+            title: 'Security Audit Matrix',
+            description: 'Full system audit trail including security events, firewall triggers, and policy changes.',
+            type: 'XLSX',
             icon: Shield,
-            color: 'text-red-600',
-            bg: 'bg-red-50',
-            accent: 'border-l-red-500',
-            size: '~3.2 MB',
+            color: 'text-rose-600',
+            bg: 'bg-rose-500/10',
+            accent: 'border-rose-500/20',
+            size: '3.2 MB',
         },
         {
             id: 'center_perf',
-            title: 'Center Performance Review',
-            description: 'Occupancy rates, revenue contribution, and staff efficiency metrics per center.',
+            title: 'Node Performance Review',
+            description: 'Occupancy rates, revenue contribution, and staff efficiency metrics per facility.',
             type: 'PDF',
             icon: Building,
-            color: 'text-primary-600',
-            bg: 'bg-primary-50',
-            accent: 'border-l-primary-500',
-            size: '~1.8 MB',
+            color: 'text-blue-600',
+            bg: 'bg-blue-500/10',
+            accent: 'border-blue-500/20',
+            size: '1.8 MB',
         },
         {
             id: 'enrollment',
             title: 'Enrollment & Retention',
-            description: 'Student enrollment trends, churn rates, and plan distribution analytics.',
+            description: 'Student enrollment trends, churn rates, and segment distribution analytics.',
             type: 'PDF',
             icon: FileText,
-            color: 'text-secondary-600',
-            bg: 'bg-orange-50',
-            accent: 'border-l-secondary-500',
-            size: '~900 KB',
+            color: 'text-amber-600',
+            bg: 'bg-amber-500/10',
+            accent: 'border-amber-500/20',
+            size: '900 KB',
         },
         {
             id: 'staff_payroll',
-            title: 'Staff Payroll Summary',
-            description: 'Payroll disbursements, staff costs by role, and month-over-month comparison.',
-            type: 'Excel',
+            title: 'Staff Payroll Register',
+            description: 'Disbursement logs, staff costs by role, and month-over-month fiscal comparison.',
+            type: 'XLSX',
             icon: FileBarChart,
-            color: 'text-primary-600',
-            bg: 'bg-primary-50',
-            accent: 'border-l-primary-500',
-            size: '~1.5 MB',
+            color: 'text-teal-600',
+            bg: 'bg-teal-500/10',
+            accent: 'border-teal-500/20',
+            size: '1.5 MB',
         },
     ];
 
     const recentReports = [
-        { title: 'Financial Statement (YTD)', date: '2026-02-01', type: 'PDF', status: 'Delivered' },
-        { title: 'User Activity Log', date: '2026-01-28', type: 'CSV', status: 'Delivered' },
-        { title: 'Security Audit Report', date: '2026-01-15', type: 'Excel', status: 'Delivered' },
+        { title: 'Financial Statement (Q4)', date: '2026-02-01', type: 'PDF', status: 'Archive' },
+        { title: 'Identity Activity Log', date: '2026-01-28', type: 'CSV', status: 'Extracted' },
+        { title: 'Security Audit Matrix', date: '2026-01-15', type: 'XLSX', status: 'Secured' },
+    ];
+
+    const ranges = [
+        { id: 'this_month', label: 'This Month' },
+        { id: 'quarter', label: 'Quarter' },
+        { id: 'ytd', label: 'YTD' },
+        { id: 'all_time', label: 'All Time' },
     ];
 
     return (
-        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Reports Generator</h2>
-                    <p className="text-slate-500 mt-1">Generate and export platform intelligence reports</p>
+        <div className="space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-1000 fill-mode-both">
+            {/* Header / Command Selector */}
+            <div className="flex flex-col xl:flex-row justify-between items-start xl:items-end gap-10">
+                <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="h-[2px] w-12 bg-indigo-600 rounded-full"></div>
+                        <p className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.4em] italic leading-none">Data Extraction Protocol</p>
+                    </div>
+                    <h2 className="text-5xl font-black text-slate-900 tracking-tighter leading-[0.9] italic">Report <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-primary-600">Forge</span></h2>
+                    <p className="text-slate-500 font-bold mt-5 text-sm uppercase tracking-wide">Signal Status: <span className="text-emerald-500 font-black">ENCRYPTED</span> • Protocol: <span className="text-primary-600 font-black">EXTRACTION MODE</span></p>
                 </div>
-                <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
-                    {[
-                        { id: 'this_month', label: 'This Month' },
-                        { id: 'last_quarter', label: 'Quarter' },
-                        { id: 'ytd', label: 'YTD' },
-                        { id: 'all_time', label: 'All Time' },
-                    ].map(r => (
+                <div className="flex bg-white/50 backdrop-blur-md p-1.5 rounded-[1.5rem] border border-slate-200/60 shadow-sm overflow-x-auto scrollbar-hide w-full xl:w-auto">
+                    {ranges.map(r => (
                         <button
                             key={r.id}
-                            onClick={() => setDateRange(r.id)}
-                            className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${dateRange === r.id ? 'bg-primary-600 text-white shadow' : 'text-slate-500 hover:text-slate-700'}`}
+                            onClick={() => {
+                                setDateRange(r.id);
+                                addToast(`Temporal buffer set to ${r.label}`, 'info');
+                            }}
+                            className={`flex-1 xl:flex-none px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${dateRange === r.id ? 'bg-[#0f172a] text-white shadow-lg italic' : 'text-slate-400 hover:text-slate-600 hover:bg-white/50'}`}
                         >
                             {r.label}
                         </button>
@@ -124,87 +133,108 @@ const ReportsGenerator = () => {
             </div>
 
             {/* Reports Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                 {reports.map(report => (
                     <Card
                         key={report.id}
-                        className={`p-0 border-none shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden group border-l-4 ${report.accent} bg-white`}
+                        className="p-0 border-none shadow-[0_30px_100px_-20px_rgba(0,0,0,0.06)] bg-white relative group rounded-[3.5rem] overflow-hidden hover:-translate-y-2 transition-all duration-700"
                     >
-                        <div className="p-6">
-                            <div className="flex items-start justify-between mb-4">
-                                <div className={`p-3 ${report.bg} ${report.color} rounded-2xl shadow-sm group-hover:scale-110 transition-transform duration-300`}>
-                                    <report.icon size={22} />
+                        <div className="p-10">
+                            <div className="flex items-start justify-between mb-8">
+                                <div className={`p-5 ${report.bg} ${report.color} rounded-[1.5rem] shadow-sm group-hover:rotate-12 transition-transform duration-500`}>
+                                    <report.icon size={28} />
                                 </div>
-                                <Badge color="bg-slate-100 text-slate-600" className="text-[9px] font-black uppercase tracking-widest px-2 py-1">
-                                    {report.type}
-                                </Badge>
+                                <div className="text-right">
+                                    <Badge color="bg-slate-100 text-slate-400" className="text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full italic border border-slate-200/50">
+                                        {report.type}
+                                    </Badge>
+                                    <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest mt-2 italic">{report.size}</p>
+                                </div>
                             </div>
-                            <h3 className="font-black text-slate-900 mb-2 text-sm leading-tight">{report.title}</h3>
-                            <p className="text-xs text-slate-400 font-medium leading-relaxed mb-5">{report.description}</p>
-                            <div className="flex items-center justify-between pt-4 border-t border-slate-50">
-                                <span className="text-[10px] text-slate-300 font-bold uppercase tracking-widest">{report.size}</span>
-                                <button
-                                    onClick={() => handleDownload(report)}
-                                    disabled={generating === report.id}
-                                    className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-xl text-[10px] font-black hover:bg-primary-600 transition-all uppercase tracking-widest disabled:opacity-50 shadow-sm"
-                                >
-                                    {generating === report.id ? (
-                                        <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                    ) : (
-                                        <Download size={13} />
-                                    )}
-                                    {generating === report.id ? 'Generating...' : 'Export'}
-                                </button>
-                            </div>
+                            <h3 className="font-black text-slate-900 mb-3 text-xl italic tracking-tighter group-hover:text-indigo-600 transition-colors uppercase">{report.title}</h3>
+                            <p className="text-xs text-slate-400 font-bold leading-relaxed mb-8 italic opacity-80">{report.description}</p>
+
+                            <button
+                                onClick={() => handleDownload(report)}
+                                disabled={generating === report.id}
+                                className="w-full h-14 bg-slate-900 hover:bg-black text-white rounded-2xl text-[10px] font-black transition-all uppercase tracking-[0.2em] disabled:opacity-50 shadow-xl flex items-center justify-center gap-3 italic group-hover:shadow-[0_20px_40px_-10px_rgba(15,23,42,0.3)] active:scale-95"
+                            >
+                                {generating === report.id ? (
+                                    <Activity className="w-4 h-4 animate-spin" />
+                                ) : (
+                                    <Download size={14} />
+                                )}
+                                {generating === report.id ? 'EXTRACTING...' : 'INITIATE FORGE'}
+                            </button>
                         </div>
                     </Card>
                 ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-                {/* Scheduled Reports */}
-                <Card className="lg:col-span-3 border-none shadow-xl bg-gradient-to-br from-[#085078] to-primary-900 text-white relative overflow-hidden">
-                    <div className="absolute inset-0 opacity-10">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-primary-400 rounded-full -mr-20 -mt-20 blur-3xl" />
-                    </div>
-                    <div className="relative z-10 p-8">
-                        <div className="flex items-center gap-2 mb-4">
-                            <Sparkles size={16} className="text-yellow-400" />
-                            <h3 className="text-xl font-black">Automated Monthly Reports</h3>
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
+                {/* Automated Forge Terminal */}
+                <Card className="lg:col-span-3 border-none shadow-[0_30px_100px_-20px_rgba(15,23,42,0.15)] bg-[#0f172a] text-white relative overflow-hidden rounded-[4rem] group/forge">
+                    <div className="absolute inset-0 opacity-10 mix-blend-overlay group-hover/forge:opacity-20 transition-opacity duration-1000" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #fff 1px, transparent 0)', backgroundSize: '32px 32px' }}></div>
+                    <div className="absolute -top-20 -right-20 w-80 h-80 bg-indigo-600/20 rounded-full blur-[100px] pointer-events-none group-hover/forge:scale-125 transition-transform duration-1000"></div>
+
+                    <div className="relative z-10 p-12">
+                        <div className="flex items-center gap-3 mb-6">
+                            <Sparkles size={20} className="text-indigo-400 animate-pulse" />
+                            <h3 className="text-3xl font-black italic tracking-tighter">Automated Extraction Nodes</h3>
                         </div>
-                        <p className="text-primary-200 text-sm font-medium leading-relaxed mb-8 max-w-md">
-                            Schedule comprehensive platform insights to be auto-generated and emailed to stakeholders on the 1st of every month.
+                        <p className="text-slate-400 text-sm font-bold italic leading-relaxed mb-10 max-w-lg opacity-80">
+                            Configure persistent data collection nodes to auto-generate and transmit platform intelligence to designated stakeholders on the 1st of every temporal cycle.
                         </p>
-                        <div className="flex flex-wrap gap-3">
-                            <button className="flex items-center gap-2 px-6 py-3 bg-white text-primary-900 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl hover:-translate-y-1 transition-all active:scale-95">
-                                <Calendar size={14} /> Configure Schedule
+                        <div className="flex flex-wrap gap-4">
+                            <button className="flex items-center gap-3 px-8 py-4 bg-indigo-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-2xl shadow-indigo-900/40 hover:-translate-y-1 transition-all active:scale-95 italic">
+                                <Calendar size={14} /> Setup Recurrence
                             </button>
-                            <button className="flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-2xl font-black text-xs uppercase tracking-widest transition-all border border-white/10">
-                                View Past Reports <ChevronRight size={14} className="ml-1" />
+                            <button className="flex items-center gap-3 px-8 py-4 bg-white/5 hover:bg-white/10 backdrop-blur-md rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all border border-white/10 italic">
+                                Sync Archives <ChevronRight size={14} className="ml-1" />
                             </button>
                         </div>
                     </div>
                 </Card>
 
-                {/* Recent Reports */}
-                <Card className="lg:col-span-2 border-none shadow-xl bg-white p-6">
-                    <h4 className="font-black text-slate-900 text-sm uppercase tracking-widest mb-5">Recent Reports</h4>
+                {/* Extraction History */}
+                <Card className="lg:col-span-2 border-none shadow-[0_30px_100px_-20px_rgba(0,0,0,0.06)] bg-white p-10 rounded-[4rem]">
+                    <div className="flex items-center gap-4 mb-8">
+                        <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100 shadow-inner">
+                            <Clock size={20} className="text-slate-300" />
+                        </div>
+                        <h4 className="font-black text-slate-900 text-xs uppercase tracking-[0.25em] italic">Forge Archives</h4>
+                    </div>
                     <div className="space-y-4">
                         {recentReports.map((r, i) => (
-                            <div key={i} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:border-primary-200 transition-colors group">
-                                <div>
-                                    <p className="text-xs font-black text-slate-700 group-hover:text-primary-700 transition-colors">{r.title}</p>
-                                    <p className="text-[10px] text-slate-400 font-medium mt-0.5">{r.date} · {r.type}</p>
+                            <div key={i} className="flex items-center justify-between p-5 bg-slate-50/50 rounded-3xl border border-slate-100 group hover:bg-white hover:border-indigo-200 hover:shadow-xl transition-all duration-300">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center border border-slate-100 shadow-sm group-hover:scale-110 transition-transform">
+                                        <FileSpreadsheet size={18} className="text-slate-400 group-hover:text-indigo-500 transition-colors" />
+                                    </div>
+                                    <div>
+                                        <p className="text-[11px] font-black text-slate-700 italic leading-tight group-hover:text-indigo-600 transition-colors uppercase tracking-tight">{r.title}</p>
+                                        <div className="flex items-center gap-2 mt-1">
+                                            <span className="text-[9px] text-slate-300 font-black uppercase tracking-widest">{r.date}</span>
+                                            <div className="w-1 h-1 rounded-full bg-slate-200"></div>
+                                            <span className="text-[9px] text-slate-300 font-black uppercase tracking-widest">{r.type}</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <CheckCircle size={14} className="text-emerald-500" />
-                                    <button className="text-slate-300 hover:text-primary-600 transition">
+                                <div className="flex items-center gap-3">
+                                    <div className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 rounded-full border border-emerald-100">
+                                        <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse"></div>
+                                        <span className="text-[8px] font-black text-emerald-600 uppercase tracking-widest italic">{r.status}</span>
+                                    </div>
+                                    <button className="p-3 text-slate-300 hover:text-indigo-600 bg-white shadow-sm border border-slate-100 rounded-xl transition-all active:scale-95">
                                         <Download size={14} />
                                     </button>
                                 </div>
                             </div>
                         ))}
                     </div>
+                    <button className="w-full mt-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] hover:text-indigo-600 transition-colors italic">
+                        View Complete Ledger
+                    </button>
                 </Card>
             </div>
         </div>
