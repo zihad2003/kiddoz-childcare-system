@@ -26,6 +26,22 @@ const HEALTH_QUICK_REPLIES = [
 ];
 
 const KIDDOZ_QA = {
+  // Greetings
+  "hi": "Walaikum Assalam! How can I help you and your little one today? 😊",
+  "hello": "Hello! Welcome to KiddoZ. I'm here to help you with any questions about our childcare programs.",
+  "hey": "Hey there! How's your day going? How can I assist you with KiddoZ today?",
+  "assalamu alaikum": "Walaikum Assalam! It's a pleasure to have you here. How can I help you today?",
+
+  // Company Info
+  "what is kiddoz": "KiddoZ is a premium, AI-powered childcare and early childhood education platform. We focus on providing a safe, nurturing, and high-tech environment for children to grow and learn.",
+  "is this oldage": "No, KiddoZ is specifically designed for early childhood care (ages 0-10 years). We specialize in childcare, preschool, and after-school programs, not senior care.",
+
+  // Locations
+  "find me a nearest location of kiddoz": "We currently have flagship centers in Gulshan, Uttara, and Dhanmondi. Each center is equipped with state-of-the-art safety and learning facilities!",
+  "location": "Our main branches are located in Gulshan-2, Uttara Sector 4, and Dhanmondi Road 27. Which area are you looking for?",
+  "where are you located": "You can find us in Gulshan, Uttara, and Dhanmondi! We're expanding soon to other areas as well.",
+
+  // Standard Q&A
   "What are your operating hours?": "We are open Sunday through Thursday from 7:00 AM to 6:00 PM. We also offer extended hours for parents with late work schedules upon request!",
   "How much does it cost?": "Our pricing depends on the plan you choose. Programs range from 12,000 BDT to 25,000 BDT per month. You can find detailed pricing in our 'Pricing & Enroll' section.",
   "How do I enroll my child?": "Enrolling is easy! You can fill out the online enrollment form on our website, or visit our center for a personal tour and documentation assistance.",
@@ -34,7 +50,11 @@ const KIDDOZ_QA = {
   "How to book a tour?": "You can book a tour by clicking the 'Schedule a Demo' button on our homepage or by calling our support line directly.",
   "Nanny services available?": "Yes! We offer premium in-home and on-site nanny services. You can view our certified nannies in the 'Staff' section or 'Nanny Portal' after logging in.",
   "What is the curriculum?": "We follow a modern play-based curriculum that focuses on cognitive development, social skills, and creative arts.",
-  "Emergency protocols?": "We have comprehensive emergency protocols for every scenario, with regular drills and instant parent notification systems."
+  "Emergency protocols?": "We have comprehensive emergency protocols for every scenario, with regular drills and instant parent notification systems.",
+
+  // Courtesy
+  "thanks": "You're very welcome! If you need anything else, just ask.",
+  "thank you": "My pleasure! We look forward to seeing you at KiddoZ."
 };
 
 const HEALTH_QA = {
@@ -130,9 +150,18 @@ const Chatbot = ({ user }) => {
 
     // Exact or normalized match
     const normalizedInput = textToSend.toLowerCase().trim().replace(/[?]$/, '');
-    const matchedKey = Object.keys(qaSource).find(key =>
+    let matchedKey = Object.keys(qaSource).find(key =>
       key.toLowerCase().trim().replace(/[?]$/, '') === normalizedInput
     );
+
+    // If no exact match, try keyword matching for General info
+    if (!matchedKey && activeTab === 'general') {
+      const keywords = ["location", "address", "branch", "near", "hour", "cost", "enroll", "safety", "tour", "nanny", "curriculum", "food", "hi", "hello", "thanks", "kiddoz"];
+      const foundKeyword = keywords.find(kw => normalizedInput.includes(kw));
+      if (foundKeyword) {
+        matchedKey = Object.keys(qaSource).find(key => key.toLowerCase().includes(foundKeyword));
+      }
+    }
 
     if (matchedKey) {
       setTimeout(() => {
