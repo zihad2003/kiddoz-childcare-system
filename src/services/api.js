@@ -337,8 +337,28 @@ apiClient.interceptors.response.use(
                 });
             }
 
+            // ─── AI CHAT MOCK ──────────────────────────────────────────────
+            if (url.includes('/ai/chat')) {
+                const msg = requestData.message?.toLowerCase() || '';
+                let responseText = "I'm sorry, I don't have a specific answer for that yet. Would you like to speak with a human representative?";
+
+                if (msg.includes('hour') || msg.includes('time')) {
+                    responseText = "We are open Sunday through Thursday from 7:00 AM to 6:00 PM. We also offer extended care upon request!";
+                } else if (msg.includes('cost') || msg.includes('price') || msg.includes('fee')) {
+                    responseText = "Our monthly plans range from 12,000 BDT to 25,000 BDT. Check our Pricing page for details.";
+                } else if (msg.includes('enroll') || msg.includes('join')) {
+                    responseText = "You can enroll directly through our website or visit our center for assistance.";
+                } else if (msg.includes('food') || msg.includes('meal')) {
+                    responseText = "We provide nutritious, balanced meals prepared fresh daily for all children.";
+                } else if (msg.includes('safety') || msg.includes('secure')) {
+                    responseText = "We maintain 24/7 CCTV, secure entry systems, and have certified medical staff on-site.";
+                }
+
+                return Promise.resolve({ data: { text: responseText } });
+            }
+
             // Default fallback for any other endpoint
-            return Promise.resolve({ data: null });
+            return Promise.resolve({ data: {} });
         }
 
         return Promise.reject(error);

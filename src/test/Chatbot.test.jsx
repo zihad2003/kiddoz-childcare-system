@@ -53,10 +53,7 @@ describe('Chatbot Component', () => {
         expect(screen.getByText('Helpful Staff Online')).toBeInTheDocument();
     });
 
-    it('sends a message and displays response', async () => {
-        // Mock API response
-        api.post.mockResolvedValue({ text: 'I am a bot response' });
-
+    it('sends a structured message and displays the correct local response', async () => {
         render(
             <BrowserRouter>
                 <Chatbot user={null} />
@@ -69,18 +66,44 @@ describe('Chatbot Component', () => {
 
         // Find input
         const input = screen.getByPlaceholderText('Type your question...');
-        fireEvent.change(input, { target: { value: 'Hello AI' } });
+        // Use a known question from KIDDOZ_QA
+        fireEvent.change(input, { target: { value: 'What are your operating hours?' } });
 
         // Send
         const sendBtn = screen.getByTestId('send-button');
         fireEvent.click(sendBtn);
 
         // Check if user message appears
-        expect(screen.getByText('Hello AI')).toBeInTheDocument();
+        expect(screen.getByText('What are your operating hours?')).toBeInTheDocument();
 
-        // Wait for bot response
+        // Wait for structured bot response (handling the 700ms setTimeout)
         await waitFor(() => {
-            expect(screen.getByText('I am a bot response')).toBeInTheDocument();
-        });
+            expect(screen.getByText(/We are open Sunday through Thursday/i)).toBeInTheDocument();
+        }, { timeout: 2000 });
+    });
+
+    it('displays a fallback message for unrecognized general questions', async () => {
+        render(
+            <BrowserRouter>
+                <Chatbot user={null} />
+            </BrowserRouter>
+        );
+
+        // Open chat
+        const button = screen.getByText(/How can I help you today/i).closest('div');
+        fireEvent.click(button);
+
+        // Find input
+        const input = screen.getByPlaceholderText('Type your question...');
+        fireEvent.change(input, { target: { value: 'Some unknown question' } });
+
+        // Send
+        const sendBtn = screen.getByTestId('send-button');
+        fireEvent.click(sendBtn);
+
+        // Wait for fallback response (handling the 1000ms setTimeout)
+        await waitFor(() => {
+            expect(screen.getByText(/I'm sorry, I don't have a specific answer/i)).toBeInTheDocument();
+        }, { timeout: 2000 });
     });
 });
