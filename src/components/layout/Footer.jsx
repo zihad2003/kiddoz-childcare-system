@@ -36,10 +36,11 @@ const Footer = () => (
       <div>
         <h4 className="font-bold text-white text-lg mb-6">Support</h4>
         <ul className="space-y-4">
+          <li><Link to="/admin-features" className="hover:text-secondary-400 transition text-left block">Admin Solutions</Link></li>
           <li><Link to="/info/help" className="hover:text-secondary-400 transition text-left block">Help Center</Link></li>
           <li><Link to="/info/safety" className="hover:text-secondary-400 transition text-left block">Safety Protocols</Link></li>
           <li><Link to="/login" className="hover:text-secondary-400 transition text-left block">Parent Login</Link></li>
-          <li><Link to="/admin" className="hover:text-secondary-400 transition text-left block">Admin Portal</Link></li>
+          <li><Link to="/admin" className="hover:text-secondary-400 transition text-left block">Admin Dashboard</Link></li>
         </ul>
       </div>
 

@@ -16,365 +16,157 @@ const AdminFeatures = () => {
     }, []);
 
     const handleDemoRequest = () => {
-        addToast('System Demo Request Transmitted to High Command', 'info');
+        addToast('Demo request received. Our team will contact you shortly.', 'success');
     };
 
     const features = [
         {
-            title: "Facility Matrix",
+            title: "Multi-Center Management",
             id: "01",
-            desc: "Command and control multiple childcare nodes from a singular intelligence hub. Monitor occupancy, staff ratios, and facility health in real-time.",
+            desc: "Effortlessly manage multiple childcare locations from a single, intuitive dashboard. Monitor enrollment, staff ratios, and daily operations in real-time.",
             icon: Building2,
-            color: "text-blue-500",
-            bg: "bg-blue-500/10",
-            tag: "Infrastructure"
+            color: "text-blue-600",
+            bg: "bg-blue-50",
+            tag: "Operations"
         },
         {
-            title: "Identity Governance",
+            title: "Staff & Parent Portal",
             id: "02",
-            desc: "The ultimate ledger for personnel management. Verify staff signatures, manage parent access protocols, and ensure platform-wide security compliance.",
+            desc: "Streamline personnel management and parent communication. Verify credentials, manage access permissions, and maintain secure digital records for everyone.",
             icon: Users,
-            color: "text-emerald-500",
-            bg: "bg-emerald-500/10",
-            tag: "Security"
+            color: "text-emerald-600",
+            bg: "bg-emerald-50",
+            tag: "Management"
         },
         {
-            title: "Financial Matrix",
+            title: "Smart Billing & Finance",
             id: "03",
-            desc: "Precision tracking of capital flux. Monitor multi-center revenue streams, analyze profit margins, and forecast fiscal growth with high-fidelity algorithms.",
+            desc: "Full transparency over your center's finances. Automated invoicing, payment tracking, and detailed financial forecasting to help your business grow.",
             icon: BarChart3,
-            color: "text-indigo-500",
-            bg: "bg-indigo-500/10",
-            tag: "Treasury"
+            color: "text-indigo-600",
+            bg: "bg-indigo-50",
+            tag: "Financials"
         },
         {
-            title: "Neural Vision (YOLO)",
+            title: "AI Safety Monitoring",
             id: "04",
-            desc: "Integrated AI-powered safety monitoring. Deploy live vision streams with child detection and proximity alerts for mission-critical childcare safety.",
+            desc: "Enhanced safety with intelligent monitoring. Real-time child detection and safety alerts help maintain the highest standards of care and security.",
             icon: Cpu,
-            color: "text-rose-500",
-            bg: "bg-rose-500/10",
-            tag: "AI Vision"
+            color: "text-rose-600",
+            bg: "bg-rose-50",
+            tag: "Safety"
         },
         {
-            title: "Forge Archives",
+            title: "Automated Reporting",
             id: "05",
-            desc: "Automated report extraction. Generate high-precision PDF intelligence logs for billing, attendance, and operational audits with a single click.",
+            desc: "Generate professional reports in seconds. Export attendance, billing, and compliance logs with high-precision PDF formatting for audits and records.",
             icon: Database,
-            color: "text-amber-500",
-            bg: "bg-amber-500/10",
-            tag: "Persistence"
+            color: "text-amber-600",
+            bg: "bg-amber-50",
+            tag: "Reports"
         },
         {
-            title: "Broadcast Bridge",
+            title: "Instant Communication",
             id: "06",
-            desc: "Universal transmission protocols. Send critical alerts, policy overrides, and informational pulses to the entire network or specific individual nodes.",
+            desc: "Connect with your entire network instantly. Send critical updates, newsletters, and urgent alerts to parents and staff with one click.",
             icon: Zap,
-            color: "text-primary-500",
-            bg: "bg-primary-500/10",
-            tag: "Transmissions"
+            color: "text-primary-600",
+            bg: "bg-primary-50",
+            tag: "Communication"
         }
     ];
 
     const subFeatures = [
-        { icon: Calendar, title: "Dynamic Scheduling", desc: "Automated staff rotational algorithms." },
-        { icon: Bell, title: "Pulse Notifications", desc: "Real-time critical event broadcasting." },
-        { icon: Heart, title: "Health Telemetry", desc: "Aggregated wellness and vaccination tracking." },
-        { icon: Key, title: "Credential Vault", desc: "Secure encrypted staff document storage." }
+        { icon: Calendar, title: "Smart Scheduling", desc: "Automated staff shift planning and rotation." },
+        { icon: Bell, title: "Real-time Alerts", desc: "Instant mobile and web notifications for events." },
+        { icon: Heart, title: "Health Tracking", desc: "Digital wellness logs and vaccination reminders." },
+        { icon: Key, title: "Secure Storage", desc: "Encrypted document vault for sensitive files." }
     ];
 
     return (
-        <div className="bg-white min-h-screen selection:bg-[#0f172a] selection:text-white overflow-hidden">
+        <div className="bg-white min-h-screen selection:bg-primary-600 selection:text-white overflow-hidden">
             {/* --- HERO SECTION --- */}
-            <div className="relative pt-40 pb-40 overflow-hidden">
+            <div className="relative pt-32 pb-32 md:pt-48 md:pb-40 overflow-hidden">
                 {/* Visual Elements */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none">
-                    <div className="absolute top-20 left-10 w-[40rem] h-[40rem] bg-primary-100 rounded-full blur-[150px] opacity-40 animate-pulse"></div>
-                    <div className="absolute bottom-20 right-10 w-[45rem] h-[45rem] bg-indigo-100 rounded-full blur-[150px] opacity-40 animate-pulse delay-1000"></div>
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full border-[1px] border-slate-100/50 rounded-full scale-110"></div>
+                    <div className="absolute top-20 left-10 w-[30rem] md:w-[40rem] h-[30rem] md:h-[40rem] bg-primary-100 rounded-full blur-[120px] opacity-40 animate-pulse"></div>
+                    <div className="absolute bottom-20 right-10 w-[35rem] md:w-[45rem] h-[35rem] md:h-[45rem] bg-indigo-100 rounded-full blur-[150px] opacity-40 animate-pulse delay-1000"></div>
                 </div>
 
                 <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
-                    <div className="inline-flex items-center gap-3 px-6 py-3 bg-slate-50/80 backdrop-blur-md border border-slate-200 rounded-full mb-12 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                    <div className="inline-flex items-center gap-3 px-5 py-2.5 bg-white shadow-xl shadow-slate-200/50 border border-slate-100 rounded-full mb-10 animate-in fade-in slide-in-from-bottom-4 duration-1000">
                         <div className="relative flex h-2 w-2">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-600"></span>
                         </div>
-                        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 italic">Admin Command Protocol v4.0.2</span>
+                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500">New: Enterprise Management Suite</span>
                     </div>
 
-                    <h1 className="text-7xl md:text-[9rem] font-black text-slate-900 tracking-tighter italic leading-[0.8] mb-12 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-150">
-                        The Master <br />
-                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-600 via-indigo-600 to-indigo-700">Administrative</span> Forge
+                    <h1 className="text-5xl md:text-8xl font-extrabold text-slate-900 tracking-tight leading-[1.1] mb-8 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-150">
+                        Professional <span className="text-primary-600">Childcare</span> <br className="hidden md:block" />
+                        Solutions for Modern Centers
                     </h1>
 
-                    <p className="max-w-3xl mx-auto text-lg md:text-2xl text-slate-500 font-bold uppercase tracking-tight leading-[1.1] mb-16 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-300">
-                        KiddoZ provides a mission-critical command center <br className="hidden md:block" />
-                        designed to monitor, govern, and scale the world's finest childcare infrastructure.
+                    <p className="max-w-3xl mx-auto text-lg md:text-xl text-slate-600 font-medium leading-relaxed mb-12 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-300">
+                        KiddoZ provides an all-in-one management platform designed to help you streamline operations,
+                        ensure safety, and grow your childcare business with confidence.
                     </p>
 
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-8 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-500">
-                        <Link to="/login" className="group px-14 py-8 bg-[#0f172a] text-white rounded-[2.5rem] font-black text-[10px] uppercase tracking-[0.4em] italic hover:bg-black hover:shadow-[0_40px_80px_-15px_rgba(15,23,42,0.3)] transition-all duration-700 hover:-translate-y-2 active:scale-95 shadow-2xl shadow-indigo-200 flex items-center gap-4">
-                            Initialize Protocol <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform duration-500" />
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-5 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-500">
+                        <Link to="/signup" className="group px-10 py-5 bg-primary-600 text-white rounded-2xl font-bold text-base hover:bg-primary-700 hover:shadow-2xl hover:shadow-primary-600/30 transition-all duration-300 hover:-translate-y-1 active:scale-95 flex items-center gap-2">
+                            Get Started Free <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                         </Link>
-                        <button onClick={handleDemoRequest} className="px-14 py-8 bg-white border-2 border-slate-100 text-slate-900 rounded-[2.5rem] font-black text-[10px] uppercase tracking-[0.4em] italic hover:border-primary-500 hover:text-primary-600 transition-all duration-700 hover:-translate-y-2 active:scale-95 shadow-lg shadow-slate-100/50">
-                            Initialize System Demo
+                        <button onClick={handleDemoRequest} className="px-10 py-5 bg-white border-2 border-slate-200 text-slate-900 rounded-2xl font-bold text-base hover:border-primary-600 hover:text-primary-600 transition-all duration-300 hover:-translate-y-1 active:scale-95 shadow-sm">
+                            Schedule a Demo
                         </button>
                     </div>
-
-                    {/* Scroll Indicator */}
-                    <div className="mt-32 flex flex-col items-center gap-3 animate-bounce opacity-40">
-                        <div className="w-px h-16 bg-gradient-to-b from-primary-600 to-transparent"></div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic">Scroll for Depth</span>
-                    </div>
                 </div>
             </div>
 
-            {/* --- PARTNERS ROW --- */}
-            <div className="bg-slate-50/50 border-y border-slate-100 py-20">
-                <div className="max-w-7xl mx-auto px-6 overflow-hidden">
-                    <p className="text-center text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] mb-12 italic">Nodes Currently Secured via KiddoZ Protocol</p>
-                    <div className="flex flex-wrap justify-center gap-12 md:gap-24 items-center opacity-40 grayscale hover:grayscale-0 transition-all duration-1000">
-                        {/* Mock Logos with Icons */}
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-black italic">N</div>
-                            <span className="text-xl font-black italic tracking-tighter text-slate-900">NORDIC_CHILD</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-black italic">P</div>
-                            <span className="text-xl font-black italic tracking-tighter text-slate-900">PINNACLE_AC</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center text-white font-black italic">G</div>
-                            <span className="text-xl font-black italic tracking-tighter text-slate-900">GALAXY_KIDS</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-black italic">M</div>
-                            <span className="text-xl font-black italic tracking-tighter text-slate-900">MIRPUR_PRIM</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-rose-600 rounded-lg flex items-center justify-center text-white font-black italic">L</div>
-                            <span className="text-xl font-black italic tracking-tighter text-slate-900">LITTLE_NODE</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* --- DASHBOARD PREVIEW SECTION --- */}
-            <div className="max-w-7xl mx-auto px-6 py-40">
-                <div className="relative group/preview">
-                    {/* Background glow */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary-500/30 to-indigo-500/30 rounded-[4rem] blur-[120px] group-hover:scale-110 transition-transform duration-1000 opacity-60"></div>
-
-                    <div className="relative bg-[#0f172a] border border-white/10 rounded-[4rem] p-4 shadow-[0_80px_160px_-40px_rgba(15,23,42,0.4)] overflow-hidden">
-                        {/* Chrome bar */}
-                        <div className="flex items-center gap-2 px-8 py-4 border-b border-white/5 mb-4">
-                            <div className="w-3 h-3 rounded-full bg-rose-500/50"></div>
-                            <div className="w-3 h-3 rounded-full bg-amber-500/50"></div>
-                            <div className="w-3 h-3 rounded-full bg-emerald-500/50"></div>
-                            <div className="ml-4 px-4 py-1.5 bg-white/5 rounded-full text-[9px] font-black text-white/30 tracking-widest italic">HTTPS://COMMAND.KIDDOZ.IO/STRAT_OS</div>
-                        </div>
-
-                        {/* Main Image Replacement for CSS Mock */}
-                        <div className="relative rounded-[3rem] overflow-hidden">
-                            <img
-                                src="https://images.unsplash.com/photo-1551288049-bbbda546697a?auto=format&fit=crop&q=80&w=1600"
-                                alt="KiddoZ Admin Dashboard Preview"
-                                className="w-full h-auto object-cover aspect-[21/9] opacity-90 group-hover:scale-105 transition-transform duration-[2000ms] ease-out"
-                            />
-
-                            {/* Overlay UI elements to blend with design */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a]/80 via-transparent to-transparent"></div>
-
-                            {/* Static overlay components */}
-                            <div className="absolute top-10 left-10 p-6 bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl hidden lg:block animate-in fade-in slide-in-from-left-4 duration-1000">
-                                <div className="flex items-center gap-3 mb-4">
-                                    <Activity className="text-emerald-400" size={16} />
-                                    <span className="text-[9px] font-black uppercase text-white tracking-widest italic leading-none">Real-Time Telemetry</span>
-                                </div>
-                                <div className="space-y-3">
-                                    <div className="h-1.5 w-32 bg-white/10 rounded-full overflow-hidden">
-                                        <div className="h-full w-3/4 bg-emerald-500"></div>
-                                    </div>
-                                    <div className="h-1.5 w-24 bg-white/10 rounded-full overflow-hidden">
-                                        <div className="h-full w-1/2 bg-blue-500"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Floating Cursor/Tooltip Overlay */}
-                            <div className="absolute bottom-10 right-10 bg-[#0f172a] text-white p-8 rounded-[2.5rem] shadow-2xl border border-white/20 hidden lg:block animate-in zoom-in-50 duration-1000 backdrop-blur-3xl bg-opacity-80">
-                                <div className="flex items-center gap-4 mb-4">
-                                    <Sparkles className="text-primary-400" size={16} />
-                                    <span className="text-[9px] font-black uppercase tracking-widest italic leading-none text-primary-300">AI Forge Insight</span>
-                                </div>
-                                <p className="text-sm font-bold italic leading-relaxed text-slate-100 mb-2">"Operational load optimized."</p>
-                                <p className="text-[11px] font-bold italic leading-relaxed text-slate-400">Predicted capacity boost: <span className="text-emerald-400">+18%</span></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* --- FEATURE MATRIX --- */}
-            <div id="feature-matrix" className="max-w-7xl mx-auto px-6 py-40">
-                <div className="flex flex-col md:flex-row justify-between items-end gap-10 mb-24">
-                    <div className="flex-1">
-                        <div className="flex items-center gap-4 mb-8">
-                            <div className="h-px w-14 bg-primary-600"></div>
-                            <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary-600 italic">Core Intelligence Architecture</span>
-                        </div>
-                        <h2 className="text-6xl md:text-7xl font-black text-slate-900 tracking-tighter italic leading-[0.85] mb-8">System <br /> <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-indigo-600">Bios</span> Protocol</h2>
-                        <p className="text-slate-500 font-bold uppercase tracking-tight max-w-xl text-lg opacity-80 italic">KiddoZ isn't software—it's an operating system for the next paradigm of automated facility management.</p>
-                    </div>
-
-                    <div className="bg-[#0f172a] p-10 rounded-[3rem] border border-white/10 shadow-2xl relative overflow-hidden group/mstat">
-                        <div className="absolute inset-0 bg-primary-500/10 scale-0 group-hover/mstat:scale-100 transition-transform duration-1000 rounded-full blur-3xl"></div>
-                        <div className="flex items-center gap-8 relative z-10">
-                            <div className="text-right">
-                                <p className="text-[9px] font-black uppercase tracking-[0.3em] text-primary-400 mb-2 italic">Network Saturation</p>
-                                <p className="text-3xl font-black text-white italic tracking-tighter">84 Nodes</p>
-                            </div>
-                            <div className="w-px h-12 bg-white/10"></div>
-                            <div className="text-left">
-                                <p className="text-[9px] font-black uppercase tracking-[0.3em] text-emerald-400 mb-2 italic">Uptime Status</p>
-                                <p className="text-3xl font-black text-white italic tracking-tighter">99.98%</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-                    {features.map((feature, idx) => (
-                        <div key={idx} className="group p-12 bg-white border border-slate-100/80 rounded-[4rem] hover:shadow-[0_80px_160px_-20px_rgba(15,23,42,0.12)] hover:border-primary-200 hover:-translate-y-3 transition-all duration-1000 relative overflow-hidden">
-                            {/* Visual Backdrops */}
-                            <div className="absolute inset-0 bg-gradient-to-br from-slate-50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
-
-                            {/* Tech Texture Overlay */}
-                            <div className="absolute inset-0 opacity-0 group-hover:opacity-[0.03] transition-opacity duration-1000 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #000 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
-
-                            <div className="absolute -bottom-10 -right-10 opacity-[0.03] group-hover:opacity-[0.12] group-hover:scale-150 transition-all duration-1000 grayscale group-hover:grayscale-0 pointer-events-none">
-                                <feature.icon size={220} />
-                            </div>
-
-                            <div className="flex justify-between items-start mb-12 relative z-10">
-                                <div className={`w-20 h-20 ${feature.bg} ${feature.color} rounded-[2rem] flex items-center justify-center shadow-inner group-hover:rotate-[15deg] group-hover:scale-110 transition-all duration-700 ease-out`}>
-                                    <feature.icon size={32} />
-                                </div>
-                                <span className="text-[10px] font-black text-slate-300 italic tracking-[0.3em]">MOD/{feature.id}</span>
-                            </div>
-
-                            <div className="space-y-4 relative z-10">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-primary-600 animate-pulse"></div>
-                                    <span className="text-[9px] font-black uppercase tracking-widest text-primary-600/60 italic">{feature.tag}</span>
-                                </div>
-                                <h3 className="text-3xl font-black text-slate-900 italic tracking-tighter group-hover:text-primary-600 transition-colors duration-500">{feature.title}</h3>
-                                <p className="text-slate-500 font-bold text-sm leading-relaxed uppercase tracking-tight opacity-70 group-hover:opacity-100 transition-opacity duration-700 italic">{feature.desc}</p>
-                            </div>
-
-                            <div className="mt-10 flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.4em] text-primary-600 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-700 italic relative z-10">
-                                Access Protocol <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform h-3 w-3" />
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* --- ADAPTIVE INTELLIGENCE LAYERS --- */}
-            <div className="bg-slate-50 py-40">
+            {/* --- TRUSTED BY --- */}
+            <div className="bg-slate-50/50 border-y border-slate-100 py-16">
                 <div className="max-w-7xl mx-auto px-6">
-                    <div className="flex flex-col items-center text-center mb-24">
-                        <div className="flex items-center gap-3 mb-8">
-                            <Layers className="text-primary-600 w-5 h-5" />
-                            <span className="text-[10px] font-black uppercase tracking-[0.6em] text-slate-400 italic">Advanced Sub-Modules</span>
-                        </div>
-                        <h2 className="text-6xl font-black text-slate-900 italic tracking-tighter mb-8 shadow-sm">Adaptive <span className="bg-clip-text text-transparent bg-gradient-to-r from-slate-700 to-slate-900 border-b-8 border-primary-500/10">Architecture</span></h2>
-                        <p className="max-w-xl text-slate-500 font-bold uppercase tracking-tight italic opacity-70">A multi-layered ecosystem designed to evolve with your operational requirements.</p>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {subFeatures.map((sub, i) => (
-                            <div key={i} className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:border-primary-100 transition-all duration-700 group/sub">
-                                <div className="p-4 bg-slate-50 rounded-2xl text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 transition-all duration-500 mb-8 inline-block shadow-inner">
-                                    <sub.icon size={24} />
-                                </div>
-                                <h4 className="text-xl font-black italic tracking-tighter text-slate-900 mb-3">{sub.title}</h4>
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest leading-relaxed italic">{sub.desc}</p>
+                    <p className="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-10">Trusted by leading childcare institutions</p>
+                    <div className="flex flex-wrap justify-center gap-10 md:gap-20 items-center opacity-50 grayscale hover:grayscale-0 transition-all duration-700">
+                        {['NORDIC CHILD', 'PINNACLE ACADEMY', 'GALAXY KIDS', 'PRIMARY SCHOOL', 'LEARNING NODE'].map((name, i) => (
+                            <div key={i} className="flex items-center gap-2">
+                                <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm ${['bg-blue-600', 'bg-indigo-600', 'bg-primary-600', 'bg-emerald-600', 'bg-rose-600'][i]}`}>{name[0]}</div>
+                                <span className="text-lg font-bold tracking-tight text-slate-900">{name}</span>
                             </div>
                         ))}
                     </div>
                 </div>
             </div>
 
-            {/* --- TACTICAL ADVANTAGE SECTION --- */}
-            <div className="bg-[#0f172a] py-48 relative overflow-hidden">
-                <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #fff 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>
-                <div className="absolute -top-40 -left-40 w-[60rem] h-[60rem] bg-indigo-600/10 rounded-full blur-[150px] pointer-events-none"></div>
-                <div className="absolute -bottom-40 -right-40 w-[60rem] h-[60rem] bg-primary-600/10 rounded-full blur-[150px] pointer-events-none"></div>
+            {/* --- DASHBOARD PREVIEW --- */}
+            <div className="max-w-7xl mx-auto px-6 py-32">
+                <div className="relative group/preview">
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary-500/20 to-indigo-500/20 rounded-[3rem] blur-[100px] group-hover:scale-105 transition-transform duration-1000 opacity-60"></div>
 
-                <div className="max-w-7xl mx-auto px-6 flex flex-col lg:flex-row items-center gap-32 relative z-10">
-                    <div className="lg:w-1/2">
-                        <div className="flex items-center gap-4 mb-10">
-                            <div className="h-px w-14 bg-primary-500"></div>
-                            <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary-400 italic">Operational Efficiency Index</span>
+                    <div className="relative bg-[#0f172a] border border-white/10 rounded-[2.5rem] p-3 shadow-2xl overflow-hidden">
+                        <div className="flex items-center gap-2 px-6 py-3 border-b border-white/5 mb-3">
+                            <div className="w-2.5 h-2.5 rounded-full bg-rose-500/50"></div>
+                            <div className="w-2.5 h-2.5 rounded-full bg-amber-500/50"></div>
+                            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/50"></div>
+                            <div className="ml-4 px-4 py-1 bg-white/5 rounded-full text-[10px] font-medium text-white/40 tracking-wider">dashboard.kiddoz.com</div>
                         </div>
-                        <h2 className="text-7xl md:text-8xl font-black text-white tracking-tighter italic leading-[0.8] mb-12">The <br /><span className="text-primary-400 underline decoration-indigo-500 underline-offset-[12px] decoration-8">Tactical</span> Advantage</h2>
 
-                        <div className="space-y-12">
-                            {[
-                                { title: "Neural Onboarding", id: "V1", desc: "Automated enrollment flow reduces administrative friction by 64% through AI predictive data mapping." },
-                                { title: "Signal Encryption", id: "V2", desc: "End-to-end multi-layer encryption for all parent-child telemetery and master financial records." },
-                                { title: "Adaptive Layouts", id: "V3", desc: "The platform dynamically reconfigures its UI based on the specific operational load of your node." }
-                            ].map((item, i) => (
-                                <div key={i} className="flex gap-8 group/tactical border-l-2 border-white/5 pl-10 hover:border-primary-500 transition-all duration-700">
-                                    <div className="w-16 h-16 rounded-[1.75rem] bg-white/5 border border-white/10 flex items-center justify-center shrink-0 group-hover/tactical:border-primary-500 group-hover/tactical:bg-primary-500/20 group-hover/tactical:rotate-12 transition-all duration-700 shadow-2xl">
-                                        <CheckCircle2 size={32} className="text-primary-400" />
-                                    </div>
-                                    <div>
-                                        <div className="flex items-center gap-3 mb-3">
-                                            <span className="text-[10px] font-black text-primary-500/60 tracking-widest">PROTOCOL_{item.id}</span>
-                                            <h4 className="text-3xl font-black text-white italic tracking-tighter leading-none">{item.title}</h4>
-                                        </div>
-                                        <p className="text-slate-400 font-bold text-base uppercase tracking-tight leading-relaxed italic opacity-80 group-hover:opacity-100 transition-opacity duration-700">{item.desc}</p>
-                                    </div>
+                        <div className="relative rounded-[2rem] overflow-hidden">
+                            <img
+                                src="https://images.unsplash.com/photo-1551288049-bbbda546697a?auto=format&fit=crop&q=80&w=1600"
+                                alt="KiddoZ Management Dashboard"
+                                className="w-full h-auto object-cover aspect-[21/9] opacity-90 group-hover:scale-105 transition-transform duration-[2000ms]"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a]/80 via-transparent to-transparent"></div>
+
+                            <div className="absolute top-8 left-8 p-5 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl hidden lg:block">
+                                <div className="flex items-center gap-2 mb-3">
+                                    <Activity className="text-emerald-400" size={14} />
+                                    <span className="text-[10px] font-bold uppercase text-white tracking-widest">Live Activity</span>
                                 </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Technical Stack Card */}
-                    <div className="lg:w-1/2 w-full">
-                        <div className="relative p-1 bg-gradient-to-br from-slate-700 to-slate-800 rounded-[5rem] shadow-2xl group/stack">
-                            <div className="absolute -inset-1 bg-gradient-to-r from-primary-500 to-indigo-600 rounded-[5.2rem] opacity-20 blur-2xl group-hover:opacity-40 transition-opacity duration-1000"></div>
-                            <div className="relative bg-[#1e293b] rounded-[4.9rem] p-16 overflow-hidden">
-                                <div className="absolute top-0 right-0 p-16 opacity-[0.05] group-hover:scale-110 transition-transform duration-1000"><Fingerprint size={160} /></div>
-
-                                <div className="mb-16">
-                                    <p className="text-[10px] font-black uppercase tracking-[0.5em] text-primary-400 mb-6 italic">Integration Technology</p>
-                                    <h5 className="text-4xl font-black text-white italic tracking-tighter leading-none mb-4">Secured by <br /> Intelligence.</h5>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-10">
-                                    {[
-                                        { label: "Latency", val: "< 42ms" },
-                                        { label: "Encryption", val: "AES-512" },
-                                        { label: "AI Engine", val: "Neural V8" },
-                                        { label: "Redundancy", val: "Triple-Tier" }
-                                    ].map((s, i) => (
-                                        <div key={i} className="border-l border-white/10 pl-6">
-                                            <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1 italic">{s.label}</p>
-                                            <p className="text-2xl font-black text-white italic tracking-tighter">{s.val}</p>
-                                        </div>
-                                    ))}
-                                </div>
-
-                                <div className="mt-16 pt-10 border-t border-white/5 flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-500"><Lock size={18} /></div>
-                                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic">GDPR & HIPPA Ready</span>
-                                    </div>
-                                    <MousePointer2 className="text-slate-600 w-6 h-6 animate-pulse" />
+                                <div className="space-y-2.5">
+                                    <div className="h-1 w-24 bg-white/10 rounded-full"><div className="h-full w-3/4 bg-emerald-500 rounded-full"></div></div>
+                                    <div className="h-1 w-20 bg-white/10 rounded-full"><div className="h-full w-1/2 bg-blue-500 rounded-full"></div></div>
                                 </div>
                             </div>
                         </div>
@@ -382,80 +174,142 @@ const AdminFeatures = () => {
                 </div>
             </div>
 
-            {/* --- FINAL CALL TO ACTION --- */}
-            <div className="py-48 bg-white relative">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-32 bg-slate-100"></div>
-                <div className="max-w-4xl mx-auto px-6 text-center space-y-16">
-                    <div className="space-y-6">
-                        <div className="flex items-center justify-center gap-4 mb-4">
-                            <Sparkles className="text-primary-500" />
-                            <span className="text-[10px] font-black uppercase tracking-[0.6em] text-slate-400 italic">Final Step</span>
+            {/* --- CORE FEATURES --- */}
+            <div id="features" className="max-w-7xl mx-auto px-6 py-32">
+                <div className="flex flex-col md:flex-row justify-between items-end gap-10 mb-20 text-left">
+                    <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="h-px w-10 bg-primary-600"></div>
+                            <span className="text-xs font-bold uppercase tracking-widest text-primary-600">Powerful Tools</span>
                         </div>
-                        <h2 className="text-6xl md:text-8xl font-black text-slate-900 tracking-tighter italic leading-[0.85]">
-                            Initialize <br />
-                            Your <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-indigo-600">Command Forge</span>
-                        </h2>
+                        <h2 className="text-4xl md:text-6xl font-extrabold text-slate-900 tracking-tight mb-6">Designed for Excellence</h2>
+                        <p className="text-slate-600 font-medium text-lg max-w-xl">Everything you need to run a modern, efficient, and successful childcare business in one place.</p>
                     </div>
 
-                    <div className="flex flex-col items-center gap-10">
-                        <Link to="/signup" className="group relative inline-flex items-center gap-6 px-20 py-10 bg-[#0f172a] text-white rounded-[3rem] font-black text-xs uppercase tracking-[0.5em] italic hover:bg-black hover:shadow-[0_40px_80px_-15px_rgba(15,23,42,0.4)] transition-all duration-700 hover:-translate-y-3 active:scale-95 shadow-2xl shadow-indigo-200">
-                            Begin Enrollment Phase <ArrowRight className="w-5 h-5 group-hover:translate-x-3 transition-transform duration-700" />
-                            <div className="absolute top-0 left-0 w-full h-full rounded-[3rem] bg-primary-500/10 scale-0 group-hover:scale-110 transition-transform duration-1000 blur-2xl"></div>
-                        </Link>
+                    <div className="bg-slate-900 p-8 rounded-[2rem] shadow-xl flex items-center gap-6">
+                        <div className="text-left border-r border-white/10 pr-6">
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-primary-400 mb-1">Active Centers</p>
+                            <p className="text-2xl font-bold text-white tracking-tight">250+</p>
+                        </div>
+                        <div className="text-left">
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-400 mb-1">System Uptime</p>
+                            <p className="text-2xl font-bold text-white tracking-tight">99.9%</p>
+                        </div>
+                    </div>
+                </div>
 
-                        <div className="flex items-center gap-6 text-slate-300">
-                            <span className="text-[10px] font-black uppercase tracking-widest italic">No master contract required</span>
-                            <div className="w-1 h-1 rounded-full bg-slate-200"></div>
-                            <span className="text-[10px] font-black uppercase tracking-widest italic flex items-center gap-2 text-primary-600">
-                                <Activity size={10} /> Instant Provisioning
-                            </span>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {features.map((feature, idx) => (
+                        <div key={idx} className="group p-10 bg-white border border-slate-100 rounded-[2.5rem] hover:shadow-2xl hover:shadow-slate-200/50 hover:border-primary-100 hover:-translate-y-2 transition-all duration-500 relative overflow-hidden text-left">
+                            <div className={`w-16 h-16 ${feature.bg} ${feature.color} rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500`}>
+                                <feature.icon size={28} />
+                            </div>
+                            <div className="space-y-3">
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-primary-600/60">{feature.tag}</span>
+                                <h3 className="text-2xl font-bold text-slate-900">{feature.title}</h3>
+                                <p className="text-slate-500 font-medium text-sm leading-relaxed">{feature.desc}</p>
+                            </div>
+                            <div className="mt-8 flex items-center gap-2 text-xs font-bold text-primary-600 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                                Learn More <ArrowRight size={14} />
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* --- SUB FEATURES --- */}
+            <div className="bg-slate-50 py-32">
+                <div className="max-w-7xl mx-auto px-6">
+                    <div className="text-center mb-20">
+                        <h2 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-4">The Complete Ecosystem</h2>
+                        <p className="text-slate-600 font-medium max-w-xl mx-auto">Thoughtful features designed to make every part of your day easier.</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
+                        {subFeatures.map((sub, i) => (
+                            <div key={i} className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all group">
+                                <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 transition-colors mb-6">
+                                    <sub.icon size={24} />
+                                </div>
+                                <h4 className="text-lg font-bold text-slate-900 mb-2">{sub.title}</h4>
+                                <p className="text-sm font-medium text-slate-500 leading-relaxed">{sub.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* --- BENEFITS --- */}
+            <div className="bg-[#0f172a] py-32 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-primary-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+                <div className="absolute bottom-0 left-0 w-[40rem] h-[40rem] bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+                <div className="max-w-7xl mx-auto px-6 flex flex-col lg:flex-row items-center gap-20 relative z-10 text-left">
+                    <div className="lg:w-1/2">
+                        <span className="text-xs font-bold uppercase tracking-widest text-primary-400 mb-6 block">Why Choose KiddoZ?</span>
+                        <h2 className="text-5xl md:text-7xl font-extrabold text-white tracking-tight leading-tight mb-10">Modern Tools for <br /><span className="text-primary-400">Superior Care</span></h2>
+
+                        <div className="space-y-10">
+                            {[
+                                { title: "Seamless Onboarding", desc: "Automated enrollment workflows reduce paperwork and administrative time by up to 60%." },
+                                { title: "Advanced Security", desc: "Enterprise-grade encryption for all parent communication and financial records." },
+                                { title: "Adaptive Experience", desc: "A smart interface that learns your workflows and puts the most important tasks front and center." }
+                            ].map((item, i) => (
+                                <div key={i} className="flex gap-6 group">
+                                    <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 group-hover:border-primary-500 group-hover:bg-primary-500/20 transition-all duration-300">
+                                        <CheckCircle2 size={24} className="text-primary-400" />
+                                    </div>
+                                    <div>
+                                        <h4 className="text-xl font-bold text-white mb-2">{item.title}</h4>
+                                        <p className="text-slate-400 font-medium text-base leading-relaxed">{item.desc}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="lg:w-1/2 w-full">
+                        <div className="bg-slate-800/50 backdrop-blur-xl rounded-[3rem] p-12 border border-white/10 shadow-2xl">
+                            <h5 className="text-3xl font-bold text-white mb-10">Production Ready. <br /> Security First.</h5>
+                            <div className="grid grid-cols-2 gap-8">
+                                {[
+                                    { label: "Performance", val: "< 100ms" },
+                                    { label: "Stability", val: "99.99%" },
+                                    { label: "Encryption", val: "256-bit" },
+                                    { label: "Support", val: "24/7" }
+                                ].map((s, i) => (
+                                    <div key={i}>
+                                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">{s.label}</p>
+                                        <p className="text-2xl font-bold text-white tracking-tight">{s.val}</p>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="mt-12 pt-8 border-t border-white/5 flex items-center gap-4">
+                                <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-500"><Shield size={20} /></div>
+                                <span className="text-xs font-bold text-slate-400">Compliant with Global Safety Standards</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* --- CUSTOM FOOTER FOR ADMIN FEATURES --- */}
-            <footer className="bg-slate-50 border-t border-slate-100 py-20 overflow-hidden relative">
-                <div className="absolute top-0 right-0 p-20 opacity-[0.01] pointer-events-none scale-[3] rotate-12"><Shield size={200} /></div>
-                <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:col-span-1 lg:grid-cols-4 gap-20">
-                    <div className="md:col-span-2 space-y-10">
-                        <Link to="/" className="flex items-center cursor-pointer gap-4">
-                            <div className="w-12 h-12 bg-primary-600 rounded-[1.25rem] flex items-center justify-center text-white font-black text-2xl shadow-xl shadow-primary-900/20 transform rotate-3 italic">K</div>
-                            <span className="text-3xl font-black tracking-tighter text-slate-900 italic">Kiddo<span className="text-primary-600">Z</span> Protocol</span>
+            {/* --- FINAL CTA --- */}
+            <div className="py-32 bg-white relative text-center">
+                <div className="max-w-4xl mx-auto px-6 space-y-12">
+                    <h2 className="text-5xl md:text-7xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                        Transform Your <br />
+                        <span className="text-primary-600">Childcare Business Today</span>
+                    </h2>
+                    <p className="text-lg md:text-xl text-slate-600 font-medium">Join hundreds of centers that trust KiddoZ to deliver a better experience for parents and staff.</p>
+
+                    <div className="flex flex-col items-center gap-8">
+                        <Link to="/signup" className="group px-12 py-6 bg-slate-900 text-white rounded-2xl font-bold text-lg hover:bg-black hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 flex items-center gap-3">
+                            Claim Your Free Trial <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                         </Link>
-                        <p className="text-slate-500 font-bold uppercase tracking-tight text-sm max-w-sm leading-relaxed italic opacity-80">The global standard for next-generation childcare infrastructure management and automated safety monitoring.</p>
-                    </div>
-                    <div className="space-y-8">
-                        <h5 className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-900 italic">Governance</h5>
-                        <ul className="space-y-4">
-                            {[
-                                { name: 'Terms of Service', path: '/info/terms' },
-                                { name: 'Privacy Matrix', path: '/info/privacy' },
-                                { name: 'Security Audit', path: '/info/safety' },
-                                { name: 'Compliance', path: '/info/safety' }
-                            ].map((l, i) => (
-                                <li key={i}><Link to={l.path} className="text-sm font-bold text-slate-400 hover:text-primary-600 transition-colors uppercase italic tracking-tight">{l.name}</Link></li>
-                            ))}
-                        </ul>
-                    </div>
-                    <div className="space-y-8">
-                        <h5 className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-900 italic">Navigation</h5>
-                        <ul className="space-y-4">
-                            <li><Link to="/login" className="text-sm font-bold text-slate-400 hover:text-primary-600 transition-colors uppercase italic tracking-tight">Initialize Login</Link></li>
-                            <li><button onClick={handleDemoRequest} className="text-sm font-bold text-slate-400 hover:text-primary-600 transition-colors uppercase italic tracking-tight text-left">Request Audit</button></li>
-                            <li><button onClick={() => document.getElementById('feature-matrix')?.scrollIntoView({ behavior: 'smooth' })} className="text-sm font-bold text-slate-400 hover:text-primary-600 transition-colors uppercase italic tracking-tight text-left">Feature Matrix</button></li>
-                            <li><Link to="/info/help" className="text-sm font-bold text-slate-400 hover:text-primary-600 transition-colors uppercase italic tracking-tight">Support Vector</Link></li>
-                        </ul>
+                        <p className="text-sm font-bold text-slate-400">No credit card required • Cancel anytime</p>
                     </div>
                 </div>
-                <div className="max-w-7xl mx-auto px-6 mt-20 pt-10 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">© 2026 KIDDOZ. HIGH COMMAND ENFORCED.</p>
-                    <div className="flex items-center gap-6">
-                        <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shadow-sm text-slate-400 hover:text-primary-600 transition-colors cursor-pointer"><Globe size={14} /></div>
-                        <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shadow-sm text-slate-400 hover:text-primary-600 transition-colors cursor-pointer"><Shield size={14} /></div>
-                    </div>
-                </div>
-            </footer>
+            </div>
         </div>
     );
 };
